@@ -30,7 +30,6 @@ export const userIsAdmin = connectedRouterRedirect({
 });
 
 export const isAdmin = (user={}) => {
-    console.log(user)
     return hasRole(user, ROLES.admin);
 };
 

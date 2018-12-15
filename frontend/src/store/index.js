@@ -4,7 +4,7 @@ import {createLogger} from 'redux-logger';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import rootReducer from '../reducers';
-import {emit, websocketInit} from '../webSockets/webSockets';
+//import {emit, websocketInit} from '../webSockets/webSockets';
 
 const logger = createLogger({
     collapsed: true,
