@@ -12,39 +12,32 @@ const actions = {
 };
 
 const {auth} = createActions(actions);
-//
-// export function loginByAccessToken() {
-//
-//     return async dispatch => {
-//         const token = localStorage.getItem('login');
-//         if (!token)
-//             return;
-//
-//         dispatch(auth.start());
-//         try {
-//
-//             await smartSystemApi.login(token);
-//
-//             const user = smartSystemApi.user;
-//
-//             const {name, token, roles} = user.attributes;
-//             if (!name) {
-//                 throw Error('Invalid user; name attribute must be present');
-//             }
-//
-//             smartSystemApi.setUserData({name, token, roles});
-//
-//             localStorage.setItem('login', token);
-//
-//             dispatch(auth.success({name, token, roles}));
-//
-//         } catch (e) {
-//
-//             dispatch(auth.failure(e));
-//         }
-//     };
-//
-// }
+
+export function loginByAccessToken() {
+
+    return async dispatch => {
+        const token = localStorage.getItem('login');
+        if (!token)
+            return;
+
+        dispatch(auth.start());
+        try {
+
+            // parse jwt
+            const user = {name: 'serbut', token: '123', roles: ['admin']}
+            smartSystemApi.setUserData(user);
+
+            localStorage.setItem('login', user.token);
+
+            dispatch(auth.success({user}));
+
+        } catch (e) {
+
+            dispatch(auth.failure(e));
+        }
+    };
+
+}
 
 export function login(username, password) {
     return async dispatch => {
