@@ -1,0 +1,129 @@
+swagger: '2.0'
+info:
+  description: Operation service to handle user's requests for CRUD operation for rules, lines, application settings
+  version: 1.0.0
+  title: Irrigation
+  contact:
+    email: butenko2003@ukr.net
+
+host: mozz.asuscomm.com
+basePath: /v1
+schemes:
+  - https
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+tags:
+- name: lines
+  description: All operations related to lines
+- name: sensors
+  description: All operations related to sensors
+- name: rules
+  description: All operations related to rule
+- name: application
+  description: Operations about application layer
+
+paths:
+  /lines:
+    get:
+      tags:
+      - lines
+      summary: Get summary for all lines
+      description: Returns an array of line objects
+      operationId: getAllLines
+      responses:
+        200:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Line'
+
+  /lines/{lineId}:
+    get:
+      summary: Returns summary of line by ID.
+      parameters:
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+    put:
+      summary: Change settings for line by id.
+      parameters:
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+
+
+  /lines/{lineId}/{command}:
+    post:
+      summary: Enable line of line by ID.
+      parameters:
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
+        - in: path
+          name: command
+          required: true
+          description: Command to execute againg line
+          type: string
+          enum: ['enable', 'disable']
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+
+definitions:
+  Line:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      status:
+        type: string
+        description: Line Status
+        enum:
+        - inProgress
+        - active
+        - notActive
+      linkedSensor:
+        type: string
+        description: Linked sensor id, if present
+  Sensor:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      status:
+        type: string
+        description: Sensot Status
+        enum:
+        - active
+        - notActive
+      linkedLine:
+        type: string
+        description: Linked line id, if present
+      value:
+        type: object
+        description: Sensor value
