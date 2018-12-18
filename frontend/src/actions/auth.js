@@ -1,6 +1,7 @@
 import {createActions} from 'redux-actions';
 
 import {smartSystemApi} from '../provider';
+import {parseJwt} from "../helpers/auth.helper";
 
 const actions = {
     AUTH: {
@@ -16,15 +17,16 @@ const {auth} = createActions(actions);
 export function loginByAccessToken() {
 
     return async dispatch => {
-        const token = localStorage.getItem('login');
-        if (!token)
+        const access_token = localStorage.getItem('login');
+        if (!access_token)
             return;
 
         dispatch(auth.start());
         try {
 
-            // parse jwt
-            const user = {name: 'serbut', token: '123', roles: ['admin']}
+            let jwt = parseJwt(access_token);//user_claims.roles identity
+
+            const user = {name: jwt.identity, token: access_token, roles: jwt.user_claims.roles};
             smartSystemApi.setUserData(user);
 
             localStorage.setItem('login', user.token);
@@ -32,7 +34,6 @@ export function loginByAccessToken() {
             dispatch(auth.success({user}));
 
         } catch (e) {
-
             dispatch(auth.failure(e));
         }
     };
@@ -45,18 +46,9 @@ export function login(username, password) {
         try {
             await smartSystemApi.login(username, password);
 
-            const user = smartSystemApi.user;
+            localStorage.setItem('login', smartSystemApi.user.token);
 
-            const {name, token, roles} = user;
-            if (!name) {
-                throw Error('Invalid user; name attribute must be present');
-            }
-
-            smartSystemApi.setUserData({name, token, roles});
-
-            localStorage.setItem('login', token);
-
-            dispatch(auth.success({user: {name, token, roles}}));
+            dispatch(auth.success({user: smartSystemApi.user}));
 
         } catch (e) {
             dispatch(auth.failure(e));
@@ -66,8 +58,10 @@ export function login(username, password) {
 
 
 export function logout() {
-    localStorage.setItem('login', '');
-    return dispatch => {
+    return async dispatch => {
+        await smartSystemApi.logout();
+        localStorage.setItem('login', '');
+
         dispatch(auth.logout());
-    };
+    }
 }

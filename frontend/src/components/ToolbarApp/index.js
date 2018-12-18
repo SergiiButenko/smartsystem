@@ -15,6 +15,10 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import connect from 'react-redux/es/connect/connect';
 import {getCurrentUser} from '../../selectors/auth';
 import AppBarMenuItems from './AppBarMenuItems';
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import Menu from "@material-ui/core/Menu/Menu";
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import {logout} from "../../actions/auth";
 
 const drawerWidth = 240;
 
@@ -103,19 +107,18 @@ const mapStateToProps = (state) => {
     return getCurrentUser(state);
 };
 @withStyles(styles)
-@connect(mapStateToProps)
+@connect(mapStateToProps, {logout})
 export default class ToolbarAppWeb extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
+        logout: PropTypes.func.isRequired,
     };
 
     state = {
         open: false,
-        top: false,
         left: false,
-        bottom: false,
-        right: false,
+        anchorEl: null,
     };
 
     toggleDrawer = (side, open) => () => {
@@ -128,8 +131,19 @@ export default class ToolbarAppWeb extends Component {
         this.setState({open: false});
     };
 
+    handleMenu = event => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    };
+
     render() {
         const {classes} = this.props;
+        const {anchorEl} = this.state;
+
+        const open = Boolean(anchorEl);
 
         return (
             <>
@@ -164,6 +178,33 @@ export default class ToolbarAppWeb extends Component {
                                     <NotificationsIcon/>
                                 </Badge>
                             </IconButton>
+                            <IconButton
+                                aria-owns={open ? 'menu-appbar' : undefined}
+                                aria-haspopup="true"
+                                onClick={this.handleMenu}
+                                color="inherit"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={open}
+                                onClose={this.handleClose}
+                            >
+                                <MenuItem onClick={this.handleClose}>Мій аккаунт</MenuItem>
+                                <MenuItem onClick={this.props.logout}>Вийти</MenuItem>
+                            </Menu>
+
                         </Toolbar>
                     </AppBar>
                     <Drawer

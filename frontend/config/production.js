@@ -1,11 +1,11 @@
 module.exports = {
     config_section: {
-        text: 'this is default config',
+        text: 'This is default config',
     },
 
     endpoint_section: {
-        base_url: 'https://mozz.asuscomm.com',
+        base_url: 'http://localhost:5000/',
         amazon: {},
-        ws_uri: 'wss://echo.websocket.org',
+        ws_uri: 'ws://localhost:9000',
     }
 };

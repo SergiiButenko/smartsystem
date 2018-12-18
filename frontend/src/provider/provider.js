@@ -2,7 +2,7 @@ import providerBase from './base';
 import {tokenAuth} from './middlewares';
 
 import {apiUrl} from '../constants/apiUrl';
-import {adminOnly} from './helpers';
+import {parseJwt} from "../helpers/auth.helper";
 
 class SmartSystemApi {
     config = {};
@@ -18,9 +18,32 @@ class SmartSystemApi {
         this.provider.setGlobalConfig(config);
     }
 
-    login(userName, password) {
-        //const {name, token, roles} = this.provider.login(userName, password);
-        this.setUserData({name: 'serbut', token: '123', roles: ['admin']});
+    async login(username, password, options = {}) {
+        const {access_token} = await this.provider.post(
+            apiUrl.AUTH(),
+            JSON.stringify({username, password}),
+            options,
+        );
+
+        let jwt = parseJwt(access_token);//user_claims.roles identity
+
+        const user = {name: jwt.identity, token: access_token, roles: jwt.user_claims.roles};
+        smartSystemApi.setUserData(user);
+
+        localStorage.setItem('login', user.token);
+
+        return this;
+    }
+
+    async logout(options = {}) {
+        // await this.provider.post(
+        //     apiUrl.LOGOUT(),
+        //     JSON.stringify({username: this.user.username}),
+        //     options,
+        // );
+        localStorage.setItem('login', '');
+
+        return this;
     }
 
     setUserData({name, token, roles}) {

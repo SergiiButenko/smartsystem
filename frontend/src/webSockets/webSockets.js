@@ -5,7 +5,7 @@ import config from 'config';
 
 const {endpoints: {ws_uri}} = config;
 
-const socket = io(ws_uri);
+//const socket = io(ws_uri);
 
 export const websocketInit = (store) => {
     socket.on(ACTION_TYPES.error, (payload) => {

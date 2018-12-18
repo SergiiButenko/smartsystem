@@ -4,7 +4,7 @@ module.exports = {
     },
 
     endpoint_section: {
-        base_url: 'https://mozz.asuscomm.com',
+        base_url: 'http://localhost:5000/',
         amazon: {},
         ws_uri: 'ws://localhost:9000',
     }

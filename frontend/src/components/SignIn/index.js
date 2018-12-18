@@ -14,6 +14,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import {login} from '../../actions/auth';
 import connect from 'react-redux/es/connect/connect';
+import {ErrorMessageBox} from './components';
+import {getCurrentUser} from "../../selectors/auth";
 
 const styles = theme => ({
     layout: {
@@ -47,11 +49,17 @@ const styles = theme => ({
     },
 });
 
+const mapStateToProps = (state) => {
+    return getCurrentUser(state);
+};
 @withStyles(styles)
-@connect(null, {login})
+@connect(mapStateToProps, {login})
 export default class SignIn extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
+        loginError: PropTypes.any,
+        loggingIn: PropTypes.bool.isRequired,
+        login: PropTypes.func.isRequired,
     };
 
     handleSubmit = (event) => {
@@ -64,8 +72,7 @@ export default class SignIn extends Component {
         this.props.login(email, password);
     };
     render() {
-        const {classes} = this.props;
-        const loggingIn = false;
+        const {classes, loggingIn, loginError } = this.props;
 
         return (
             <React.Fragment>
@@ -110,6 +117,7 @@ export default class SignIn extends Component {
                                 className={classes.buttonProgress}
                             />}
                         </form>
+                        <ErrorMessageBox errorMsg={loginError}/>
                     </Paper>
                 </main>
             </React.Fragment>
