@@ -51,7 +51,7 @@ class Fab extends React.Component {
         return (
             <Button
                 disabled={!this.state.active}
-                variant="extended"
+                variant="extendedFab"
                 color="primary"
                 className={classes.button_float}>
                 Почати полив

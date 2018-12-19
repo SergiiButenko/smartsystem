@@ -11,7 +11,7 @@ export default handleActions({
         FAILURE: (state, action) => {
             return {
                 ...state,
-                lineFetchError: action.payload.message,
+                lineFetchError: action.payload.message || action.payload,
             };
         },
         LOADING: (state, action) => {

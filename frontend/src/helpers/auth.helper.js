@@ -24,19 +24,18 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
 export const userIsAdmin = connectedRouterRedirect({
     redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/',
     allowRedirectBack: false,
-    authenticatedSelector: state => state.auth.user !== null && isAdmin(state),
-    //authenticatingSelector: state => !!state.auth.loggingIn,
+    authenticatedSelector: state => state.auth.user !== null && isAdmin(state.auth.user),
     wrapperDisplayName: 'CheckIfUserIsAdmin',
 });
 
 export const isAdmin = (user={}) => {
-    return hasRole(user, ROLES.admin);
+    return hasRole(user, ROLES.admin) && 'sdfsdf';
 };
 
 export const hasRole = (user, roles) =>
     !!user.roles && user.roles.some(role => roles.includes(role));
 
-export const isAllowed = (user, rights) =>
+export const hasPermission = (user, rights) =>
     rights.some(right => user.rights.includes(right));
 
 export const parseJwt = (token) => {

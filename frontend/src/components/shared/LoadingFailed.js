@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 
 const styles = {
     errorLabel: {
-        'textAlign': 'center',
+        textAlign: 'center',
+        width: '100%',
     },
 };
 
@@ -25,20 +26,22 @@ export default class LoadingFailed extends Component {
 
         return (
             <>
-                <Typography
-                    color="error"
-                    gutterBottom
-                    variant='h5'
-                    style={{'marginTop': '5rem'}}
-                >
-                    Помилка при завантаженні. Причина: "{errorText}"
-                </Typography>
+                <div className={classes.errorLabel}>
+                    <Typography
+                        color="error"
+                        gutterBottom
+                        variant='h5'
+                        style={{'marginTop': '5rem'}}
+                    >
+                        Помилка при завантаженні. Причина: "{errorText}"
+                    </Typography>
 
-                <Typography
-                    color="error"
-                    variant='h5'>
-                    <ContactSupport upper={true}/>
-                </Typography>
+                    <Typography
+                        color="error"
+                        variant='h5'>
+                        <ContactSupport upper={true}/>
+                    </Typography>
+                </div>
             </>
         );
     }

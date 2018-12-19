@@ -3,6 +3,7 @@ import {tokenAuth} from './middlewares';
 
 import {apiUrl} from '../constants/apiUrl';
 import {parseJwt} from "../helpers/auth.helper";
+import {adminOnly} from "./helpers";
 
 class SmartSystemApi {
     config = {};
@@ -55,7 +56,7 @@ class SmartSystemApi {
         ]);
     }
 
-    //@adminOnly
+    @adminOnly
     async getLines(options = {}) {
         return this.provider.post(
             apiUrl.GET_LINES(),
