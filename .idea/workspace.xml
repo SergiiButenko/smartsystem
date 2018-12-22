@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af24246c-5745-42da-bc41-37daa8bbbc56" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Irrigation/Fab.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Irrigation/Fab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/helpers/auth.helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/helpers/auth.helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/provider/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/provider/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/provider/provider.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/provider/provider.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/reducers/lines.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/reducers/lines.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/auth/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/auth/auth.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,45 +11,46 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="21583360">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="4" />
-          <entry key="project.open.time.1" value="1" />
-          <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.12" value="1" />
-          <entry key="project.open.time.13" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="5" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="gitignore" value="2" />
-          <entry key="js" value="20" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="JavaScript" value="20" />
-          <entry key="PLAIN_TEXT" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="js" value="516" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JavaScript" value="516" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docker-compose.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docker/swagger.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="26" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/backend/auth/auth.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/bin/activate">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-643" />
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -93,6 +89,8 @@
         <option value="$PROJECT_DIR$/frontend/src/provider/helpers.js" />
         <option value="$PROJECT_DIR$/frontend/src/provider/provider.js" />
         <option value="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" />
+        <option value="$PROJECT_DIR$/docker-compose.yml" />
+        <option value="$PROJECT_DIR$/backend/auth/auth.py" />
       </list>
     </option>
   </component>
@@ -110,11 +108,11 @@
       <path value="$PROJECT_DIR$/frontend/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="2240" />
-    <option name="y" value="-8" />
-    <option name="width" value="1279" />
-    <option name="height" value="701" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="67" />
+    <option name="y" value="25" />
+    <option name="width" value="1299" />
+    <option name="height" value="743" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -126,78 +124,29 @@
         <subPane>
           <expand>
             <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
+              <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="auth" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="actions" type="462c0819:PsiDirectoryNode" />
+              <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
+              <item name="docker" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="Irrigation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="shared" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="ToolbarApp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="helpers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="provider" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="smartsystem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="smartsystem" type="462c0819:PsiDirectoryNode" />
-              <item name="frontend" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="reducers" type="462c0819:PsiDirectoryNode" />
+              <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
+              <item name="sqlDump" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -233,14 +182,11 @@
         <settings>
           <option name="buildOnly" value="true" />
           <option name="command" value="" />
-          <option name="commandLineOptions" value="" />
           <option name="containerName" value="" />
           <option name="entrypoint" value="" />
           <option name="imageTag" value="" />
+          <option name="commandLineOptions" value="" />
           <option name="sourceFilePath" value="backend/operator/Dockerfile" />
-          <option name="startBrowserSettings">
-            <browser url="http://127.0.0.1" />
-          </option>
         </settings>
       </deployment>
       <method v="2" />
@@ -273,10 +219,11 @@
     <option name="totallyTimeSpent" value="6590000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="67" y="25" width="1299" height="743" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.2455216" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.2452978" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="0" weight="0.32884097" />
       <window_info anchor="bottom" id="Event Log" order="1" side_tool="true" />
@@ -298,9 +245,6 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/pyvenv.cfg">
       <provider selected="true" editor-type-id="text-editor">
@@ -314,13 +258,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1501">
           <caret line="128" column="33" selection-start-line="128" selection-start-column="33" selection-end-line="128" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docker/swagger.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="26" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -544,6 +481,35 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="22" column="84" selection-start-line="21" selection-start-column="16" selection-end-line="22" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker-compose.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker/swagger.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="26" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/bin/activate">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-643" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/auth/auth.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
