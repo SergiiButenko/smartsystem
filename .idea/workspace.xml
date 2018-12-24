@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af24246c-5745-42da-bc41-37daa8bbbc56" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/new_irrigation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/new_irrigation.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/nginx/smartsystem.conf" beforeDir="false" afterPath="$PROJECT_DIR$/backend/nginx/smartsystem.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,27 +16,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/docker-compose.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8">
-              <caret line="12" column="14" lean-forward="true" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/backend/nginx/smartsystem.conf">
-          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
-              <caret line="9" column="20" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="20" />
+              <caret line="9" column="8" lean-forward="true" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/venv/bin/activate">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/../irrigation_peregonivka/ngnix/irrigation">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="27" selection-end-line="99" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/nginx/smartsystem.conf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="8" lean-forward="true" selection-start-column="8" selection-end-column="8" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -85,8 +93,8 @@
         <option value="$PROJECT_DIR$/backend/auth/auth.py" />
         <option value="$PROJECT_DIR$/backend/nginx/smartsystem" />
         <option value="$PROJECT_DIR$/backend/auth/requirements.txt" />
-        <option value="$PROJECT_DIR$/docker-compose.yml" />
         <option value="$PROJECT_DIR$/backend/nginx/smartsystem.conf" />
+        <option value="$PROJECT_DIR$/docker-compose.yml" />
       </list>
     </option>
   </component>
@@ -110,11 +118,13 @@
     <option name="width" value="1299" />
     <option name="height" value="743" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -137,23 +147,22 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../irrigation_peregonivka" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/backend" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/backend/auth" />
       <recent name="$PROJECT_DIR$/sqlDump" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/backend" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -237,8 +246,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.conf" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/backend/operator/__init__.py" />
     <entry file="file://$PROJECT_DIR$/backend/operator/git_push.sh" />
     <entry file="file://$PROJECT_DIR$/backend/operator/setup.py" />
     <entry file="file://$PROJECT_DIR$/backend/operator/requirements.txt" />
@@ -449,22 +460,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/venv/bin/activate">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/AuthDockerfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="25" selection-start-line="6" selection-start-column="25" selection-end-line="6" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/__main__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/AuthDockerfile" />
+    <entry file="file://$PROJECT_DIR$/backend/requirements.txt" />
+    <entry file="file://$PROJECT_DIR$/backend/__main__.py" />
     <entry file="file://$PROJECT_DIR$/swagger.yaml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -485,20 +483,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AuthDockerfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="22" lean-forward="true" selection-start-column="22" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../irrigation_peregonivka/ngnix/irrigation">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-300">
-          <caret line="16" lean-forward="true" selection-end-line="99" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/auth/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -513,17 +497,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docker-compose.yml">
+    <entry file="file://$PROJECT_DIR$/AuthDockerfile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8">
-          <caret line="12" column="14" lean-forward="true" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        <state>
+          <caret column="22" lean-forward="true" selection-start-column="22" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../irrigation_peregonivka/tools/scripts/dev_restart_7542.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/bin/activate">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../irrigation_peregonivka/ngnix/irrigation">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="27" selection-end-line="99" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/nginx/smartsystem.conf">
       <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" lean-forward="true" selection-start-column="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker-compose.yml">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" column="20" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="20" />
+          <caret line="9" column="8" lean-forward="true" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
         </state>
       </provider>
     </entry>

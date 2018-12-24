@@ -5,15 +5,12 @@ services:
       context: .
       dockerfile: AuthDockerfile
     depends_on:
-      #- redis
       - nginx
-    environment:
-      - REDIS_HOST=redis
     expose:
-      - "5000"
+      - 5000
     ports:
-      - "445:5000"
-    command: /usr/local/bin/gunicorn backend.auth.auth:app -w 4 -t 90 --log-level=debug -b 0.0.0.0:5000
+      - "3333:5000"
+    command: /usr/local/bin/gunicorn backend.auth.auth:app -w 1 -t 90 -b 0.0.0.0:5000
 
 #  web:
 #    build:
@@ -24,22 +21,10 @@ services:
 #    ports:
 #      - "8008:8008"
 
-#  redis:
-#    image: redis:3.2-alpine
-#    volumes:
-#      - redis_data:/data
-#    ports:
-#      - "6379:6379"
-
   nginx:
     image: nginx:latest
     container_name: nginx
     volumes:
-      - ./backend/nginx/smartsystem.conf:/etc/nginx/nginx.conf
+      - ./backend/nginx/smartsystem.conf:/etc/nginx/smartsystem.conf
     ports:
-      - "8008:8008"
-      - "5000:5000"
       - "7542:7542"
-
-volumes:
-  redis_data:
