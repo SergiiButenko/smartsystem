@@ -4,8 +4,8 @@ from flask_jwt_extended import (
     get_jwt_identity, get_jwt_claims
 )
 from flask_cors import CORS
-from common.user import User
-from common.globalErrorHandler import GlobalErrorHandler
+from backend.common.user import User
+from backend.common.globalErrorHandler import GlobalErrorHandler
 
 import logging
 logging.basicConfig(level=logging.INFO)

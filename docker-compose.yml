@@ -1,50 +1,45 @@
-version: '2'
-
+version: '3.6'
 services:
-  nginx:
-    build: './docks/nginx/.'
-    ports:
-      - '8080:80'
-    volumes_from:
-      - web:ro
+  auth:
+    build:
+      context: .
+      dockerfile: AuthDockerfile
     depends_on:
-      - web
+      #- redis
+      - nginx
+    environment:
+      - REDIS_HOST=redis
+    expose:
+      - "5000"
+    ports:
+      - "445:5000"
+    command: /usr/local/bin/gunicorn backend.auth.auth:app -w 4 -t 90 --log-level=debug -b 0.0.0.0:5000
 
 #  web:
-#    build: './sources/.'
-#    image: 'websource'
-#    ports:
-#      - '127.0.0.1:8000:8000'
-#    env_file: '.env'
-#    command: 'gunicorn _project_.wsgi:application -w 2 -b :8000 --capture-output --enable-stdio-inheritance --log-level=debug --access-logfile=- --log-file=-'
-#    volumes:
-#      - 'cachedata:/cache'
-#      - 'mediadata:/media'
+#    build:
+#      context: .
+#      dockerfile: FrontendDockerfile
 #    depends_on:
-#      - postgres
-#      - redis
+#      - auth
+#    ports:
+#      - "8008:8008"
 
+#  redis:
+#    image: redis:3.2-alpine
+#    volumes:
+#      - redis_data:/data
+#    ports:
+#      - "6379:6379"
 
-  postgres:
-    container_name: 'postgres'
-    image: 'postgres:9.5.3'
-    ports:
-      - '0.0.0.0:5432:5432'
+  nginx:
+    image: nginx:latest
+    container_name: nginx
     volumes:
-      - 'pgdata:/var/lib/postgresql/data/'
-
-  redis:
-    container_name: 'redis'
-    image: 'redis:3.2.0'
+      - ./backend/nginx/smartsystem.conf:/etc/nginx/nginx.conf
     ports:
-      - '0.0.0.0:6379:6379'
-    volumes:
-      - 'redisdata:/data'
-
+      - "8008:8008"
+      - "5000:5000"
+      - "7542:7542"
 
 volumes:
-  pgdata:
-  redisdata:
-  cachedata:
-  mediadata:
-  mongodata:
+  redis_data:
