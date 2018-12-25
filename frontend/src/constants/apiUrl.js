@@ -1,5 +1,5 @@
 export const apiUrl = {
-    GET_LINES: () => '/login',
+    GET_LINES: () => '/lines',
     AUTH: () => '/login',
     LOGOUT: () => '/logout',
 };
