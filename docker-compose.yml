@@ -9,7 +9,7 @@ services:
       - backend
     expose:
       - 5000
-    command: /usr/local/bin/gunicorn backend.auth.auth:app -w 1 -t 90 -b 0.0.0.0:5000
+    command: /usr/local/bin/gunicorn auth.auth:app -w 1 -t 90 -b 0.0.0.0:5000
 
 #  web:
 #    build:
