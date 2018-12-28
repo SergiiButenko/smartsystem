@@ -1,6 +1,6 @@
 version: '3.6'
 services:
-  auth:
+  gateway:
     build:
       context: .
       dockerfile: GatewayDockerfile
@@ -16,22 +16,22 @@ services:
 #      context: .
 #      dockerfile: FrontendDockerfile
 #    depends_on:
-#      - auth
+#      - gateway
 #    ports:
 #      - "8008:8008"
 
   nginx:
     build:
       context: .
-      dockerfile: NginxDockerfile
+      dockerfile: NginxDockerFile
     container_name: nginx  
     ports:
-      - "7542:7542"
+      - "80:80"
     networks:
       - backend
       - frontend
     depends_on:
-      - auth
+      - gateway
 
 networks:
   frontend:

@@ -1,4 +1,4 @@
 FROM python:3.4-alpine
 COPY backend /app
 WORKDIR /app
-RUN pip install -r auth/requirements.txt
+RUN pip install -r gateway/requirements.txt
