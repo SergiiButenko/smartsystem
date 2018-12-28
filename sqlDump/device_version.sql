@@ -1,3 +1,4 @@
+--create extension "uuid-ossp";
 -- USER SECTION ---
 CREATE TABLE permission (
     name text NOT NULL PRIMARY KEY,
@@ -14,71 +15,80 @@ INSERT INTO permission(name, description) VALUES ('delete_device', 'Ability to d
 
 
 CREATE TABLE roles (
-    name text NOT NULL PRIMARY KEY,
-    description text
+    name TEXT NOT NULL PRIMARY KEY,
+    description TEXT
 );
 INSERT INTO roles(name, description) VALUES ('user', 'Simple user');
-INSERT INTO roles(name, description) VALUES ('branch_admin', 'User with ability to create branches');
-INSERT INTO roles(name, description) VALUES ('device_admin', 'User with ability to create devices');
+INSERT INTO roles(name, description) VALUES ('advanced', 'User with ability to modify settings');
+INSERT INTO roles(name, description) VALUES ('admin', 'User with ability to create devices');
 
 CREATE TABLE role_permissions (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     role_name TEXT NOT NULL,
     permission_name TEXT NOT NULL,
     FOREIGN KEY(permission_name) REFERENCES permission(name),
     FOREIGN KEY(role_name) REFERENCES roles(name)
 );
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('branch_admin', 'create_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('branch_admin', 'read_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('branch_admin', 'update_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('branch_admin', 'delete_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('device_admin', 'create_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('device_admin', 'read_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('device_admin', 'update_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('device_admin', 'delete_device');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_device');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_device');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_device');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_device');
+
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_branch');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_device');
+INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_device');
+
 INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_branch');
 INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_device');
 
 
 CREATE TABLE groups (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     description TEXT NOT NULL 
 );
-INSERT INTO groups (id, description) VALUES (1, 'peregonivka')
-
-CREATE TABLE users (
-    id INTEGER NOT NULL PRIMARY KEY,
-    email text NOT NULL,
-    password text NOT NULL,
-    salt text NOT NULL
-);
-INSERT INTO users (email, password, salt) VALUES ('test@test.com', 'qwerty', '123456');
-INSERT INTO users (email, password, salt) VALUES ('test2@test.com', 'qwerty', '123456');
+INSERT INTO groups (description) VALUES ('peregonivka');
 
 CREATE TABLE group_roles (
-    id INTEGER NOT NULL PRIMARY KEY,
-    group_id INTEGER NOT NULL,
-    role_name INTEGER NOT NULL,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    group_id uuid NOT NULL,
+    role_name TEXT NOT NULL,
     FOREIGN KEY(group_id) REFERENCES groups(id),
     FOREIGN KEY(role_name) REFERENCES roles(name)
 );
-INSERT INTO user_roles(user_id, group_id) VALUES (1, 'branch_admin');
-INSERT INTO user_roles(user_id, group_id) VALUES (2, 'user');
 
+
+
+CREATE TABLE users (
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    email text NOT NULL,
+    name text NOT NULL,
+    password text NOT NULL
+);
+INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'admin', 'test');
+INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'user', 'test');
+INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'advanced', 'test');
 
 CREATE TABLE user_groups (
-    id INTEGER NOT NULL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    group_id INTEGER NOT NULL,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id uuid NOT NULL,
+    group_id uuid NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(group_id) REFERENCES groups(id)
 );
-
+--INSERT INTO user_groups(user_id, group_id) VALUES ('3e5ccd3f-7065-4ff3-8e82-d8dd16faba48', '2bc1e294-44d9-4845-8d18-db8109717417');
+--INSERT INTO user_groups(user_id, group_id) VALUES ('df62c3a6-5b59-49f9-b97d-33bf9a19f3d0', '2bc1e294-44d9-4845-8d18-db8109717417');
+--INSERT INTO user_groups(user_id, group_id) VALUES ('075f79a6-8cf6-40b9-aa0d-a6bb60ac56c6', '2bc1e294-44d9-4845-8d18-db8109717417');
 
 
 
 -- HUB SECTION ---
 CREATE TABLE hub_parameters (
+    id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name text NOT NULL PRIMARY KEY,
     description text NOT NULL
 );
@@ -94,14 +104,14 @@ INSERT INTO hub_parameters(name, description) VALUES('pump2_pin', 'Насос 2.
 INSERT INTO hub_parameters(name, description) VALUES('pump2_name', 'Насос 2. Назва');
 
 CREATE TABLE hub (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT
 );
 INSERT INTO hub (name) VALUES ('Контроллер поливу Перегонівка.');
 
 CREATE TABLE hub_settings (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     hub_id INTEGER NOT NULL,
     setting TEXT NOT NULL,
     value TEXT NOT NULL,
@@ -118,7 +128,7 @@ INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'pump1_name', 'На
 INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'pump1_pin', '16');
 
 CREATE TABLE user_hub (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id INTEGER NOT NULL,
     hub_id INTEGER NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id),
@@ -138,14 +148,14 @@ INSERT INTO device_parameters(name, description) VALUES('radio_type', 'Тип р
 INSERT INTO device_parameters(name, description) VALUES('outer_temp_hum', 'Виносний датчик DHT21');
 
 CREATE TABLE device (      
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     description text NOT NULL
 );
 INSERT INTO device(id, description) VALUES (1, 'Контроллер заповнення верхньої бочки');
 INSERT INTO device(id, description) VALUES (2, 'Контроллер дитячого будинку');
 
 CREATE TABLE device_settings (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     device_id INTEGER NOT NULL,
     setting TEXT NOT NULL,
     value TEXT NOT NULL,
@@ -157,7 +167,7 @@ INSERT INTO device_settings (device_id, setting, value) VALUES (2, 'type', 'rela
 
 
 CREATE TABLE device_hub (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     hub_id INTEGER NOT NULL,
     device_id INTEGER NOT NULL,
     FOREIGN KEY(hub_id) REFERENCES hub(id),
@@ -180,7 +190,7 @@ INSERT INTO line_parameters(name, description) VALUES('pump_mode', 'Який н�
 INSERT INTO line_parameters(name, description) VALUES('type', 'Тип лінії. Потенційно потрібен');
 
 CREATE TABLE lines (      
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     description text NOT NULL
 );
 INSERT INTO lines(description) VALUES ('Полуниця клумба');
@@ -193,7 +203,7 @@ INSERT INTO lines(description) VALUES ('Газон');
 INSERT INTO lines(description) VALUES ('Верхня бочка');
 
 CREATE TABLE line_settings (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id INTEGER NOT NULL,
     setting TEXT NOT NULL,
     value TEXT NOT NULL,
@@ -257,7 +267,7 @@ INSERT INTO line_settings (line_id, setting, value) VALUES (8, 'relay_num', '13'
 
 
 CREATE TABLE line_hub (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     hub_id INTEGER NOT NULL,
     line_id INTEGER NOT NULL,
     FOREIGN KEY(hub_id) REFERENCES hub(id),
@@ -274,7 +284,7 @@ INSERT INTO line_hub(hub_id, line_id) VALUES (1, 8);
 
 
 CREATE TABLE rule_type (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     short_name text NOT NULL,
     full_name text NOT NULL
 );
@@ -283,7 +293,7 @@ INSERT INTO rule_type(id, name) VALUES(2, 'deactivate', 'Деактивуват�
 
 
 CREATE TABLE rule_states (
-    id INTEGER PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     short_name text NOT NULL,
     full_name text NOT NULL
 );
@@ -297,7 +307,7 @@ INSERT INTO rule_states VALUES(7, 'Canceled_by_mistime', 'Скасовано ч�
 
 
 CREATE TABLE rules_line(
-    id INTEGER NOT NULL PRIMARY KEY,
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id INTEGER NOT NULL,
     rule_id INTEGER NOT NULL,
     --device_id INTEGER NOT NULL, ???
