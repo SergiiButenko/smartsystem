@@ -3,13 +3,13 @@ services:
   auth:
     build:
       context: .
-      dockerfile: AuthDockerfile
-    container_name: auth
+      dockerfile: GatewayDockerfile
+    container_name: gateway
     networks:
       - backend
     expose:
       - 5000
-    command: /usr/local/bin/gunicorn auth.auth:app -w 1 -t 90 -b 0.0.0.0:5000
+    command: /usr/local/bin/gunicorn gateway.gateway:app -w 1 -t 90 -b 0.0.0.0:5000
 
 #  web:
 #    build:
@@ -21,10 +21,10 @@ services:
 #      - "8008:8008"
 
   nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./backend/nginx/nginx.conf:/etc/nginx/nginx.conf
+    build:
+      context: .
+      dockerfile: NginxDockerfile
+    container_name: nginx  
     ports:
       - "7542:7542"
     networks:
