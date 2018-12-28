@@ -4,8 +4,8 @@ from flask_jwt_extended import (
     get_jwt_identity, get_jwt_claims
 )
 from flask_cors import CORS
-from backend.common.user import User
-from backend.common.globalErrorHandler import GlobalErrorHandler
+from common.user import User
+from common.globalErrorHandler import globalErrorHandler
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -44,17 +44,17 @@ def user_identity_lookup(user):
 def login():
     logger.info(request.is_json)
     if not request.is_json:
-        return GlobalErrorHandler(msg="Missing JSON in request", errCode=400)
+        return globalErrorHandler(msg="Missing JSON in request", err_code=400)
 
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     if not username:
-        return GlobalErrorHandler(msg="Missing username parameter", errCode=400)
+        return globalErrorHandler(msg="Missing username parameter", err_code=400)
     if not password:
-        return GlobalErrorHandler(msg="Missing password parameter", errCode=400)
+        return globalErrorHandler(msg="Missing password parameter", err_code=400)
 
     if username != 'test' or password != 'test':
-        return GlobalErrorHandler(msg="Bad username or password", errCode=401)
+        return globalErrorHandler(msg="Bad username or password", err_code=401)
 
     # Create an example UserObject
     user = User(username='test', roles=['admin'], permissions=['rw'])
