@@ -16,7 +16,7 @@ const styles = {
 export default class LoadingFailed extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        errorText: PropTypes.string.isRequired,
+        errorText: PropTypes.any,
     };
 
 
@@ -33,7 +33,7 @@ export default class LoadingFailed extends Component {
                         variant='h5'
                         style={{'marginTop': '5rem'}}
                     >
-                        Помилка при завантаженні. Причина: "{errorText}"
+                        Помилка при завантаженні. Причина: "{errorText.message || 'Сталася помилка'}"
                     </Typography>
 
                     <Typography

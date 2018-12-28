@@ -3,12 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="af24246c-5745-42da-bc41-37daa8bbbc56" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GatewayDockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayDockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/auth/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gateway/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/auth/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gateway/gateway.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/auth/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gateway/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/nginx/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/nginx.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/gateway/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gateway/gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/config/default.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/config/default.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/config/dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/config/dev.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/config/production.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/config/production.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Irrigation/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Irrigation/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/constants/apiUrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/constants/apiUrl.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/provider/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/provider/base.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/reducers/lines.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/reducers/lines.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/selectors/lines.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/selectors/lines.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/nginx.conf" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,33 +24,13 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/docker-compose.yml">
+        <entry file="file://$PROJECT_DIR$/backend/gateway/gateway.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="28" column="14" selection-start-line="28" selection-start-column="14" selection-end-line="28" selection-end-column="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/NginxDockerFile">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nginx/nginx.conf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="3" lean-forward="true" selection-start-line="3" selection-start-column="3" selection-end-line="3" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GatewayDockerfile">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+            <state relative-caret-position="285">
+              <caret line="73" column="15" selection-start-line="73" selection-start-column="15" selection-end-line="73" selection-end-column="15" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -66,6 +51,9 @@
       <find>toggleDrawer</find>
       <find>8008</find>
       <find>mozz</find>
+      <find>base_url</find>
+      <find>AUTH</find>
+      <find>ec2-18-191-184-229.us-east-2.</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -82,14 +70,12 @@
         <option value="$PROJECT_DIR$/swagger/swagger.yaml" />
         <option value="$PROJECT_DIR$/frontend/src/components/SignIn/index.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/frontend/src/constants/apiUrl.js" />
         <option value="$PROJECT_DIR$/frontend/src/components/ToolbarApp/index.js" />
         <option value="$PROJECT_DIR$/frontend/src/actions/auth.js" />
         <option value="$PROJECT_DIR$/frontend/src/components/Irrigation/Fab.js" />
         <option value="$PROJECT_DIR$/frontend/src/helpers/auth.helper.js" />
         <option value="$PROJECT_DIR$/frontend/src/reducers/lines.js" />
         <option value="$PROJECT_DIR$/frontend/src/provider/helpers.js" />
-        <option value="$PROJECT_DIR$/frontend/src/provider/provider.js" />
         <option value="$PROJECT_DIR$/frontend/src/components/shared/LoadingFailed.js" />
         <option value="$PROJECT_DIR$/backend/AuthDockerfile" />
         <option value="$PROJECT_DIR$/backend/auth/Dockerfile" />
@@ -99,13 +85,20 @@
         <option value="$PROJECT_DIR$/backend/auth/requirements.txt" />
         <option value="$PROJECT_DIR$/backend/nginx/smartsystem.conf" />
         <option value="$PROJECT_DIR$/FrontendDockerfile" />
-        <option value="$PROJECT_DIR$/backend/common/globalErrorHandler.py" />
         <option value="$PROJECT_DIR$/AuthDockerfile" />
         <option value="$PROJECT_DIR$/backend/auth/auth.py" />
         <option value="$PROJECT_DIR$/backend/nginx/nginx.conf" />
         <option value="$PROJECT_DIR$/GatewayDockerfile" />
-        <option value="$PROJECT_DIR$/nginx/nginx.conf" />
         <option value="$PROJECT_DIR$/docker-compose.yml" />
+        <option value="$PROJECT_DIR$/frontend/src/provider/provider.js" />
+        <option value="$PROJECT_DIR$/frontend/src/provider/base.js" />
+        <option value="$PROJECT_DIR$/frontend/src/constants/apiUrl.js" />
+        <option value="$PROJECT_DIR$/frontend/config/production.js" />
+        <option value="$PROJECT_DIR$/nginx/nginx.conf" />
+        <option value="$PROJECT_DIR$/frontend/config/default.js" />
+        <option value="$PROJECT_DIR$/backend/common/globalErrorHandler.py" />
+        <option value="$PROJECT_DIR$/frontend/config/dev.js" />
+        <option value="$PROJECT_DIR$/backend/gateway/gateway.py" />
       </list>
     </option>
   </component>
@@ -152,7 +145,7 @@
               <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
               <item name="new_irrigation" type="462c0819:PsiDirectoryNode" />
               <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="gateway" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="new_irrigation" type="b2602c69:ProjectViewProjectNode" />
@@ -266,33 +259,6 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.conf" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/backend/operator/.travis.yml" />
-    <entry file="file://$PROJECT_DIR$/backend/operator/README.md" />
-    <entry file="file://$PROJECT_DIR$/backend/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_frontend/frontend/src/App.js" />
-    <entry file="file://$PROJECT_DIR$/backend/operator/swagger_server/controllers/lines_controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/operator/swagger_server/controllers/default_controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/operator/swagger_server/models/line.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="7" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/components/SignIn/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -315,13 +281,6 @@
     <entry file="file://$PROJECT_DIR$/backend/operator/swagger_server/__main__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/provider/base.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="63" column="21" selection-start-line="63" selection-start-column="21" selection-end-line="63" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -337,13 +296,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/operator/Dockerfile" />
-    <entry file="file://$PROJECT_DIR$/frontend/src/constants/apiUrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/components/ToolbarApp/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1618">
@@ -368,16 +320,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/actions/auth.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="986">
-          <caret line="61" column="33" selection-start-line="61" selection-start-column="33" selection-end-line="61" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/src/components/ToolbarApp/CommonMenu.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -399,13 +341,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="43" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/reducers/auth.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -445,16 +380,6 @@
           <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/src/provider/provider.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -516,13 +441,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/common/globalErrorHandler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="41" selection-start-line="4" selection-start-column="41" selection-end-line="4" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AuthDockerfile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -547,17 +465,99 @@
     <entry file="file://$PROJECT_DIR$/NginxDockerFile">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/nginx/nginx.conf">
+    <entry file="file://$PROJECT_DIR$/frontend/src/actions/auth.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="3" lean-forward="true" selection-start-line="3" selection-start-column="3" selection-end-line="3" selection-end-column="3" />
+        <state relative-caret-position="287">
+          <caret line="46" column="35" selection-start-line="46" selection-start-column="35" selection-end-line="46" selection-end-column="35" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/provider/index.js">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/docker-compose.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="337">
           <caret line="28" column="14" selection-start-line="28" selection-start-column="14" selection-end-line="28" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/provider/base.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="48" column="16" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/provider/provider.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/config/index.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/reducers/auth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/config/default.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="38" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/common/globalErrorHandler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nginx/nginx.conf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="18" column="6" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/common/user.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/config/dev.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/config/production.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/src/constants/apiUrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/gateway/gateway.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="73" column="15" selection-start-line="73" selection-start-column="15" selection-end-line="73" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

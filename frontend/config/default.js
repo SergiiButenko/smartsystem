@@ -4,7 +4,7 @@ module.exports = {
     },
 
     endpoint_section: {
-        base_url: 'http://localhost:5000/',
+        base_url: 'http://localhost/',
         amazon: {},
         ws_uri: 'ws://localhost:9000',
     }

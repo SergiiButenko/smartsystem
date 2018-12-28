@@ -1,6 +1,6 @@
 module.exports = {
     config_section: {
-        text: 'This is default config',
+        text: 'This is dev config',
     },
 
     endpoint_section: {

@@ -40,7 +40,7 @@ def user_identity_lookup(user):
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
 # it to the caller however you choose.
-@app.route('/login', methods=['POST'])
+@app.route('/v1/login', methods=['POST'])
 def login():
     logger.info(request.is_json)
     if not request.is_json:
@@ -71,7 +71,7 @@ def login():
 
 # Protect a view with jwt_required, which requires a valid access token
 # in the request to access.
-@app.route('/protected', methods=['GET'])
+@app.route('/v1/protected', methods=['GET'])
 @jwt_required
 def protected():
     # Access the identity of the current user with get_jwt_identity

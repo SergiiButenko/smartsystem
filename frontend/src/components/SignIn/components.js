@@ -22,7 +22,7 @@ const ErrorMessageBoxComponent = ({classes, errorMsg}) => {
 
     return (<div className={classes.messageBox}>
         <Typography variant="subtitle1">
-            {errorMsg.message || 'Something went wrong'}
+            {errorMsg.message || 'Сталася помилка'}
         </Typography>
     </div>);
 };

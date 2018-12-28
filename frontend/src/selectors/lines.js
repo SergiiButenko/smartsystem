@@ -13,7 +13,6 @@ export const getIrrigationLines = createSelector(
                 arr.push(lines[id]);
             }
         }
-
         return {
             ...linesState,
             lines: arr,

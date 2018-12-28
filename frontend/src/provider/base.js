@@ -46,7 +46,6 @@ class _ProviderBase {
         url = new URL(url, base_url);
 
         Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
-
         return url;
     }
 
@@ -68,6 +67,7 @@ class _ProviderBase {
         options = {
             ...options,
             body,
+            //mode: 'no-cors',
             method: 'POST',
             headers: {
                 ...DEFAULT_POST_OPTIONS,

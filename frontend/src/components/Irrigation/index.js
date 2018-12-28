@@ -62,7 +62,7 @@ export default class Irrigation extends React.Component {
         classes: PropTypes.object.isRequired,
         lines: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired,
-        lineFetchError: PropTypes.string,
+        lineFetchError: PropTypes.any,
     };
 
     constructor(props) {
