@@ -5,6 +5,7 @@ from flask_jwt_extended import (
 )
 from flask_cors import CORS
 from common.user import User
+from common.db import Db
 from common.globalErrorHandler import globalErrorHandler
 
 import logging
@@ -57,7 +58,7 @@ def login():
         return globalErrorHandler(msg="Bad username or password", err_code=401)
 
     # Create an example UserObject
-    user = User(username='test', roles=['admin'], permissions=['rw'])
+    user = User(username='admin', roles=['admin'], permissions=['rw'])
 
     # We can now pass this complex object directly to the
     # create_access_token method. This will allow us to access
@@ -82,6 +83,10 @@ def protected():
     }
     return jsonify(ret), 200
 
+@app.route('/v1/test', methods=['GET'])
+@jwt_required
+def test():
+    return jsonify(users=Db.get_user(user_identity=get_jwt_identity()))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
