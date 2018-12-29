@@ -18,7 +18,9 @@ class Database():
     def get_user(self, user_identity):
         self.cursor.execute("Select name, password from users where email = %s or name = %s", (user_identity, user_identity))
         records = self.cursor.fetchone()
-        user = User(username=records[0], roles=['admin'], permissions=['rw'])
-        return user
+        if records is not None:
+            return User(username=records[0], roles=['admin'], permissions=['rw'])
+
+        return None
 
 Db = Database()

@@ -6,8 +6,9 @@ from flask_jwt_extended import (
     verify_jwt_in_request,
     get_jwt_identity, get_jwt_claims
 )
+
 from flask_cors import CORS
-from common.user import User
+import bcrypt
 from common.db import Db
 from common.globalErrorHandler import globalErrorHandler
 
@@ -84,6 +85,7 @@ def admin_required(fn):
             return fn(*args, **kwargs)
     return wrapper
 
+
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
 # it to the caller however you choose.
@@ -100,18 +102,24 @@ def login():
     if not password:
         return globalErrorHandler(msg="Missing password parameter", err_code=400)
 
-    if username != 'test' or password != 'test':
-        return globalErrorHandler(msg="Bad username or password", err_code=401)
+    cr_user = Db.get_user(user_identity=username)
+    if cr_user is None:
+        logger.error("User {} not found".format(username))
+        return globalErrorHandler(msg="User {} not found".format(username), err_code=401)
 
-    # Create an example UserObject
-    user = User(username='admin', roles=['admin'], permissions=['rw'])
+    #hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+    if bcrypt.hashpw(password.encode('utf-8'), b'$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy') != b'$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy':
+        logger.error("User's {} pass not correct".format(username))
+        return globalErrorHandler(msg="User's {} pass not correct".format(username), err_code=401)
+
+    logger.info("User {} logged in".format(cr_user.username))
 
     # We can now pass this complex object directly to the
     # create_access_token method. This will allow us to access
     # the properties of this object in the user_claims_loader
     # function, and get the identity of this object from the
     # user_identity_loader function.
-    access_token = create_access_token(identity=user)
+    access_token = create_access_token(identity=cr_user)
     ret = {'access_token': access_token}
     return jsonify(ret), 200
 
