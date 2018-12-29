@@ -1,6 +1,9 @@
+from functools import wraps
+
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
+    verify_jwt_in_request,
     get_jwt_identity, get_jwt_claims
 )
 from flask_cors import CORS
@@ -37,6 +40,49 @@ def add_claims_to_access_token(user):
 def user_identity_lookup(user):
     return user.username
 
+
+# This function is called whenever a protected endpoint is accessed,
+# and must return an object based on the tokens identity.
+# This is called after the token is verified, so you can use
+# get_jwt_claims() in here if desired. Note that this needs to
+# return None if the user could not be loaded for any reason,
+# such as not being found in the underlying data store
+@jwt.user_loader_callback_loader
+def user_loader_callback(identity):
+    cr_user = Db.get_user(user_identity=identity)
+
+    if identity != cr_user.username:
+        return None
+
+    return cr_user
+
+
+# You can override the error returned to the user if the
+# user_loader_callback returns None. If you don't override
+# this, # it will return a 401 status code with the JSON:
+# {"msg": "Error loading the user <identity>"}.
+# You can use # get_jwt_claims() here too if desired
+@jwt.user_loader_error_loader
+def custom_user_loader_error(identity):
+    ret = {
+        "msg": "User {} not found".format(identity)
+    }
+    return jsonify(ret), 404
+
+
+# Here is a custom decorator that verifies the JWT is present in
+# the request, as well as insuring that this user has a role of
+# `admin` in the access token
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        claims = get_jwt_claims()
+        if 'admin' not in claims['roles']:
+            return jsonify(msg='Admins only!'), 403
+        else:
+            return fn(*args, **kwargs)
+    return wrapper
 
 # Provide a method to create access tokens. The create_access_token()
 # function is used to actually generate the token, and you can return
@@ -84,9 +130,9 @@ def protected():
     return jsonify(ret), 200
 
 @app.route('/v1/test', methods=['GET'])
-@jwt_required
+@admin_required
 def test():
-    return jsonify(users=Db.get_user(user_identity=get_jwt_identity()))
+    return jsonify(users=Db.get_user(user_identity=get_jwt_identity()).to_json())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

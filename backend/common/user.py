@@ -6,3 +6,6 @@ class User:
         self.username = username
         self.roles = roles
         self.permissions = permissions
+
+    def to_json(self):
+        return {'username': self.username, 'roles': self.roles, 'permission': self.permissions}

@@ -1,4 +1,5 @@
 import psycopg2
+from common.user import User
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -15,8 +16,9 @@ class Database():
         self.cursor = self.conn.cursor()
 
     def get_user(self, user_identity):
-        self.cursor.execute("Select * from users where email = %s or name = %s", (user_identity, user_identity))
+        self.cursor.execute("Select name, password from users where email = %s or name = %s", (user_identity, user_identity))
         records = self.cursor.fetchone()
-        return records
+        user = User(username=records[0], roles=['admin'], permissions=['rw'])
+        return user
 
 Db = Database()
