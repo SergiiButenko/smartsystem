@@ -90,5 +90,11 @@ class _ProviderBase {
 
         return this.doRequest(url, options, reader);
     }
+
+    async delete(url, options = {}, reader = DEFAULT_READER) {
+        options.method = 'DELETE';
+        return this.doRequest(url, options, reader);
+    }
+
 }
 export default new _ProviderBase();

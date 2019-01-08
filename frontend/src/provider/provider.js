@@ -37,11 +37,11 @@ class SmartSystemApi {
     }
 
     async logout(options = {}) {
-        // await this.provider.post(
-        //     apiUrl.LOGOUT(),
-        //     JSON.stringify({username: this.user.username}),
-        //     options,
-        // );
+        await this.provider.post(
+            apiUrl.LOGOUT(),
+            JSON.stringify({username: this.user.username}),
+            options,
+        );
         localStorage.setItem('login', '');
 
         return this;
@@ -58,8 +58,8 @@ class SmartSystemApi {
 
     @adminOnly
     async getLines(options = {}) {
-        return this.provider.post(
-            apiUrl.GET_LINES(),
+        return this.provider.delete(
+            apiUrl.LOGOUT(),
             options,
         );
     }
