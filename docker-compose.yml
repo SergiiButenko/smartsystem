@@ -13,14 +13,17 @@ services:
     depends_on:
       - redis
 
-#  web:
-#    build:
-#      context: .
-#      dockerfile: FrontendDockerfile
-#    depends_on:
-#      - gateway
-#    ports:
-#      - "8008:8008"
+  web:
+    build:
+      context: .
+      dockerfile: FrontendDockerfile
+    depends_on:
+      - gateway
+    networks:
+      - frontend
+    expose:
+      - 8008
+    command: yarn start-prod
 
   nginx:
     build:
@@ -34,10 +37,10 @@ services:
       - frontend
     depends_on:
       - gateway
+      - web
 
   redis:
     image: redis:5.0.3-alpine
-    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     expose:
@@ -45,6 +48,7 @@ services:
     networks:
       - backend
     restart: always
+    command: redis-server --appendonly yes
 
 networks:
   frontend:

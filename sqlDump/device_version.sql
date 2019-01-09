@@ -62,7 +62,6 @@ CREATE TABLE group_roles (
 );
 
 
-
 CREATE TABLE users (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     email text NOT NULL,
