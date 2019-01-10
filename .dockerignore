@@ -1,0 +1,12 @@
+frontend/node_modules
+frontend/.idea
+venv
+swagger
+Dockerfile*
+*Dockerfile
+docker-compose*
+.dockerignore
+.git
+.gitignore
+swagger.yaml
+.idea

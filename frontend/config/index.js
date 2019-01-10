@@ -6,6 +6,7 @@ const default_endpoint_section = DEFAULT_CONFIG.endpoint_section;
 
 const ENV_CONFIGS = {
     DEV: 'dev',
+    QA: 'qa',
     PRODUCTION: 'production',
 };
 
