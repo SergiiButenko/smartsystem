@@ -3,15 +3,9 @@ FROM node:8.15.0-alpine
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /tmp/web
 
-#ADD frontend/package.json frontend/yarn.lock /tmp/web/
-
-#RUN cd /tmp/web && yarn install
-#RUN cd /usr/src/app && ln -s /tmp/web/node_modules node_modules
-
-#RUN cd /usr/src/app
-
-ADD frontend /usr/src/app/
-RUN cd /usr/src/app && yarn install
+COPY frontend/package.json /tmp/web/
+RUN cd /tmp/web && yarn
+RUN cd /usr/src/app && ln -s /tmp/web/node_modules node_modules
+COPY frontend /usr/src/app/
 
 WORKDIR /usr/src/app
-

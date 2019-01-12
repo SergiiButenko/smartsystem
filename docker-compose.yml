@@ -9,9 +9,9 @@ services:
       - backend
     expose:
       - 5000
-    command: /usr/local/bin/gunicorn gateway.gateway:app -w 1 -t 90 -b 0.0.0.0:5000
     depends_on:
       - redis
+    command: /usr/local/bin/gunicorn gateway.gateway:app -w 1 -t 90 -b 0.0.0.0:5000
 
   web:
     build:
@@ -24,7 +24,7 @@ services:
       - frontend
     expose:
       - 8008
-    command: yarn start-qa
+    command: yarn start-prod
 
   nginx:
     build:
