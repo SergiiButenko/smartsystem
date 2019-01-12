@@ -18,13 +18,12 @@ class TestLinesController(BaseTestCase):
         Get summary for all lines
         """
         response = self.client.open(
-            '/v1/lines',
-            method='GET',
-            content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+            "/v1/lines", method="GET", content_type="application/json"
+        )
+        self.assert200(response, "Response body is : " + response.data.decode("utf-8"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import unittest
+
     unittest.main()

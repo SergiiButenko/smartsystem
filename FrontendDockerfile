@@ -1,11 +1,14 @@
 FROM node:8.15.0-alpine
 
-RUN mkdir -p /usr/src/app
-RUN mkdir -p /tmp/web
+WORKDIR /opt/app
 
-COPY frontend/package.json /tmp/web/
-RUN cd /tmp/web && yarn
-RUN cd /usr/src/app && ln -s /tmp/web/node_modules node_modules
-COPY frontend /usr/src/app/
+#ADD frontend/package.json frontend/yarn.lock /tmp/
+#RUN if [ ! diff -q frontend/yarn.lock /tmp/yarn.lock > /dev/null  2>&1 ]; then cp /tmp/yarn.lock yarn.lock; fi
 
-WORKDIR /usr/src/app
+ADD frontend/package.json /tmp/
+
+RUN cd /tmp && yarn
+RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules
+
+COPY frontend /opt/app
+RUN rm -f /opt/app/dist/* && cd /tmp && yarn build

@@ -1,8 +1,8 @@
-import connexion
 import six
 
-from swagger_server.models.line import Line  # noqa: E501
+import connexion
 from swagger_server import util
+from swagger_server.models.line import Line  # noqa: E501
 
 
 def lines_line_id_command_post(lineId, command):  # noqa: E501
@@ -17,7 +17,7 @@ def lines_line_id_command_post(lineId, command):  # noqa: E501
 
     :rtype: Line
     """
-    return 'do some magic!'
+    return "do some magic!"
 
 
 def lines_line_id_get(lineId):  # noqa: E501
@@ -30,7 +30,7 @@ def lines_line_id_get(lineId):  # noqa: E501
 
     :rtype: Line
     """
-    return 'do some magic!'
+    return "do some magic!"
 
 
 def lines_line_id_put(lineId):  # noqa: E501
@@ -43,4 +43,4 @@ def lines_line_id_put(lineId):  # noqa: E501
 
     :rtype: Line
     """
-    return 'do some magic!'
+    return "do some magic!"

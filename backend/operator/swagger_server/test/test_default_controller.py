@@ -18,11 +18,13 @@ class TestDefaultController(BaseTestCase):
         Enable line of line by ID.
         """
         response = self.client.open(
-            '/v1/lines/{lineId}/{command}'.format(lineId='lineId_example', command='command_example'),
-            method='POST',
-            content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+            "/v1/lines/{lineId}/{command}".format(
+                lineId="lineId_example", command="command_example"
+            ),
+            method="POST",
+            content_type="application/json",
+        )
+        self.assert200(response, "Response body is : " + response.data.decode("utf-8"))
 
     def test_lines_line_id_get(self):
         """Test case for lines_line_id_get
@@ -30,11 +32,11 @@ class TestDefaultController(BaseTestCase):
         Returns summary of line by ID.
         """
         response = self.client.open(
-            '/v1/lines/{lineId}'.format(lineId='lineId_example'),
-            method='GET',
-            content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+            "/v1/lines/{lineId}".format(lineId="lineId_example"),
+            method="GET",
+            content_type="application/json",
+        )
+        self.assert200(response, "Response body is : " + response.data.decode("utf-8"))
 
     def test_lines_line_id_put(self):
         """Test case for lines_line_id_put
@@ -42,13 +44,14 @@ class TestDefaultController(BaseTestCase):
         Change settings for line by id.
         """
         response = self.client.open(
-            '/v1/lines/{lineId}'.format(lineId='lineId_example'),
-            method='PUT',
-            content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+            "/v1/lines/{lineId}".format(lineId="lineId_example"),
+            method="PUT",
+            content_type="application/json",
+        )
+        self.assert200(response, "Response body is : " + response.data.decode("utf-8"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import unittest
+
     unittest.main()

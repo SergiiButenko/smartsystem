@@ -1,8 +1,8 @@
-import connexion
 import six
 
-from swagger_server.models.line import Line  # noqa: E501
+import connexion
 from swagger_server import util
+from swagger_server.models.line import Line  # noqa: E501
 
 
 def get_all_lines():  # noqa: E501
@@ -13,4 +13,4 @@ def get_all_lines():  # noqa: E501
 
     :rtype: List[Line]
     """
-    return 'do some magic!'
+    return "do some magic!"

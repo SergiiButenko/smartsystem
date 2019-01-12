@@ -1,12 +1,12 @@
 # coding: utf-8
 
 from __future__ import absolute_import
+
 from datetime import date, datetime  # noqa: F401
+from typing import Dict, List  # noqa: F401
 
-from typing import List, Dict  # noqa: F401
-
-from swagger_server.models.base_model_ import Model
 from swagger_server import util
+from swagger_server.models.base_model_ import Model
 
 
 class Sensor(Model):
@@ -15,7 +15,13 @@ class Sensor(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, status: str=None, linked_line: str=None, value: object=None):  # noqa: E501
+    def __init__(
+        self,
+        id: int = None,
+        status: str = None,
+        linked_line: str = None,
+        value: object = None,
+    ):  # noqa: E501
         """Sensor - a model defined in Swagger
 
         :param id: The id of this Sensor.  # noqa: E501
@@ -28,17 +34,17 @@ class Sensor(Model):
         :type value: object
         """
         self.swagger_types = {
-            'id': int,
-            'status': str,
-            'linked_line': str,
-            'value': object
+            "id": int,
+            "status": str,
+            "linked_line": str,
+            "value": object,
         }
 
         self.attribute_map = {
-            'id': 'id',
-            'status': 'status',
-            'linked_line': 'linkedLine',
-            'value': 'value'
+            "id": "id",
+            "status": "status",
+            "linked_line": "linkedLine",
+            "value": "value",
         }
 
         self._id = id
@@ -47,7 +53,7 @@ class Sensor(Model):
         self._value = value
 
     @classmethod
-    def from_dict(cls, dikt) -> 'Sensor':
+    def from_dict(cls, dikt) -> "Sensor":
         """Returns the dict as a model
 
         :param dikt: A dict.
@@ -101,8 +107,9 @@ class Sensor(Model):
         allowed_values = ["active", "notActive"]  # noqa: E501
         if status not in allowed_values:
             raise ValueError(
-                "Invalid value for `status` ({0}), must be one of {1}"
-                .format(status, allowed_values)
+                "Invalid value for `status` ({0}), must be one of {1}".format(
+                    status, allowed_values
+                )
             )
 
         self._status = status
