@@ -49,7 +49,6 @@ export function login(username, password) {
             localStorage.setItem('login', smartSystemApi.user.token);
 
             dispatch(auth.success({user: smartSystemApi.user}));
-
         } catch (e) {
             dispatch(auth.failure(e));
         }

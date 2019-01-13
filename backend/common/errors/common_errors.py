@@ -16,7 +16,8 @@ def error_obj(message, code, payload=None):
     if payload is not None: 
         tmp['payload'] = payload
 
-    return jsonify(tmp)
+    return jsonify(tmp), tmp['code']
+
 
 def handle_error(error):
     def_code = 500
@@ -42,7 +43,6 @@ def handle_error(error):
 
 def handle_common_errors(app):
     for clazz in common_errors:
-        logger.info(clazz)
         app.register_error_handler(clazz, handle_error)
 
     return app

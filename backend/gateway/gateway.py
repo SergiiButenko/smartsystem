@@ -19,7 +19,7 @@ from flask_jwt_extended import (
 )
 
 from common.db import Db
-from common.common_config.common_config import create_app
+from common.config.config import create_app
 from common.errors import *
 
 logging.basicConfig(level=logging.INFO)
@@ -108,8 +108,8 @@ def login():
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
 
-    revoked_store.set(access_jti, "false", app.JWT_ACCESS_TOKEN_EXPIRES * 1.2)
-    revoked_store.set(refresh_jti, "false", app.JWT_REFRESH_TOKEN_EXPIRES * 1.2)
+    revoked_store.set(access_jti, "false", app.config['JWT_ACCESS_TOKEN_EXPIRES'] * 1.2)
+    revoked_store.set(refresh_jti, "false", app.config['JWT_REFRESH_TOKEN_EXPIRES'] * 1.2)
 
     ret = {"access_token": access_token, "refresh_token": refresh_token}
 
@@ -134,7 +134,7 @@ def protected():
 @jwt_required
 def logout():
     jti = get_raw_jwt()["jti"]
-    revoked_store.set(jti, "true",  app.JWT_ACCESS_TOKEN_EXPIRES * 1.2)
+    revoked_store.set(jti, "true",  app.config['JWT_ACCESS_TOKEN_EXPIRES'] * 1.2)
     return jsonify({"msg": "Access token revoked"}), 200
 
 

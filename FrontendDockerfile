@@ -1,14 +1,14 @@
 FROM node:8.15.0-alpine
 
+RUN npm install http-server -g
+
 WORKDIR /opt/app
 
-#ADD frontend/package.json frontend/yarn.lock /tmp/
-#RUN if [ ! diff -q frontend/yarn.lock /tmp/yarn.lock > /dev/null  2>&1 ]; then cp /tmp/yarn.lock yarn.lock; fi
-
-ADD frontend/package.json /tmp/
+ADD frontend/package.json frontend/yarn.lock /tmp/
+RUN if [ ! diff -q frontend/yarn.lock /tmp/yarn.lock > /dev/null  2>&1 ]; then cp /tmp/yarn.lock yarn.lock; fi
 
 RUN cd /tmp && yarn
 RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules
 
 COPY frontend /opt/app
-RUN rm -f /opt/app/dist/* && cd /tmp && yarn build
+RUN rm -rf /opt/app/dist && cd /opt/app && yarn build

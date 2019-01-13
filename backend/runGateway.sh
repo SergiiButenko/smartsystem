@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-PYTHONPATH=../ python -m gateway
+PYTHONPATH=../ python3 -m gateway

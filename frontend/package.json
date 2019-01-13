@@ -8,8 +8,7 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --env.ENV=DEV --hot --progress",
-    "start-prod": "webpack --env.ENV=PRODUCTION",
-    "start-qa": "webpack-dev-server --env.ENV=QA --hot --progress",
+    "start-prod": "http-server ./dist -p 8008",
     "build": "webpack --env.ENV=PRODUCTION",
     "test": "jest",
     "test-ci": "jest --ci --reporters=default --reporters=jest-junit",
@@ -85,7 +84,6 @@
     "@material-ui/lab": "^3.0.0-alpha.19",
     "classnames": "^2.2.6",
     "eslint": "^5.6.1",
-    "http-server": "^0.11.1",
     "immutable": "^4.0.0-rc.12",
     "prop-types": "^15.6.0",
     "react": "^16.6.3",
