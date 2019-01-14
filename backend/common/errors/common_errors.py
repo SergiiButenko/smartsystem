@@ -1,4 +1,5 @@
-from common.errors import * 
+from common.errors import GeneralError
+from common.errors import COMMON_ERROR
 from werkzeug.exceptions import HTTPException
 from flask import jsonify
 import logging
@@ -6,7 +7,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-common_errors = [UserNotFound, WrongCreds, GeneralError, UnexpectedRole]
 
 def error_obj(message, code, payload=None):
     tmp = {}
@@ -30,19 +30,19 @@ def handle_error(error):
         )
 
     if isinstance(error, HTTPException):
-        return error_factory(
+        return error_obj(
             message=error.description,
             code=error.code
         )
 
-    return error_factory(
+    return error_obj(
             message=def_message,
             code=def_code
         )
 
 
 def handle_common_errors(app):
-    for clazz in common_errors:
+    for clazz in COMMON_ERROR:
         app.register_error_handler(clazz, handle_error)
 
     return app
