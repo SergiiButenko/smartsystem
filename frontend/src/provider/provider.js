@@ -20,18 +20,22 @@ class SmartSystemApi {
     }
 
     async login(username, password, options = {}) {
-        const {access_token} = await this.provider.post(
+        const {access_token, refresh_token} = await this.provider.post(
             apiUrl.AUTH(),
             JSON.stringify({username, password}),
             options,
         );
 
-        let jwt = parseJwt(access_token);//user_claims.roles identity
+        let jwt = parseJwt(access_token);
 
-        const user = {name: jwt.identity, token: access_token, roles: jwt.user_claims.roles};
+        const user = {
+            name: jwt.identity,
+            accessToken: access_token,
+            refreshToken: refresh_token,
+            roles: jwt.user_claims.roles
+        };
+
         smartSystemApi.setUserData(user);
-
-        localStorage.setItem('login', user.token);
 
         return this;
     }
@@ -41,17 +45,15 @@ class SmartSystemApi {
             apiUrl.LOGOUT(),
             options,
         );
-        localStorage.setItem('login', '');
 
         return this;
     }
 
-    setUserData({name, token, roles}) {
-        // TODO: need to think about more suitable middleware injection.
-        this.user = {name, token, roles};
+    setUserData({name, accessToken, refreshToken, roles}) {
+        this.user = {name, accessToken, refreshToken, roles};
 
         this.provider.setMiddlewares([
-            tokenAuth(token)
+            tokenAuth(accessToken)
         ]);
     }
 

@@ -116,15 +116,24 @@ def login():
     return jsonify(ret), 201
 
 
+@app.route('/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh():
+    current_user = get_jwt_identity()
+    ret = {
+        'access_token': create_access_token(identity=current_user)
+    }
+    return jsonify(ret), 200
+
+
 # Protect a view with jwt_required, which requires a valid access token
 # in the request to access.
 @app.route("/v1/protected", methods=["GET"])
 @jwt_required
 def protected():
-    # Access the identity of the current user with get_jwt_identity
     ret = {
-        "current_identity": get_jwt_identity(),  # test
-        "current_roles": get_jwt_claims()["roles"],  # ['foo', 'bar']
+        "current_identity": get_jwt_identity(),
+        "current_roles": get_jwt_claims()["roles"],
     }
     return jsonify(ret), 200
 

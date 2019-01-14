@@ -27,6 +27,7 @@ class _ProviderBase {
                     .then(async (response) => {
                         try {
                             let resp = reader(await response.json());
+
                             if (response.status >= 200 && response.status < 300) {
                                 resolve(resp);
                             } else {

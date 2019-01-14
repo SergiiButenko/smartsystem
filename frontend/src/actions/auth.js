@@ -17,19 +17,17 @@ const {auth} = createActions(actions);
 export function loginByAccessToken() {
 
     return async dispatch => {
-        const access_token = localStorage.getItem('login');
-        if (!access_token)
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken)
             return;
 
         dispatch(auth.start());
         try {
 
-            let jwt = parseJwt(access_token);//user_claims.roles identity
+            let jwt = parseJwt(accessToken);
 
-            const user = {name: jwt.identity, token: access_token, roles: jwt.user_claims.roles};
+            const user = {name: jwt.identity, token: accessToken, roles: jwt.user_claims.roles};
             smartSystemApi.setUserData(user);
-
-            localStorage.setItem('login', user.token);
 
             dispatch(auth.success({user}));
 
@@ -46,7 +44,8 @@ export function login(username, password) {
         try {
             await smartSystemApi.login(username, password);
 
-            localStorage.setItem('login', smartSystemApi.user.token);
+            localStorage.setItem('accessToken', smartSystemApi.user.token);
+            localStorage.setItem('refreshToken', smartSystemApi.user.refreshToken);
 
             dispatch(auth.success({user: smartSystemApi.user}));
         } catch (e) {
@@ -55,12 +54,12 @@ export function login(username, password) {
     };
 }
 
-
 export function logout() {
     return async dispatch => {
         await smartSystemApi.logout();
-        localStorage.setItem('login', '');
+        localStorage.setItem('accessToken', '');
+        localStorage.setItem('refreshToken', '');
 
         dispatch(auth.logout());
-    }
+    };
 }

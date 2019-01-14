@@ -1,4 +1,5 @@
 from flask_cors import CORS
+
 from common.errors.common_errors import handle_common_errors
 from flask_cors import CORS
 from flask import Flask
@@ -24,5 +25,4 @@ def create_app(name):
 
     CORS(app)
 
-    
     return app
