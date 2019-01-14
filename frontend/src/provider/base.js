@@ -24,13 +24,18 @@ class _ProviderBase {
         const fetchRequest = async (url, options) => {
             return new Promise((resolve, reject) => {
                 fetch(url.href, options)
-                    .then((response) => {
-                        if (response.status >= 200 && response.status < 300) {
-                            response.json().then(data => {
-                                resolve(reader(data));
-                            });
-                        } else {
-                            reject(response);
+                    .then(async (response) => {
+                        try {
+                            let resp = reader(await response.json());
+                            if (response.status >= 200 && response.status < 300) {
+                                resolve(resp);
+                            } else {
+                                reject(resp);
+                            }
+                        } catch (error) {
+                            console.log("Error");
+                            console.log(error);
+                            reject(error);
                         }
                     })
                     .catch(reject);
