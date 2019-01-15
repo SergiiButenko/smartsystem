@@ -1,7 +1,7 @@
 import {createActions} from 'redux-actions';
 
 import {smartSystemApi} from '../provider';
-import {parseJwt} from "../helpers/auth.helper";
+import {getTokensIntoLocalStorage, setTokensIntoLocalStorage} from '../helpers/auth.helper';
 
 const actions = {
     AUTH: {
@@ -14,23 +14,20 @@ const actions = {
 
 const {auth} = createActions(actions);
 
-export function loginByAccessToken() {
 
+export function loginByAccessToken(refreshToken = getTokensIntoLocalStorage().refreshToken) {
     return async dispatch => {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken)
+        if (!refreshToken)
             return;
 
         dispatch(auth.start());
         try {
 
-            let jwt = parseJwt(accessToken);
+            await smartSystemApi.loginWithRefreshToken(refreshToken);
+            
+            setTokensIntoLocalStorage(smartSystemApi.user);            
 
-            const user = {name: jwt.identity, token: accessToken, roles: jwt.user_claims.roles};
-            smartSystemApi.setUserData(user);
-
-            dispatch(auth.success({user}));
-
+            dispatch(auth.success({user: smartSystemApi.user}));
         } catch (e) {
             dispatch(auth.failure(e));
         }
@@ -44,8 +41,7 @@ export function login(username, password) {
         try {
             await smartSystemApi.login(username, password);
 
-            localStorage.setItem('accessToken', smartSystemApi.user.token);
-            localStorage.setItem('refreshToken', smartSystemApi.user.refreshToken);
+            setTokensIntoLocalStorage(smartSystemApi.user);
 
             dispatch(auth.success({user: smartSystemApi.user}));
         } catch (e) {
@@ -57,9 +53,8 @@ export function login(username, password) {
 export function logout() {
     return async dispatch => {
         await smartSystemApi.logout();
-        localStorage.setItem('accessToken', '');
-        localStorage.setItem('refreshToken', '');
-
+        setTokensIntoLocalStorage({accessToken: '', refreshToken: ''});
+        
         dispatch(auth.logout());
     };
 }

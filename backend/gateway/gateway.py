@@ -86,11 +86,11 @@ def login():
     if not username or not password:
         raise GeneralError(message="Empty password or username")
 
-    cr_user = Db.get_user(user_identity=username)
+    current_user = Db.get_user(user_identity=username)
 
     # hashed = bcrypt.hashpw(password, bcrypt.gensalt())
     if (
-        cr_user is None
+        current_user is None
         or bcrypt.hashpw(
             password.encode("utf-8"),
             b"$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy",
@@ -100,10 +100,10 @@ def login():
         logger.error("User's {} pass or email not correct".format(username))
         raise WrongCreds()
 
-    logger.info("User {} logged in".format(cr_user.username))
+    logger.info("User {} logged in".format(current_user.username))
 
-    access_token = create_access_token(identity=cr_user)
-    refresh_token = create_refresh_token(identity=cr_user)
+    access_token = create_access_token(identity=current_user)
+    refresh_token = create_refresh_token(identity=current_user)
 
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
@@ -116,13 +116,24 @@ def login():
     return jsonify(ret), 201
 
 
-@app.route('/refresh', methods=['POST'])
+@app.route('/v1/auth/refreshToken', methods=['POST'])
 @jwt_refresh_token_required
 def refresh():
+    jti = get_raw_jwt()["jti"]
+    status = revoked_store.set(refresh_jti, "false", app.config['JWT_REFRESH_TOKEN_EXPIRES'] * 1.2)
+
+    if status is False:
+        raise UnableToRefresh()
+
     current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+    access_jti = get_jti(encoded_token=access_token)
+    revoked_store.set(access_jti, "false", app.config['JWT_ACCESS_TOKEN_EXPIRES'] * 1.2)        
+
     ret = {
         'access_token': create_access_token(identity=current_user)
     }
+
     return jsonify(ret), 200
 
 

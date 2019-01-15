@@ -2,8 +2,8 @@ import providerBase from './base';
 import {tokenAuth} from './middlewares';
 
 import {apiUrl} from '../constants/apiUrl';
-import {parseJwt} from "../helpers/auth.helper";
-import {adminOnly} from "./helpers";
+import {parseJwt} from '../helpers/auth.helper';
+import {adminOnly} from './helpers';
 
 class SmartSystemApi {
     config = {};
@@ -32,6 +32,27 @@ class SmartSystemApi {
             name: jwt.identity,
             accessToken: access_token,
             refreshToken: refresh_token,
+            roles: jwt.user_claims.roles
+        };
+
+        smartSystemApi.setUserData(user);
+
+        return this;
+    }
+
+    async loginWithRefreshToken(refreshToken, options) {
+        const {access_token} = await this.provider.post(
+            apiUrl.AUTH_REFRESH(),
+            JSON.stringify({refreshToken}),
+            options,
+        );
+
+        let jwt = parseJwt(access_token);
+
+        const user = {
+            name: jwt.identity,
+            accessToken: access_token,
+            refreshToken: refreshToken,
             roles: jwt.user_claims.roles
         };
 

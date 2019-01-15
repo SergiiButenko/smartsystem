@@ -1,6 +1,7 @@
 import {connectedRouterRedirect} from 'redux-auth-wrapper/history4/redirect';
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper';
 import {ROLES} from '../constants/roles';
+import {ACCESS, REFRESH} from '../constants/storages';
 
 const locationHelper = locationHelperBuilder({});
 
@@ -43,3 +44,24 @@ export const parseJwt = (token) => {
     let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(window.atob(base64));
 };
+
+export const setLocalStrorage = (k, v) => {
+    localStorage.setItem(k, v);
+}
+
+export const getLocalStrorage = (k) => {
+    return localStorage.getItem(k);
+}
+
+export const setTokensIntoLocalStorage = ({accessToken, refreshToken}) => {
+    setLocalStrorage(ACCESS, accessToken);
+    setLocalStrorage(REFRESH, refreshToken);
+}
+
+export const getTokensIntoLocalStorage = () => {
+    return {
+        accessToken: setLocalStrorage(ACCESS),
+        refreshToken: setLocalStrorage(REFRESH),
+    };
+}
+

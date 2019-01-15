@@ -18,7 +18,6 @@ export const globalErrorHandler = handler => (url, opts) => async next => {
 //         //so login action
 //         opts.header.Authorization = newToken
 //     }
-
 //     return next(url, opts).catch(response => handler(response));
 // };
 
