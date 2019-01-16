@@ -11,6 +11,7 @@ class SmartSystemApi {
     constructor(config = {}) {
         this.provider = providerBase;
         this.setGlobalConfig(config);
+
         this.user = {};
     }
 
@@ -74,8 +75,8 @@ class SmartSystemApi {
         this.user = {name, accessToken, refreshToken, roles};
 
         this.provider.setMiddlewares([
-            withAuth(accessToken),
             tokenRefresh(),
+            withAuth(),
         ]);
     }
 
