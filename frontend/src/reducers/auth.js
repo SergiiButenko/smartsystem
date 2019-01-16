@@ -28,7 +28,7 @@ export default handleActions({
             return {
                 ...state,
                 loggingIn: false,
-                user: action.payload.user,
+                user: action.payload,
                 loginError: null,
             };
         },

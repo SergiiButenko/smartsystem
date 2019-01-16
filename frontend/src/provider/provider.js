@@ -1,5 +1,5 @@
 import providerBase from './base';
-import {tokenAuth} from './middlewares';
+import {withAuth, tokenRefresh} from './middlewares';
 
 import {apiUrl} from '../constants/apiUrl';
 import {parseJwt} from '../helpers/auth.helper';
@@ -74,7 +74,8 @@ class SmartSystemApi {
         this.user = {name, accessToken, refreshToken, roles};
 
         this.provider.setMiddlewares([
-            tokenAuth(accessToken)
+            withAuth(accessToken),
+            tokenRefresh(),
         ]);
     }
 

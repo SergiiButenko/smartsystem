@@ -45,6 +45,11 @@ export const parseJwt = (token) => {
     return JSON.parse(window.atob(base64));
 };
 
+export const isTokenExpired = (accessToken) => {
+    //TODO fix here
+    return false;
+}
+
 export const setLocalStrorage = (k, v) => {
     localStorage.setItem(k, v);
 }

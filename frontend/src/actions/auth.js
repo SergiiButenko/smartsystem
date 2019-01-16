@@ -27,7 +27,7 @@ export function loginByAccessToken(refreshToken = getTokensIntoLocalStorage().re
             
             setTokensIntoLocalStorage(smartSystemApi.user);            
 
-            dispatch(auth.success({user: smartSystemApi.user}));
+            dispatch(auth.success(smartSystemApi.user));
         } catch (e) {
             dispatch(auth.failure(e));
         }
@@ -43,7 +43,7 @@ export function login(username, password) {
 
             setTokensIntoLocalStorage(smartSystemApi.user);
 
-            dispatch(auth.success({user: smartSystemApi.user}));
+            dispatch(auth.success(smartSystemApi.user));
         } catch (e) {
             dispatch(auth.failure(e));
         }

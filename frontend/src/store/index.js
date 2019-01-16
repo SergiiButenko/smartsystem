@@ -21,7 +21,7 @@ const store = createStore(
         applyMiddleware(
             thunk.withExtraArgument( {emit} ),
             promise,
-            logger
+            logger,
         )
     ));
 
