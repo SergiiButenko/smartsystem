@@ -21,20 +21,19 @@ export const globalErrorHandler = handler => (url, opts) => async next => {
 };
 
 
-export const tokenRefresh = handler => (url, opts) => async next => {   
+export const tokenRefresh = handler => (url, opts) => async next => {
+
     let accessToken = store.getState().auth.user && parseJwt(store.getState().auth.user.accessToken);
+    let refreshing = store.getState().auth.user && store.getState().auth.refreshing;
 
     let dt = Math.floor( Date.now() / 1000 );
-    if (accessToken && accessToken.exp  >= dt ) {
+
+    if (!refreshing && (accessToken && accessToken.exp  >= dt)) {
+        console.log(accessToken)
         let refreshToken = store.getState().auth.user.refreshToken;
-        console.log(refreshToken);
-
-        await smartSystemApi.loginWithRefreshToken(refreshToken);
-
-        setTokensIntoLocalStorage(smartSystemApi.user);
-
-        //store.dispatch(loginByAccessToken(refreshToken));
+        store.dispatch(loginByAccessToken(refreshToken));
     }
+
     return next(url, opts);
 };
 

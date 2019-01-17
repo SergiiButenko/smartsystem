@@ -4,11 +4,20 @@ const defaultState = {
     user: null,
     loggingIn: false,
     loginError: null,
+    refreshing: false,
 };
 
 export default handleActions({
 
     AUTH: {
+        REFRESH: (state) => {
+            return {
+                ...state,
+                refreshing: true,
+                loggingIn: false,
+                loginError: null,
+            };
+        },
         START: (state) => {
             return {
                 ...state,
@@ -20,6 +29,7 @@ export default handleActions({
             return {
                 ...state,
                 loggingIn: false,
+                refreshing: false,
                 user: null,
                 loginError: action.payload,
             };
@@ -28,6 +38,7 @@ export default handleActions({
             return {
                 ...state,
                 loggingIn: false,
+                refreshing: false,
                 user: action.payload,
                 loginError: null,
             };
@@ -36,6 +47,7 @@ export default handleActions({
             return {
                 ...state,
                 loggingIn: false,
+                refreshing: false,
                 user: null,
             };
         }

@@ -9,6 +9,7 @@ const actions = {
         SUCCESS: v => v,
         FAILURE: v => v,
         LOGOUT: v => v,
+        REFRESH: v => v,
     }
 };
 
@@ -20,7 +21,7 @@ export function loginByAccessToken(refreshToken = getTokensIntoLocalStorage().re
         if (!refreshToken)
             return;
 
-        dispatch(auth.start());
+        dispatch(auth.refresh());
         try {
             await smartSystemApi.loginWithRefreshToken(refreshToken);
             
