@@ -1,7 +1,6 @@
-import {parseJwt, setTokensIntoLocalStorage} from '../helpers/auth.helper';
+import {parseJwt, isTokenExpired} from '../helpers/auth.helper';
 import store from '../store';
 import {loginByAccessToken} from '../actions/auth';
-import {smartSystemApi} from './provider';
 
 
 export const withAuth = token => (url, opts) => async next => {
@@ -24,11 +23,9 @@ export const globalErrorHandler = handler => (url, opts) => async next => {
 export const tokenRefresh = handler => (url, opts) => async next => {
 
     let accessToken = store.getState().auth.user && parseJwt(store.getState().auth.user.accessToken);
-    let refreshing = store.getState().auth.user && store.getState().auth.refreshing;
+    let refreshing = store.getState().auth.refreshing;
 
-    let dt = Math.floor( Date.now() / 1000 );
-
-    if (!refreshing && (accessToken && accessToken.exp  >= dt)) {
+    if ( !refreshing && accessToken && isTokenExpired(accessToken) ) {
         console.log(accessToken)
         let refreshToken = store.getState().auth.user.refreshToken;
         store.dispatch(loginByAccessToken(refreshToken));

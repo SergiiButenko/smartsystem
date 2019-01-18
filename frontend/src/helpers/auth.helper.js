@@ -46,9 +46,10 @@ export const parseJwt = (token) => {
 };
 
 export const isTokenExpired = (accessToken) => {
-    //TODO fix here
-    return false;
-}
+    let dt = Math.floor( Date.now() / 1000 );
+    
+    return accessToken.exp  >= dt;
+};
 
 export const setLocalStrorage = (k, v) => {
     localStorage.setItem(k, v);
