@@ -7,6 +7,7 @@ export const withAuth = token => (url, opts) => async next => {
     let token = store.getState().auth.user && store.getState().auth.user.accessToken;
 
     //console.log("Beofre", opts.headers.Authorization)
+    !opts.headers && (opts.headers = {});
     if (!opts.headers.Authorization) {
         opts.headers.Authorization = `Bearer ${token}`;
     }

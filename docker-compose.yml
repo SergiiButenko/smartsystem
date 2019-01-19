@@ -24,7 +24,7 @@ services:
       - frontend
     expose:
       - 8008
-    command: yarn start
+    command: yarn start-prod
 
   nginx:
     build:
