@@ -6,10 +6,11 @@ import {loginByAccessToken} from '../actions/auth';
 export const withAuth = token => (url, opts) => async next => {
     let token = store.getState().auth.user && store.getState().auth.user.accessToken;
 
-    console.log(opts);
-
-    !opts.headers.Authorization && (opts.headers.Authorization = `Bearer ${token}`);
-    console.log(opts);
+    //console.log("Beofre", opts.headers.Authorization)
+    if (!opts.headers.Authorization) {
+        opts.headers.Authorization = `Bearer ${token}`;
+    }
+    //console.log("after", opts.headers.Authorization)
 
     return next(url, {
         ...opts,

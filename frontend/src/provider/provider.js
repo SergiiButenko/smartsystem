@@ -44,8 +44,8 @@ class SmartSystemApi {
     async loginWithRefreshToken(refreshToken, options = {}) {
         const {access_token} = await this.provider.post(
             apiUrl.AUTH_REFRESH(),
-            JSON.stringify({refreshToken}),
-            options.headers = {'Authorization': `Bearer ${refreshToken}`},
+            {},
+            {headers: {'Authorization': `Bearer ${refreshToken}`}},
         );
 
         let jwt = parseJwt(access_token);

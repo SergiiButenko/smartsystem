@@ -1,6 +1,9 @@
 from common.errors import GeneralError
 from common.errors import COMMON_ERROR
 
+from werkzeug.exceptions import HTTPException
+from flask_jwt_extended.exceptions import JWTExtendedException
+
 from flask import jsonify
 import logging
 
