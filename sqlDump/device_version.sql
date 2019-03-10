@@ -1,179 +1,161 @@
 --create extension "uuid-ossp";
--- USER SECTION ---
-CREATE TABLE permission (
-    name text NOT NULL PRIMARY KEY,
-    description text
-);
-INSERT INTO permission(name, description) VALUES ('create_branch', 'Ability to add branches for user');
-INSERT INTO permission(name, description) VALUES ('read_branch', 'Ability to read branches for user');
-INSERT INTO permission(name, description) VALUES ('update_branch', 'Ability to update branches for user');
-INSERT INTO permission(name, description) VALUES ('delete_branch', 'Ability to delete branches for user');
-INSERT INTO permission(name, description) VALUES ('create_device', 'Ability to add devices for user');
-INSERT INTO permission(name, description) VALUES ('read_device', 'Ability to read devices for user');
-INSERT INTO permission(name, description) VALUES ('update_device', 'Ability to update devices for user');
-INSERT INTO permission(name, description) VALUES ('delete_device', 'Ability to delete devices for user');
+
+BEGIN:
+    -- USER SECTION ---
+
+    -- here placed all possible permissions
+    CREATE TABLE permission (
+        name text NOT NULL PRIMARY KEY,
+        description text
+    );
+    INSERT INTO permission(name, description) VALUES ('create_line', 'Ability to add lines for user');
+    INSERT INTO permission(name, description) VALUES ('read_line', 'Ability to read lines for user');
+    INSERT INTO permission(name, description) VALUES ('update_line', 'Ability to update lines for user');
+    INSERT INTO permission(name, description) VALUES ('delete_line', 'Ability to delete lines for user');
+    INSERT INTO permission(name, description) VALUES ('create_device', 'Ability to add devices for user');
+    INSERT INTO permission(name, description) VALUES ('read_device', 'Ability to read devices for user');
+    INSERT INTO permission(name, description) VALUES ('update_device', 'Ability to update devices for user');
+    INSERT INTO permission(name, description) VALUES ('delete_device', 'Ability to delete devices for user');
+
+    -- here placed all possible roles
+    CREATE TABLE roles (
+        name TEXT NOT NULL PRIMARY KEY,
+        description TEXT
+    );
+    INSERT INTO roles(name, description) VALUES ('user', 'Read only user');
+    INSERT INTO roles(name, description) VALUES ('advanced', 'User with ability to modify settings');
+    INSERT INTO roles(name, description) VALUES ('admin', 'User with ability to create devices');
+
+    -- Concatination of role and permissions
+    CREATE TABLE role_permissions (
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        role_name TEXT NOT NULL,
+        permission_name TEXT NOT NULL,
+        FOREIGN KEY(permission_name) REFERENCES permission(name),
+        FOREIGN KEY(role_name) REFERENCES roles(name)
+    );
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_device');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_device');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_device');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_device');
+
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_device');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_device');
+
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_line');
+    INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_device');
+
+    CREATE TABLE users (
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        email text NOT NULL,
+        name text NOT NULL,
+        password text NOT NULL
+    );
+    INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'admin', '$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
+    INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'user', '$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
+    INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'advanced', '$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
+COMMIT;
 
 
-CREATE TABLE roles (
-    name TEXT NOT NULL PRIMARY KEY,
-    description TEXT
-);
-INSERT INTO roles(name, description) VALUES ('user', 'Simple user');
-INSERT INTO roles(name, description) VALUES ('advanced', 'User with ability to modify settings');
-INSERT INTO roles(name, description) VALUES ('admin', 'User with ability to create devices');
+BEGIN;
+    -- DEVICE SECTION ---
+    CREATE TABLE device_parameters(
+        name text NOT NULL PRIMARY KEY,
+        description text NOT NULL
+    );
+    INSERT INTO device_parameters(name, description) VALUES('type', 'Тип датчика: реле, термо, контроль заповнення, консоль');
+    INSERT INTO device_parameters(name, description) VALUES('version', 'Версія датчика');
+    INSERT INTO device_parameters(name, description) VALUES('model', 'Модель датчика');
+    INSERT INTO device_parameters(name, description) VALUES('comm_protocol', 'Тип радіо канала датчика: IP, Radio');
+    INSERT INTO device_parameters(name, description) VALUES('ip', 'Адреса девайса');
+    INSERT INTO device_parameters(name, description) VALUES('outer_temp_hum', 'Виносний датчик DHT21');
+    INSERT INTO device_parameters(name, description) VALUES('relay_quantity', 'Кількість реле');
 
-CREATE TABLE role_permissions (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    role_name TEXT NOT NULL,
-    permission_name TEXT NOT NULL,
-    FOREIGN KEY(permission_name) REFERENCES permission(name),
-    FOREIGN KEY(role_name) REFERENCES roles(name)
-);
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'create_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'read_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'update_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('admin', 'delete_device');
+    CREATE TABLE device(
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name text NOT NULL,
+        description text,
+        parent_device uuid,
+        FOREIGN KEY (parent_device) REFERENCES device(id)
+    );
 
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'read_device');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('advanced', 'update_device');
-
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_branch');
-INSERT INTO role_permissions (role_name, permission_name) VALUES ('user', 'read_device');
-
-
-CREATE TABLE groups (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    description TEXT NOT NULL 
-);
-INSERT INTO groups (description) VALUES ('peregonivka');
-
-CREATE TABLE group_roles (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    group_id uuid NOT NULL,
-    role_name TEXT NOT NULL,
-    FOREIGN KEY(group_id) REFERENCES groups(id),
-    FOREIGN KEY(role_name) REFERENCES roles(name)
-);
+    CREATE TABLE device_settings(
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        device_id uuid NOT NULL,
+        setting TEXT NOT NULL,
+        value TEXT NOT NULL,
+        FOREIGN KEY (device_id) REFERENCES device(id),
+        FOREIGN KEY (setting) REFERENCES device_parameters(name)
+    );
 
 
-CREATE TABLE users (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    email text NOT NULL,
-    name text NOT NULL,
-    password text NOT NULL
-);
-INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'admin', 'test');
-INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'user', 'test');
-INSERT INTO users(email, name, password) VALUES ('butenko2003@ukr.net', 'advanced', 'test');
+    DECLARE console_id device.id%TYPE;
+    INSERT INTO device(name, description) VALUES ('Перегонівка Хаб', 'Центральна консоль') returning id into console_id;
+    INSERT INTO device_settings (device_id, setting, value) VALUES (console_id, 'type', 'console');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (console_id, 'model', 'rasbpery_pi');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (console_id, 'version', '0.1');
 
-CREATE TABLE user_groups (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id uuid NOT NULL,
-    group_id uuid NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(group_id) REFERENCES groups(id)
-);
---INSERT INTO user_groups(user_id, group_id) VALUES ('3e5ccd3f-7065-4ff3-8e82-d8dd16faba48', '2bc1e294-44d9-4845-8d18-db8109717417');
---INSERT INTO user_groups(user_id, group_id) VALUES ('df62c3a6-5b59-49f9-b97d-33bf9a19f3d0', '2bc1e294-44d9-4845-8d18-db8109717417');
---INSERT INTO user_groups(user_id, group_id) VALUES ('075f79a6-8cf6-40b9-aa0d-a6bb60ac56c6', '2bc1e294-44d9-4845-8d18-db8109717417');
+    DECLARE device_id device.id%TYPE;
+    INSERT INTO device(name, description, parent_device) VALUES ('Полив', 'Контроллер поливу огорода', console_id) returning id into device_id;
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'type', 'relay');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'model', 'relay_no');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'version', '0.1');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'comm_protocol', 'network');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'ip', '192.168.1.104');
+    INSERT INTO device_settings (device_id, setting, value) VALUES (device_id, 'relay_quantity', '16');
+
+    CREATE TABLE device_user(
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        device_id uuid NOT NULL,
+        user_id uuid NOT NULL,
+        FOREIGN KEY (device_id) REFERENCES device(id),
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    );
+COMMIT;
 
 
 
--- HUB SECTION ---
-CREATE TABLE hub_parameters (
-    id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    name text NOT NULL PRIMARY KEY,
-    description text NOT NULL
-);
-INSERT INTO hub_parameters(name, description) VALUES('base_url', 'URL адреса до хаба');
-INSERT INTO hub_parameters(name, description) VALUES('s0', 'S0 pin');
-INSERT INTO hub_parameters(name, description) VALUES('s1', 'S1 pin');
-INSERT INTO hub_parameters(name, description) VALUES('s2', 'S2 pin');
-INSERT INTO hub_parameters(name, description) VALUES('s3', 'S3 pin');
-INSERT INTO hub_parameters(name, description) VALUES('en', 'en pin');
-INSERT INTO hub_parameters(name, description) VALUES('pump1_pin', 'Насос 1. Пін');
-INSERT INTO hub_parameters(name, description) VALUES('pump1_name', 'Насос 1. Назва');
-INSERT INTO hub_parameters(name, description) VALUES('pump2_pin', 'Насос 2. Пін');
-INSERT INTO hub_parameters(name, description) VALUES('pump2_name', 'Насос 2. Назва');
-
-CREATE TABLE hub (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT
-);
-INSERT INTO hub (name) VALUES ('Контроллер поливу Перегонівка.');
-
-CREATE TABLE hub_settings (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    hub_id INTEGER NOT NULL,
-    setting TEXT NOT NULL,
-    value TEXT NOT NULL,
-    FOREIGN KEY (hub_id) REFERENCES hub_settings(id),
-    FOREIGN KEY (setting) REFERENCES hub_parameters(name)
-);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'base_url', 'http://mozz.asuscomm.com:7542');
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 's0', 2);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 's1', 1);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 's2', 2);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 's3', 3);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'en', 5);
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'pump1_name', 'Насос AL-KO');
-INSERT INTO hub_settings (hub_id, setting, value) VALUES (1, 'pump1_pin', '16');
-
-CREATE TABLE user_hub (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    hub_id INTEGER NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(hub_id) REFERENCES hub(id)
-);
-INSERT INTO user_hub(user_id, hub_id) VALUES (1, 1);
-INSERT INTO user_hub(user_id, hub_id) VALUES (2, 1);
 
 
--- DEVICE SECTION ---
-CREATE TABLE device_parameters (
-    name text NOT NULL PRIMARY KEY,
-    description text NOT NULL
-);
-INSERT INTO device_parameters(name, description) VALUES('type', 'Тип датчика: реле, термо, контроль заповнення');
-INSERT INTO device_parameters(name, description) VALUES('radio_type', 'Тип радіо канала датчика: IP, Radio');
-INSERT INTO device_parameters(name, description) VALUES('outer_temp_hum', 'Виносний датчик DHT21');
-
-CREATE TABLE device (      
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    description text NOT NULL
-);
-INSERT INTO device(id, description) VALUES (1, 'Контроллер заповнення верхньої бочки');
-INSERT INTO device(id, description) VALUES (2, 'Контроллер дитячого будинку');
-
-CREATE TABLE device_settings (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    device_id INTEGER NOT NULL,
-    setting TEXT NOT NULL,
-    value TEXT NOT NULL,
-    FOREIGN KEY (device_id) REFERENCES device(id),
-    FOREIGN KEY (setting) REFERENCES device_parameters(name)
-);
-INSERT INTO device_settings (device_id, setting, value) VALUES (1, 'type', 'fill');
-INSERT INTO device_settings (device_id, setting, value) VALUES (2, 'type', 'relay');
 
 
-CREATE TABLE device_hub (
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    hub_id INTEGER NOT NULL,
-    device_id INTEGER NOT NULL,
-    FOREIGN KEY(hub_id) REFERENCES hub(id),
-    FOREIGN KEY(device_id) REFERENCES device(id)
-);
-INSERT INTO device_hub(hub_id, device_id) VALUES (1, 1);
-INSERT INTO device_hub(hub_id, device_id) VALUES (1, 2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -- IRRIGATION SECTION ---
@@ -199,7 +181,6 @@ INSERT INTO lines(description) VALUES ('Квіти');
 INSERT INTO lines(description) VALUES ('Огірки');
 INSERT INTO lines(description) VALUES ('Томати');
 INSERT INTO lines(description) VALUES ('Газон');
-INSERT INTO lines(description) VALUES ('Верхня бочка');
 
 CREATE TABLE line_settings (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
