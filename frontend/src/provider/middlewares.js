@@ -26,7 +26,7 @@ export const tokenRefresh = handler => (url, opts) => async next => {
     let refreshing = store.getState().auth.refreshing;
 
     if ( !refreshing && accessToken && isTokenExpired(accessToken) ) {
-        console.log(accessToken)
+        console.log("Refresh token");
         let refreshToken = store.getState().auth.user.refreshToken;
         store.dispatch(loginByAccessToken(refreshToken));
     }

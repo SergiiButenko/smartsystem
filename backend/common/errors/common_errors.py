@@ -1,5 +1,8 @@
-from common.errors import GeneralError
 from common.errors import COMMON_ERROR
+
+from werkzeug.exceptions import HTTPException
+from flask_jwt_extended.exceptions import JWTExtendedException
+from common.errors import GeneralError
 
 from flask import jsonify
 import logging
@@ -7,10 +10,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def error_obj(message, code, payload=None):
+def error_obj(message, code, err, payload=None):
     tmp = {}
     tmp['message'] = message
     tmp['code'] = code
+    tmp['raw'] = str(err)
     
     if payload is not None: 
         tmp['payload'] = payload
@@ -25,24 +29,28 @@ def handle_error(error):
         return error_obj(
             message=error.message,
             code=error.code,
-            payload=error.payload
+            payload=error.payload,
+            err = error,
         )
 
     if isinstance(error, HTTPException):
         return error_obj(
             message=error.description,
-            code=error.code
+            code=error.code,
+            err = error,
         )
 
     if isinstance(error, JWTExtendedException):
         return error_obj(
             message=error.msg,
-            code=error.code
+            code=error.code,
+            err = error,
         )
 
     return error_obj(
             message=def_message,
-            code=def_code
+            code=def_code,
+            err = error,
         )
 
 
