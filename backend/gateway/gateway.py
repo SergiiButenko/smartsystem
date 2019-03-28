@@ -88,14 +88,13 @@ def login():
 
     current_user = Db.get_user(user_identity=username)
 
-    # hashed = bcrypt.hashpw(password, bcrypt.gensalt())
     if (
         current_user is None
         or bcrypt.hashpw(
             password.encode("utf-8"),
-            b"$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy",
+            current_user.password.encode("utf-8"),
         )
-        != b"$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy"
+        != current_user.password.encode("utf-8")
     ):
         logger.error("User's {} pass or email not correct".format(username))
         raise WrongCreds()

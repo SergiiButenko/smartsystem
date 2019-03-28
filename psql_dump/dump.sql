@@ -1,12 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
--- Dumped by pg_dump version 11.2
-
--- Started on 2019-03-27 23:44:31 UTC
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -17,7 +8,7 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE irrigation;
+DROP DATABASE IF EXISTS irrigation;
 --
 -- TOC entry 3046 (class 1262 OID 16384)
 -- Name: irrigation; Type: DATABASE; Schema: -; Owner: postgres

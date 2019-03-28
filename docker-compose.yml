@@ -25,7 +25,7 @@ services:
       - frontend
     expose:
       - 8008
-    command: yarn start-prod
+    command: yarn start
 
   nginx:
     build:
@@ -62,8 +62,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       PGDATA: /data/postgres
-    volumes:
-       - postgres-data:/data/postgres
+#    volumes:
+#       - postgres-data:/data/postgres
     ports:
       - 5432:5432
     networks:
@@ -87,7 +87,6 @@ services:
 networks:
   frontend:
   backend:
-    driver: bridge
 
 volumes:
   redis_data:

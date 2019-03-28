@@ -1,6 +1,7 @@
 import logging
 
 import psycopg2
+import psycopg2.extras
 
 from common.models.user import User
 
@@ -13,9 +14,9 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='postgres' post='5432' dbname='test' user='postgres' password='changeme'"
+        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
-        self.cursor = self.conn.cursor()
+        self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def get_user(self, user_identity):
         self.cursor.execute(
@@ -24,7 +25,7 @@ class Database:
         )
         records = self.cursor.fetchone()
         if records is not None:
-            return User(username=records[0], roles=["admin"], permissions=["rw"])
+            return User(username=records['name'], password=records['password'], roles=["admin"], permissions=["rw"])
 
         return None
 

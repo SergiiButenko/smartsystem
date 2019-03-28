@@ -2,10 +2,11 @@
 # a JWT from. In practice, this will likely be something
 # like a SQLAlchemy instance.
 class User:
-    def __init__(self, username, roles, permissions):
+    def __init__(self, username, password, roles, permissions):
         self.username = username
         self.roles = roles
         self.permissions = permissions
+        self.password = password
 
     def to_json(self):
         return {

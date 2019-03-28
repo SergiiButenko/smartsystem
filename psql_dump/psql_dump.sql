@@ -1,7 +1,66 @@
---create extension "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+--
+-- PostgreSQL database dump
+--
 
-BEGIN;
+-- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
+-- Dumped by pg_dump version 11.2
+
+-- Started on 2019-03-27 23:44:31 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE IF EXISTS irrigation;
+--
+-- TOC entry 3046 (class 1262 OID 16384)
+-- Name: irrigation; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE irrigation WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE irrigation OWNER TO postgres;
+
+\connect irrigation
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2 (class 3079 OID 24633)
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner:
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- TOC entry 3047 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
     -- USER SECTION ---
 
     -- here placed all possible permissions
@@ -61,10 +120,7 @@ BEGIN;
     INSERT INTO users(id, email, name, password) VALUES ('3c545eb5-6cc0-47f7-a129-da0a41b856e3', 'butenko2003@ukr.net', 'admin', '$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
     INSERT INTO users(id, email, name, password) VALUES ('56743837-89c9-46dc-a455-09f16fa1f9fd', 'butenko2003@ukr.net', 'user', '$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
     INSERT INTO users(id, email, name, password) VALUES ('9e1aa40b-7d3d-4207-9705-39a5393edaab', 'butenko2003@ukr.net', 'advanced','$2b$12$WdbdI4b/oZifO4LbbfwtQ.C3iHNOyJP1lvuxVH6fnbUgxQrFJqlfy');
-COMMIT;
 
-
-BEGIN;
 -- device SECTION ---
     CREATE TABLE device_parameters(
         name text NOT NULL PRIMARY KEY,
@@ -119,7 +175,7 @@ BEGIN;
     INSERT INTO device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'comm_protocol', 'network');
     INSERT INTO device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'ip', '192.168.1.104');
     INSERT INTO device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'relay_quantity', '16');
-COMMIT;
+
 
 -- IRRIGATION SECTION ---
 CREATE TABLE line_parameters (
