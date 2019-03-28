@@ -18,8 +18,8 @@ from flask_jwt_extended import (
     verify_jwt_in_request,
 )
 
-from common.db import Db
-from common.config.config import create_app
+from common.models.db import Db
+from common.config.helpers import create_app
 from common.errors import *
 
 logging.basicConfig(level=logging.INFO)
