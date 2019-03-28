@@ -13,7 +13,7 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='postgres' post='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='postgres' post='5432' dbname='test' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor()
 
