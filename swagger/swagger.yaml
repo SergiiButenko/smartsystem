@@ -117,7 +117,7 @@ definitions:
         format: int64
       status:
         type: string
-        description: Sensot Status
+        description: Sensor Status
         enum:
         - active
         - notActive

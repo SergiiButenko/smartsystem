@@ -46,7 +46,14 @@ export const parseJwt = (token) => {
 };
 
 export const isTokenExpired = (accessToken) => {
+<<<<<<< HEAD
     return new Date() >= new Date(accessToken.exp * 1000);
+=======
+    let now = new Date();
+    let dt = Math.floor( (now.getTime() + now.getTimezoneOffset() * 60 ) / 1000 );
+
+    return accessToken.exp  <= dt;
+>>>>>>> 9464dbb85bd912485910a1a065a25cb18d973c98
 };
 
 export const setLocalStrorage = (k, v) => {
@@ -64,8 +71,8 @@ export const setTokensIntoLocalStorage = ({accessToken, refreshToken}) => {
 
 export const getTokensIntoLocalStorage = () => {
     return {
-        accessToken: setLocalStrorage(ACCESS),
-        refreshToken: setLocalStrorage(REFRESH),
+        accessToken: getLocalStrorage(ACCESS),
+        refreshToken: getLocalStrorage(REFRESH),
     };
 }
 

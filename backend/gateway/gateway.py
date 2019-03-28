@@ -18,8 +18,8 @@ from flask_jwt_extended import (
     verify_jwt_in_request,
 )
 
-from common.db import Db
-from common.config.config import create_app
+from common.models.db import Db
+from common.config.helpers import create_app
 from common.errors import *
 
 logging.basicConfig(level=logging.INFO)
@@ -119,19 +119,23 @@ def login():
 @app.route('/v1/auth/refreshToken', methods=['POST'])
 @jwt_refresh_token_required
 def refresh():
-    jti = get_raw_jwt()["jti"]
+    refresh_jti = get_raw_jwt()["jti"]
     status = revoked_store.set(refresh_jti, "false", app.config['JWT_REFRESH_TOKEN_EXPIRES'] * 1.2)
 
     if status is False:
         raise UnableToRefresh()
 
-    current_user = get_jwt_identity()
+    username = get_jwt_identity()
+    current_user = Db.get_user(user_identity=username)
+    if current_user is None:
+        raise WrongCreds()
+
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
     revoked_store.set(access_jti, "false", app.config['JWT_ACCESS_TOKEN_EXPIRES'] * 1.2)        
 
     ret = {
-        'access_token': create_access_token(identity=current_user)
+        'access_token': access_token
     }
 
     return jsonify(ret), 200
