@@ -1,10 +1,10 @@
 version: '3.6'
 services:
-  gateway:
+  actuators:
     build:
       context: .
-      dockerfile: GatewayDockerfile
-    container_name: gateway
+      dockerfile: ActuatorsDockerfile
+    container_name: actuators
     networks:
       - backend
     expose:
@@ -12,7 +12,7 @@ services:
     depends_on:
       - redis
       - postgres
-    command: /usr/local/bin/gunicorn gateway.gateway:app -w 1 -t 90 -b 0.0.0.0:5000
+    command: /usr/local/bin/gunicorn actuators.actuators:app -w 1 -t 90 -b 0.0.0.0:5000
 
   web:
     build:
@@ -20,7 +20,7 @@ services:
       dockerfile: FrontendDockerfile
     container_name: web
     depends_on:
-      - gateway
+      - actuators
     networks:
       - frontend
     expose:
@@ -38,7 +38,7 @@ services:
       - backend
       - frontend
     depends_on:
-      - gateway
+      - actuators
       - web
 
   redis:

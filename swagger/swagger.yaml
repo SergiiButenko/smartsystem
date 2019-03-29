@@ -17,8 +17,8 @@ produces:
   - application/json
 
 tags:
-- name: lines
-  description: All operations related to lines
+- name: actuators
+  description: All operations related to actuators
 - name: sensors
   description: All operations related to sensors
 - name: rules
@@ -27,25 +27,59 @@ tags:
   description: Operations about application layer
 
 paths:
-  /lines:
+  /actuators:
     get:
       tags:
-      - lines
-      summary: Get summary for all lines
-      description: Returns an array of line objects
-      operationId: getAllLines
+      - actuators
+      summary: Get summary for all actuators
+      description: Returns an array of actuator objects
+      operationId: getAllActuators
       responses:
         200:
             description: OK
             schema:
               type: array
               items:
-                $ref: '#/definitions/Line'
+                $ref: '#/definitions/Actuator'
+  
+  /actuators/{id}:
+    get:
+      summary: Returns summary of actuator by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Actuator'
+    put:
+      summary: Change settings for actuator by id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Actuator'
 
-  /lines/{lineId}:
+
+  /actuators/{id}/{lineId}:
     get:
       summary: Returns summary of line by ID.
       parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
         - in: path
           name: lineId
           required: true
@@ -60,6 +94,11 @@ paths:
       summary: Change settings for line by id.
       parameters:
         - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+        - in: path
           name: lineId
           required: true
           description: Line id to process
@@ -70,11 +109,15 @@ paths:
             schema:
               $ref: '#/definitions/Line'
 
-
-  /lines/{lineId}/{command}:
-    post:
+  /actuators/{id}/{lineId}/{command}:
+    put:
       summary: Enable line of line by ID.
       parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
         - in: path
           name: lineId
           required: true

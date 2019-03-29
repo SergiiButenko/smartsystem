@@ -1,138 +1,172 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "Operation service to handle user's requests for CRUD operation for\
-    \ rules, lines, application settings"
-  version: "1.0.0"
-  title: "Irrigation"
+  description: Operation service to handle user's requests for CRUD operation for rules, lines, application settings
+  version: 1.0.0
+  title: Irrigation
   contact:
-    email: "butenko2003@ukr.net"
-host: "mozz.asuscomm.com"
-basePath: "/v1"
-tags:
-- name: "lines"
-  description: "All operations related to lines"
-- name: "sensors"
-  description: "All operations related to sensors"
-- name: "rules"
-  description: "All operations related to rule"
-- name: "application"
-  description: "Operations about application layer"
+    email: butenko2003@ukr.net
+
+host: mozz.asuscomm.com
+basePath: /v1
 schemes:
-- "https"
+  - https
+
 consumes:
-- "application/json"
+  - application/json
 produces:
-- "application/json"
+  - application/json
+
+tags:
+- name: actuators
+  description: All operations related to actuators
+- name: sensors
+  description: All operations related to sensors
+- name: rules
+  description: All operations related to rule
+- name: application
+  description: Operations about application layer
+
 paths:
-  /lines:
+  /actuators:
     get:
       tags:
-      - "lines"
-      summary: "Get summary for all lines"
-      description: "Returns an array of line objects"
-      operationId: "get_all_lines"
-      parameters: []
+      - actuators
+      summary: Get summary for all actuators
+      description: Returns an array of actuator objects
+      operationId: getAllActuators
       responses:
         200:
-          description: "OK"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Line"
-      x-swagger-router-controller: "swagger_server.controllers.lines_controller"
-  /lines/{lineId}:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Actuator'
+  
+  /actuators/{id}:
     get:
-      summary: "Returns summary of line by ID."
-      operationId: "lines_line_id_get"
+      summary: Returns summary of actuator by ID.
       parameters:
-      - name: "lineId"
-        in: "path"
-        description: "Line id to process"
-        required: true
-        type: "string"
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Line"
-      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+            description: OK
+            schema:
+              $ref: '#/definitions/Actuator'
     put:
-      summary: "Change settings for line by id."
-      operationId: "lines_line_id_put"
+      summary: Change settings for actuator by id.
       parameters:
-      - name: "lineId"
-        in: "path"
-        description: "Line id to process"
-        required: true
-        type: "string"
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Line"
-      x-swagger-router-controller: "swagger_server.controllers.default_controller"
-  /lines/{lineId}/{command}:
-    post:
-      summary: "Enable line of line by ID."
-      operationId: "lines_line_id_command_post"
+            description: OK
+            schema:
+              $ref: '#/definitions/Actuator'
+
+
+  /actuators/{id}/{lineId}:
+    get:
+      summary: Returns summary of line by ID.
       parameters:
-      - name: "lineId"
-        in: "path"
-        description: "Line id to process"
-        required: true
-        type: "string"
-      - name: "command"
-        in: "path"
-        description: "Command to execute againg line"
-        required: true
-        type: "string"
-        enum:
-        - "enable"
-        - "disable"
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Line"
-      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+    put:
+      summary: Change settings for line by id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+
+  /actuators/{id}/{lineId}/{command}:
+    put:
+      summary: Enable line of line by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Actuator id to process
+          type: string
+        - in: path
+          name: lineId
+          required: true
+          description: Line id to process
+          type: string
+        - in: path
+          name: command
+          required: true
+          description: Command to execute againg line
+          type: string
+          enum: ['enable', 'disable']
+      responses:
+        200:
+            description: OK
+            schema:
+              $ref: '#/definitions/Line'
+
 definitions:
   Line:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       status:
-        type: "string"
-        description: "Line Status"
+        type: string
+        description: Line Status
         enum:
-        - "inProgress"
-        - "active"
-        - "notActive"
+        - inProgress
+        - active
+        - notActive
       linkedSensor:
-        type: "string"
-        description: "Linked sensor id, if present"
-    example:
-      linkedSensor: "linkedSensor"
-      id: 0
-      status: "inProgress"
+        type: string
+        description: Linked sensor id, if present
   Sensor:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       status:
-        type: "string"
-        description: "Sensot Status"
+        type: string
+        description: Sensor Status
         enum:
-        - "active"
-        - "notActive"
+        - active
+        - notActive
       linkedLine:
-        type: "string"
-        description: "Linked line id, if present"
+        type: string
+        description: Linked line id, if present
       value:
-        type: "object"
-        description: "Sensor value"
-        properties: {}
+        type: object
+        description: Sensor value
