@@ -1,5 +1,4 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
     -- USER SECTION ---
 
     -- here placed all possible permissions
@@ -87,6 +86,8 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
         device_id uuid NOT NULL,
         setting TEXT NOT NULL,
         value TEXT NOT NULL,
+        type TEXT NOT NULL DEFAULT 'str',
+        readonly BOOLEAN NOT NULL DEFAULT TRUE, 
         FOREIGN KEY (device_id) REFERENCES devices(id),
         FOREIGN KEY (setting) REFERENCES device_parameters(name)
     );
@@ -150,11 +151,10 @@ INSERT INTO line_state VALUES ('deactivated', 'Вимкнуто');
 
 CREATE TABLE lines (      
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    description text NOT NULL,
-    sensor uuid,
+    name text NOT NULL,
+    description text,
     state text NOT NULL,
-    FOREIGN KEY (state) REFERENCES line_state(name),
-    FOREIGN KEY (sensor) REFERENCES devices(id)
+    FOREIGN KEY (state) REFERENCES line_state(name)
 );
 
 CREATE TABLE line_settings (
@@ -162,6 +162,8 @@ CREATE TABLE line_settings (
     line_id uuid NOT NULL,
     setting TEXT NOT NULL,
     value TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'str',
+    readonly BOOLEAN NOT NULL DEFAULT 'TRUE', 
     FOREIGN KEY (line_id) REFERENCES lines(id),
     FOREIGN KEY (setting) REFERENCES line_parameters(name)
 );
@@ -194,8 +196,8 @@ CREATE TABLE allowed_status_for_line (
 );
 
 
-INSERT INTO lines(id, description, state) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'Полуниця клумба', 'deactivated');
-INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'type', 'irrigation');
+INSERT INTO lines(id, name, state) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'Полуниця клумба', 'deactivated');
+INSERT INTO line_settings (line_id, setting, value, readonly) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'type', 'irrigation', 'FALSE');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'activated');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'deactivated');
 
@@ -230,7 +232,7 @@ CREATE TABLE rules_line(
     line_id uuid NOT NULL,
     rule text NOT NULL,
     device_id uuid NOT NULL,
-    desired_state text DEFAULT 'Pending' NOT NULL,
+    desired_state text DEFAULT 'pending' NOT NULL,
     interval_id uuid,
     -- ongoing rule ???
     FOREIGN KEY(line_id) REFERENCES lines(id),
