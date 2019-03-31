@@ -1,66 +1,5 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
--- Dumped by pg_dump version 11.2
-
--- Started on 2019-03-27 23:44:31 UTC
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
-DROP DATABASE IF EXISTS irrigation;
---
--- TOC entry 3046 (class 1262 OID 16384)
--- Name: irrigation; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE irrigation WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-
-
-ALTER DATABASE irrigation OWNER TO postgres;
-
-\connect irrigation
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- TOC entry 2 (class 3079 OID 24633)
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner:
---
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- TOC entry 3047 (class 0 OID 0)
--- Dependencies: 2
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
---
-
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
-SET default_tablespace = '';
-
-SET default_with_oids = false;
-
     -- USER SECTION ---
 
     -- here placed all possible permissions
@@ -177,6 +116,19 @@ SET default_with_oids = false;
     INSERT INTO device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'relay_quantity', '16');
 
 
+    CREATE TABLE device_user(
+        id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+        device_id uuid NOT NULL,
+        user_id uuid NOT NULL,
+        FOREIGN KEY (device_id) REFERENCES devices(id),
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    );
+
+    INSERT INTO device_user (device_id, user_id) VALUES ('a1106ae2-b537-45c8-acb6-aca85dcee675', '3c545eb5-6cc0-47f7-a129-da0a41b856e3');
+    INSERT INTO device_user (device_id, user_id) VALUES ('c66f67ec-84b1-484f-842f-5624415c5841', '3c545eb5-6cc0-47f7-a129-da0a41b856e3');
+    INSERT INTO device_user (device_id, user_id) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', '3c545eb5-6cc0-47f7-a129-da0a41b856e3');
+
+
 -- IRRIGATION SECTION ---
 CREATE TABLE line_parameters (
     name text NOT NULL PRIMARY KEY,
@@ -251,17 +203,7 @@ INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_intervals', '2');
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_time_wait', '15');
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'relay_num', '1');
-
-
-CREATE TABLE line_user(
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    line_id uuid NOT NULL,
-    user_id uuid NOT NULL,
-    FOREIGN KEY (line_id) REFERENCES lines(id),
-    FOREIGN KEY(user_id) REFERENCES users(id)
-);
-
-INSERT INTO line_user (line_id, user_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', '3c545eb5-6cc0-47f7-a129-da0a41b856e3');
+INSERT INTO line_device (line_id, device_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'c66f67ec-84b1-484f-842f-5624415c5841');
 
 CREATE TABLE rule_type (
     name text NOT NULL PRIMARY KEY,

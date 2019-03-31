@@ -19,6 +19,7 @@ from flask_jwt_extended import (
     verify_jwt_in_request,
 )
 
+from common.models.db import Db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
