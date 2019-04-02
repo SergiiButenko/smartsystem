@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import {ACTION_TYPES} from '../constants/websocket';
-import lines from '../actions/card';
+import lines from '../actions/device';
 import config from 'config';
 
 const {endpoints: {ws_uri}} = config;

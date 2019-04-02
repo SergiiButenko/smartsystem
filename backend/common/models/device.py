@@ -12,7 +12,7 @@ class Device:
 
     def to_json(self):
         return {
-            "device_id": self.device_id,
+            "id": self.device_id,
             "name": self.name,
             "description": self.description,
             "settings": self.settings,

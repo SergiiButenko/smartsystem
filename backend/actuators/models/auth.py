@@ -23,9 +23,8 @@ from common.errors import *
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-auth = Blueprint("auth", __name__)
 revoked_store = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True)
-
+auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["POST"])
 def login():

@@ -14,7 +14,7 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='localhost' port='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -48,13 +48,14 @@ class Database:
             where s.device_id in (
             select id from devices where id in (
                 select device_id from device_user where user_id in (
-                    select id from users where name = 'admin'
+                    select id from users where name = '{user_identity}'
                     )
                 ) {device}
             )
             group by d.id
             """.format(
-            device=device
+            device=device,
+            user_identity='admin',
         )
 
         self.cursor.execute(q, (user_identity))
@@ -71,14 +72,14 @@ class Database:
 
         return devices
 
-    def get_actuator_lines(self, device_id, line_id):
+    def get_actuator_lines(self, device_id, line_id, user_identity):
         line = ""
         if line_id is not None:
             line = " and line_id = '{line_id}'".format(line_id=line_id)
 
         q = """
             select
-            l.id, l.description,
+            l.id, l.name, l.description,
             jsonb_object_agg(setting, value) as settings
             from line_settings as s
             join lines as l on s.line_id = l.id

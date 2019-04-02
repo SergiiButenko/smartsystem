@@ -81,9 +81,17 @@ class SmartSystemApi {
     }
 
     @adminOnly
-    async getLines(options = {}) {
-        return this.provider.post(
-            apiUrl.GET_LINES(),
+    async getLines(deviceId, options = {}) {
+        return this.provider.get(
+            apiUrl.GET_LINES(deviceId),
+            options,
+        );
+    }
+
+    @adminOnly
+    async getDevices(deviceId, options = {}) {
+        return this.provider.get(
+            apiUrl.GET_DEVICES(deviceId),
             options,
         );
     }

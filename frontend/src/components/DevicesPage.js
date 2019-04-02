@@ -1,10 +1,13 @@
 import React from 'react';
 import Devices from './Devices/index';
+import ToolbarAppWeb from './ToolbarApp';
 
 
 const DevicePage = () => (
     <div>
-        	<Devices/>
+        <ToolbarAppWeb>
+            <Devices/>
+        </ToolbarAppWeb>
     </div>
 );
 

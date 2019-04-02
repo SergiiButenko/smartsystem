@@ -12,7 +12,7 @@ class Line:
 
     def to_json(self):
         return {
-            "line_id": self.line_id,
+            "id": self.line_id,
             "name": self.name,
             "description": self.description,
             "settings": self.settings,
