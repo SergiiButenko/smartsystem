@@ -14,5 +14,5 @@ COMMON_ERROR = [
     WrongCreds,
     GeneralError,
     UnexpectedRole,
-    UnableToRefresh
+    UnableToRefresh,
 ]

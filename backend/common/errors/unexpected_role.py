@@ -1,5 +1,6 @@
 from common.errors.general_error import GeneralError
 
+
 class UnexpectedRole(GeneralError):
     def_status_code = 403
     def_message = "User is not allowed to perform this operation"

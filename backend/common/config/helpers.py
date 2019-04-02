@@ -49,11 +49,9 @@ def create_jwt(app):
     def add_claims_to_access_token(user):
         return {"roles": user.roles}
 
-
     @jwt.user_identity_loader
     def user_identity_lookup(user):
         return user.username
-
 
     @jwt.user_loader_callback_loader
     def user_loader_callback(identity):
@@ -62,12 +60,12 @@ def create_jwt(app):
             return None
         return cr_user
 
-
     @jwt.user_loader_error_loader
     def custom_user_loader_error(identity):
         raise WrongCreds()
 
     return jwt
+
 
 def admin_required(fn):
     @wraps(fn)

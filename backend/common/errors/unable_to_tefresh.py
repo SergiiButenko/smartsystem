@@ -1,5 +1,6 @@
 from common.errors.general_error import GeneralError
 
+
 class UnableToRefresh(GeneralError):
     def_status_code = 403
     def_message = "Unable to refresh token"
