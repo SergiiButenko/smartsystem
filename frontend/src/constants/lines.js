@@ -1,5 +1,0 @@
-export const LINE_TYPE = {
-    IRRIGATION: 'PHYLOGENY',
-    LIGHT: 'TAXONOMY',
-    TANK: 'TAXONOMY',
-};

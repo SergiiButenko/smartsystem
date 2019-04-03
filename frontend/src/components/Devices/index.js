@@ -62,30 +62,45 @@ export default class Devices extends React.Component {
         classes: PropTypes.object.isRequired,
         devices: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired,
-        fetchError: PropTypes.any,
+        deviceFetchError: PropTypes.any,
     };
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            devices: []
+        }
     }
 
     componentWillMount() {
         this.props.fetchDevices();
     }
 
+    componentWillReceiveProps(newProps) {
+        console.log('newProps:'+newProps)
+        this.setState({'devices': newProps});
+    }
+
     render() {
-        const {classes, loading, fetchError, devices} = this.props;
+        console.log('props:'+props)
+
+        const {classes, loading, deviceFetchError} = this.props;
+        const {devices} = this.state
 
         if (loading) {
             return <PageSpinner/>;
         }
 
-        if (fetchError) {
-            return <LoadingFailed errorText={fetchError}/>;
+        if (deviceFetchError) {
+            return <LoadingFailed errorText={deviceFetchError}/>;
         }
 
         return (
+            <Link to={REPORT_URL(row.tv_document_id, 'organisms')}>
                 <div><pre>{JSON.stringify(devices, null, 2) }</pre></div>
+            </Link>
+                
         );
     }
 }

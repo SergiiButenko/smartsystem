@@ -8,10 +8,11 @@ export const getDevices = createSelector(
     (devices, deviceState) => {
         let arr = [];
 
+        console.log(devices)
         for (let id in devices) {
-            console.log(devices[id])
             arr.push(devices[id]);
         }
+        console.log(arr)
         return {
             ...deviceState,
             devices: arr,

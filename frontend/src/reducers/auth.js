@@ -8,7 +8,6 @@ const defaultState = {
 };
 
 export default handleActions({
-
     AUTH: {
         REFRESH: (state) => {
             return {

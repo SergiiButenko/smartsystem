@@ -80,18 +80,9 @@ class SmartSystemApi {
         ]);
     }
 
-    @adminOnly
-    async getLines(deviceId, options = {}) {
+    async getDevice(deviceId=null, lineId=null, options = {}) {
         return this.provider.get(
-            apiUrl.GET_LINES(deviceId),
-            options,
-        );
-    }
-
-    @adminOnly
-    async getDevices(deviceId, options = {}) {
-        return this.provider.get(
-            apiUrl.GET_DEVICES(deviceId),
+            apiUrl.DEVICES(deviceId),
             options,
         );
     }

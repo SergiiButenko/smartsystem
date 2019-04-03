@@ -8,7 +8,7 @@ import {emit, websocketInit} from '../webSockets/webSockets';
 
 const logger = createLogger({
     collapsed: true,
-    // diff: true,
+    diff: true,
 });
 
 

@@ -17,6 +17,7 @@ const App = () => {
                 <Route exact path="/" component={ userIsAuthenticated(DevicesPage) }/>
                 <Route exact path="/login" component={ userIsNotAuthenticated(SignInPage) }/>
                 <Route exact path="/device" component={ userIsAdmin(DevicesPage) }/>
+                <Route path="/device/:device_id" component={userIsAuthenticated(DevicesPage)}/>
             </div>
         </BrowserRouter>
     );

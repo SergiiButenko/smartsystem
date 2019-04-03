@@ -17,7 +17,7 @@ export const fetchDevices = (deviceId=null) => {
         dispatch(devices.loading(true));
 
         try {
-            const devices_input = await smartSystemApi.getDevices(deviceId);
+            const devices_input = await smartSystemApi.getDevice(deviceId);
             console.log(devices_input);
 
             dispatch(devices.set(devices_input));
