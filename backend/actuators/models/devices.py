@@ -6,7 +6,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from common.database.db import Db
+from common.resources.db import Db
 
 import logging
 

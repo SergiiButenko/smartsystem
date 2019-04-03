@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import current_app as app
 
 import bcrypt
-import redis
+
 import logging
 
 from flask import jsonify, request
@@ -17,13 +17,12 @@ from flask_jwt_extended import (
     jwt_required,
 )
 
-from common.database.db import Db
+from common.resources import Db, redis
 from common.errors import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-revoked_store = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True)
 auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["POST"])
@@ -53,8 +52,10 @@ def login():
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
 
-    revoked_store.set(access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
-    revoked_store.set(
+    redis.set(
+        access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2
+    )
+    redis.set(
         refresh_jti, "false", app.config["JWT_REFRESH_TOKEN_EXPIRES"] * 1.2
     )
 
@@ -67,7 +68,7 @@ def login():
 @jwt_refresh_token_required
 def refresh():
     refresh_jti = get_raw_jwt()["jti"]
-    status = revoked_store.set(
+    status = redis.set(
         refresh_jti, "false", app.config["JWT_REFRESH_TOKEN_EXPIRES"] * 1.2
     )
 
@@ -81,7 +82,7 @@ def refresh():
 
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
-    revoked_store.set(access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
+
 
     ret = {"access_token": access_token}
 
@@ -93,5 +94,6 @@ def refresh():
 @jwt_required
 def logout():
     jti = get_raw_jwt()["jti"]
-    revoked_store.set(jti, "true", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
+    redis.set(jti, "true", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
+
     return jsonify({"msg": "Access token revoked"}), 200

@@ -80,9 +80,9 @@ class SmartSystemApi {
         ]);
     }
 
-    async getDevice(deviceId=null, lineId=null, options = {}) {
+    async getDevice(deviceId='', lineId='', options = {}) {
         return this.provider.get(
-            apiUrl.DEVICES(deviceId),
+            apiUrl.DEVICES(deviceId, lineId),
             options,
         );
     }

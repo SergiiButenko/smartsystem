@@ -25,7 +25,6 @@ export const baseEntityReducers = {
                 : fromJS(action.payload.value)
         );
     },
-
     REMOVE: (state, action) => {
         return state.delete(action.payload.id);
     },

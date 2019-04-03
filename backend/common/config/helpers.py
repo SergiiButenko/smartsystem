@@ -15,6 +15,7 @@ from flask_jwt_extended import (
 )
 from functools import wraps
 import logging
+from common.resources import Db, redis
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ def create_jwt(app):
     @jwt.token_in_blacklist_loader
     def check_if_token_is_revoked(decrypted_token):
         jti = decrypted_token["jti"]
-        entry = revoked_store.get(jti)
+        entry = redis.get(jti)
         if entry is None:
             return True
         return entry == "true"

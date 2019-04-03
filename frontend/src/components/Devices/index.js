@@ -4,13 +4,14 @@ import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
-import Fab from './Fab';
+
 import ControlCard from '../ControlCard/index';
 import {getDevices} from '../../selectors/devices';
 import {fetchDevices} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
-import ToolbarAppWeb from '../ToolbarApp';
+import Link from 'react-router-dom/Link';
+import {apiUrl} from '../../constants/apiUrl';
 
 const styles = theme => ({
     card: {
@@ -78,13 +79,10 @@ export default class Devices extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log('newProps:'+newProps)
-        this.setState({'devices': newProps});
+        this.setState({'devices': newProps.devices});
     }
 
     render() {
-        console.log('props:'+props)
-
         const {classes, loading, deviceFetchError} = this.props;
         const {devices} = this.state
 
@@ -97,7 +95,7 @@ export default class Devices extends React.Component {
         }
 
         return (
-            <Link to={REPORT_URL(row.tv_document_id, 'organisms')}>
+            <Link to={apiUrl.DEVICES()}>
                 <div><pre>{JSON.stringify(devices, null, 2) }</pre></div>
             </Link>
                 

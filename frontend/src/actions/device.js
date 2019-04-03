@@ -18,9 +18,11 @@ export const fetchDevices = (deviceId=null) => {
 
         try {
             const devices_input = await smartSystemApi.getDevice(deviceId);
-            console.log(devices_input);
-
-            dispatch(devices.set(devices_input));
+            let arr = [];
+            for (let id in devices_input) {
+                console.log(devices_input[id])
+                await dispatch(devices.set(devices_input[id]));
+            }
         } catch (e) {
             dispatch(devices.failure(e));
         }
