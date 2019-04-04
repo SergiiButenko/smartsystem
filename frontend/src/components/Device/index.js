@@ -7,11 +7,9 @@ import Grid from '@material-ui/core/Grid';
 
 import ControlCard from '../ControlCard/index';
 import {getDevices} from '../../selectors/devices';
-import {fetchDevices} from '../../actions/device';
+import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
-import Link from 'react-router-dom/Link';
-import {webUri} from '../../constants/uri';
 
 const styles = theme => ({
     card: {
@@ -57,7 +55,7 @@ const mapStateToProps = (state) => {
     return getDevices(state);
 };
 @withStyles(styles)
-@connect(mapStateToProps, {fetchDevices})
+@connect(mapStateToProps, {fetchDeviceById})
 export default class Devices extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
@@ -67,7 +65,7 @@ export default class Devices extends React.Component {
     };
 
     componentWillMount() {
-        this.props.fetchDevices();
+        this.props.fetchDeviceById("75308265-98aa-428b-aff6-a13beb5a3129");
     }
 
     render() {
@@ -82,10 +80,7 @@ export default class Devices extends React.Component {
         }
 
         return (
-            <Link to={webUri.DEVICES("75308265-98aa-428b-aff6-a13beb5a3129")}>
-                <div><pre>{JSON.stringify(devices, null, 2) }</pre></div>
-            </Link>
-                
+            <div><pre>{JSON.stringify(devices["75308265-98aa-428b-aff6-a13beb5a3129"], null, 2) }</pre></div>
         );
     }
 }

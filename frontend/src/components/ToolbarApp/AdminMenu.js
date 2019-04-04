@@ -33,14 +33,7 @@ export default class AdminMenu extends Component {
         return (
             <List>
                 <ListSubheader inset>Адміністрування</ListSubheader>
-                <ListItem component={Link} to="/newhub"  button>
-                    <ListItemIcon>
-                        <DeviceHub />
-                    </ListItemIcon>
-                    <ListItemText primary="Додати хаб" />
-                </ListItem>
-
-                <ListItem component={Link} to="/device"  button>
+                <ListItem component={Link} to="/devices"  button>
                     <ListItemIcon>
                         <DevicesOther />
                     </ListItemIcon>

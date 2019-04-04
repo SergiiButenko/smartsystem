@@ -132,7 +132,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 CREATE TABLE groups (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     name text NOT NULL,
-    description text,
+    description text
 );
 INSERT INTO groups(id, name, description) VALUES ('80122551-18bc-4846-9799-0b728324251c', 'Огород', 'Все, що смачне');
 
@@ -193,13 +193,14 @@ CREATE TABLE line_device (
 );
 
 
-CREATE TABLE line_groups (
+CREATE TABLE device_groups (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    line_id uuid NOT NULL,
+    device_id uuid NOT NULL,
     group_id uuid NOT NULL,
-    FOREIGN KEY(group_id) REFERENCES groups(id),
-    FOREIGN KEY(line_id) REFERENCES lines(id)
+    FOREIGN KEY(device_id) REFERENCES devices(id),
+    FOREIGN KEY(group_id) REFERENCES groups(id)
 );
+INSERT INTO device_groups(device_id, group_id) VALUES ('c66f67ec-84b1-484f-842f-5624415c5841', '80122551-18bc-4846-9799-0b728324251c');
 
 CREATE TABLE allowed_status_for_line (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -220,7 +221,7 @@ INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_time_wait', '15');
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'relay_num', '1');
 INSERT INTO line_device (line_id, device_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'c66f67ec-84b1-484f-842f-5624415c5841');
-INSERT INTO line_groups(line_id, group_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', '80122551-18bc-4846-9799-0b728324251c');
+
 
 CREATE TABLE rule_type (
     name text NOT NULL PRIMARY KEY,

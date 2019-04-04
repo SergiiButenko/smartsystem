@@ -1,7 +1,7 @@
 import providerBase from './base';
 import {withAuth, tokenRefresh} from './middlewares';
 
-import {apiUrl} from '../constants/apiUrl';
+import {apiUri} from '../constants/uri';
 import {parseJwt} from '../helpers/auth.helper';
 import {adminOnly} from './helpers';
 
@@ -22,7 +22,7 @@ class SmartSystemApi {
 
     async login(username, password, options = {}) {
         const {access_token, refresh_token} = await this.provider.post(
-            apiUrl.AUTH(),
+            apiUri.AUTH(),
             JSON.stringify({username, password}),
             options,
         );
@@ -43,7 +43,7 @@ class SmartSystemApi {
 
     async loginWithRefreshToken(refreshToken, options = {}) {
         const {access_token} = await this.provider.post(
-            apiUrl.AUTH_REFRESH(),
+            apiUri.AUTH_REFRESH(),
             {},
             {headers: {'Authorization': `Bearer ${refreshToken}`}},
         );
@@ -64,7 +64,7 @@ class SmartSystemApi {
 
     async logout(options = {}) {
         await this.provider.delete(
-            apiUrl.LOGOUT(),
+            apiUri.LOGOUT(),
             options,
         );
 
@@ -82,28 +82,28 @@ class SmartSystemApi {
 
     async getDevice(options = {}) {
         return this.provider.get(
-            apiUrl.DEVICES(),
+            apiUri.DEVICES(),
             options,
         );
     }
 
-    async getDeviceById(deviceId='', options = {}) {
+    async getDeviceById(deviceId, options = {}) {
         return this.provider.get(
-            apiUrl.DEVICES(deviceId),
+            apiUri.DEVICES(deviceId),
             options,
         );
     }
 
-    async getLineGroup(options = {}) {
+    async getGroup(options = {}) {
         return this.provider.get(
-            apiUrl.LIST_GROUPS(),
+            apiUri.GROUPS(),
             options,
         );
     }
 
-    async getLineGroupById(groupId='', options = {}) {
+    async getGroupLinesById(groupId, options = {}) {
         return this.provider.get(
-            apiUrl.LIST_GROUPS(groupId),
+            apiUri.GROUPS(groupId),
             options,
         );
     }

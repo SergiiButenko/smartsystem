@@ -7,17 +7,22 @@ import {userIsAdmin, userIsAuthenticated, userIsNotAuthenticated} from './helper
 
 import SignInPage from './components/SignInPage';
 import DevicesPage from './components/DevicesPage';
+import GroupsPage from './components/GroupsPage';
 import CssBaseline from '@material-ui/core/CssBaseline/CssBaseline';
+import DevicePage from './components/DevicePage';
+import GroupPage from './components/GroupPage';
 
 const App = () => {
     return (
         <BrowserRouter>
             <div>
                 <CssBaseline/>
-                <Route exact path="/" component={ userIsAuthenticated(DevicesPage) }/>
                 <Route exact path="/login" component={ userIsNotAuthenticated(SignInPage) }/>
-                <Route exact path="/device" component={ userIsAdmin(DevicesPage) }/>
-                <Route path="/device/:device_id" component={userIsAuthenticated(DevicesPage)}/>
+                <Route exact path="/" component={ userIsAuthenticated(GroupsPage) }/>
+                <Route exact path="/groups" component={ userIsAuthenticated(GroupsPage) }/>
+                <Route exact path="/groups/:group_id" component={ userIsAuthenticated(GroupPage) }/>
+                <Route exact path="/devices" component={ userIsAuthenticated(DevicesPage) }/>
+                <Route path="/devices/:device_id" component={userIsAuthenticated(DevicePage)}/>
             </div>
         </BrowserRouter>
     );

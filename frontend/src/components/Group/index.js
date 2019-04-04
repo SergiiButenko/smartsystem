@@ -2,16 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
+import { withRouter } from 'react-router-dom'
 
 import Grid from '@material-ui/core/Grid';
 
 import ControlCard from '../ControlCard/index';
-import {getDevices} from '../../selectors/devices';
-import {fetchDevices} from '../../actions/device';
+import {getGroups} from '../../selectors/groups';
+import {fetchGroupById} from '../../actions/group';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import Link from 'react-router-dom/Link';
-import {webUri} from '../../constants/uri';
+import {apiUri} from '../../constants/uri';
+import queryString from 'query-string'
 
 const styles = theme => ({
     card: {
@@ -54,38 +56,41 @@ const styles = theme => ({
 });
 
 const mapStateToProps = (state) => {
-    return getDevices(state);
+    return getGroups(state);
 };
 @withStyles(styles)
-@connect(mapStateToProps, {fetchDevices})
-export default class Devices extends React.Component {
+@withRouter
+@connect(mapStateToProps, {fetchGroupById})
+export default class Group extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        devices: PropTypes.object.isRequired,
+        groups: PropTypes.object.isRequired,
         loading: PropTypes.bool.isRequired,
-        deviceFetchError: PropTypes.any,
+        groupFetchError: PropTypes.any,
     };
 
     componentWillMount() {
-        this.props.fetchDevices();
+        this.props.fetchGroupById(params.groupId);
+    }
+
+    componentDidMount() {
+        const { match: { params } } = this.props;
+        console.log('user', params);
     }
 
     render() {
-        const {classes, loading, deviceFetchError, devices} = this.props;   
+        const {classes, loading, groupFetchError, groups} = this.props;
 
         if (loading) {
             return <PageSpinner/>;
         }
 
-        if (deviceFetchError) {
-            return <LoadingFailed errorText={deviceFetchError}/>;
+        if (groupFetchError) {
+            return <LoadingFailed errorText={groupFetchError}/>;
         }
 
         return (
-            <Link to={webUri.DEVICES("75308265-98aa-428b-aff6-a13beb5a3129")}>
-                <div><pre>{JSON.stringify(devices, null, 2) }</pre></div>
-            </Link>
-                
+            <div><pre>{JSON.stringify(groups["80122551-18bc-4846-9799-0b728324251c"], null, 2) }</pre></div>
         );
     }
 }

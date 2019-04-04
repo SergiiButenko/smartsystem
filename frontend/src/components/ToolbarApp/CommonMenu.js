@@ -28,18 +28,18 @@ export default class CommonMenu extends Component {
 
         return (
             <List>
-                <ListItem component={Link} to="/" button>
+                <ListItem component={Link} to="/groups" button>
                     <ListItemIcon>
                         <DashboardIcon/>
                     </ListItemIcon>
-                    <ListItemText primary="Полив"/>
+                    <ListItemText primary="Зони"/>
                 </ListItem>
 
-                <ListItem component={Link} to="/login" button>
+                <ListItem component={Link} to="/devices" button>
                     <ListItemIcon>
                         <Face/>
                     </ListItemIcon>
-                    <ListItemText primary="Login"/>
+                    <ListItemText primary="Пристрої"/>
                 </ListItem>
             </List>
         );
