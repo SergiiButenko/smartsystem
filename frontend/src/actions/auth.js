@@ -25,7 +25,7 @@ export function loginByAccessToken(refreshToken = getTokensIntoLocalStorage().re
         try {
             await smartSystemApi.loginWithRefreshToken(refreshToken);
             
-            setTokensIntoLocalStorage(smartSystemApi.user);            
+            setTokensIntoLocalStorage(smartSystemApi.user);
 
             dispatch(auth.success(smartSystemApi.user));
         } catch (e) {

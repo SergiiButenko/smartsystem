@@ -75,14 +75,35 @@ class SmartSystemApi {
         this.user = {name, accessToken, refreshToken, roles};
 
         this.provider.setMiddlewares([
-            tokenRefresh(),
+            tokenRefresh, // removed handler from tokenRefresh fucntion
             withAuth(),
         ]);
     }
 
-    async getDevice(deviceId='', lineId='', options = {}) {
+    async getDevice(options = {}) {
         return this.provider.get(
-            apiUrl.DEVICES(deviceId, lineId),
+            apiUrl.DEVICES(),
+            options,
+        );
+    }
+
+    async getDeviceById(deviceId='', options = {}) {
+        return this.provider.get(
+            apiUrl.DEVICES(deviceId),
+            options,
+        );
+    }
+
+    async getLineGroup(options = {}) {
+        return this.provider.get(
+            apiUrl.LIST_GROUPS(),
+            options,
+        );
+    }
+
+    async getLineGroupById(groupId='', options = {}) {
+        return this.provider.get(
+            apiUrl.LIST_GROUPS(groupId),
             options,
         );
     }

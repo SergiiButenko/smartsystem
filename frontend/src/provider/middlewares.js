@@ -24,13 +24,14 @@ export const globalErrorHandler = handler => (url, opts) => async next => {
 };
 
 
-export const tokenRefresh = handler => (url, opts) => async next => {
+export const tokenRefresh = (url, opts) => async next => {
+    const auth = store.getState().auth
 
-    let accessToken = store.getState().auth.user && parseJwt(store.getState().auth.user.accessToken);
-    let refreshing = store.getState().auth.refreshing;
+    const accessToken = auth.user && parseJwt(auth.user.accessToken);
+    let refreshing = auth.refreshing;
 
     if ( !refreshing && accessToken && isTokenExpired(accessToken) ) {
-        let refreshToken = store.getState().auth.user.refreshToken;
+        let refreshToken = auth.user.refreshToken;
         store.dispatch(loginByAccessToken(refreshToken));
     }
 
