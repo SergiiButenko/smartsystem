@@ -70,16 +70,12 @@ export default class Group extends React.Component {
     };
 
     componentWillMount() {
-        this.props.fetchGroupById(params.groupId);
-    }
-
-    componentDidMount() {
-        const { match: { params } } = this.props;
-        console.log('user', params);
+        console.log(this.props)
+        this.props.fetchGroupById(this.props.match.params.groupId);
     }
 
     render() {
-        const {classes, loading, groupFetchError, groups} = this.props;
+        const {classes, loading, groupFetchError, groups, match: {params}} = this.props;
 
         if (loading) {
             return <PageSpinner/>;
@@ -90,7 +86,7 @@ export default class Group extends React.Component {
         }
 
         return (
-            <div><pre>{JSON.stringify(groups["80122551-18bc-4846-9799-0b728324251c"], null, 2) }</pre></div>
+            <div><pre>{JSON.stringify(groups[params.groupId], null, 2) }</pre></div>
         );
     }
 }

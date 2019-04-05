@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
+import { withRouter } from 'react-router-dom'
 
 import Grid from '@material-ui/core/Grid';
 
@@ -55,6 +56,7 @@ const mapStateToProps = (state) => {
     return getDevices(state);
 };
 @withStyles(styles)
+@withRouter
 @connect(mapStateToProps, {fetchDeviceById})
 export default class Devices extends React.Component {
     static propTypes = {
@@ -65,11 +67,12 @@ export default class Devices extends React.Component {
     };
 
     componentWillMount() {
-        this.props.fetchDeviceById("75308265-98aa-428b-aff6-a13beb5a3129");
+        console.log(this.props)
+        this.props.fetchDeviceById(this.props.match.params.deviceId);
     }
 
     render() {
-        const {classes, loading, deviceFetchError, devices} = this.props;   
+        const {classes, loading, deviceFetchError, devices, match: {params}} = this.props;   
 
         if (loading) {
             return <PageSpinner/>;
@@ -80,7 +83,7 @@ export default class Devices extends React.Component {
         }
 
         return (
-            <div><pre>{JSON.stringify(devices["75308265-98aa-428b-aff6-a13beb5a3129"], null, 2) }</pre></div>
+            <div><pre>{JSON.stringify(params.deviceId, null, 2) }</pre></div>
         );
     }
 }

@@ -61,15 +61,16 @@ class Database:
         self.cursor.execute(q, (user_identity))
 
         records = self.cursor.fetchall()
-        devices = dict()
+        devices = list()
         for rec in records:
-            devices[rec["id"]] = Device(
+            devices.append(Device(
                 device_id=rec["id"],
                 name=rec["name"],
                 description=rec["description"],
                 settings=rec["settings"],
-            ).to_json()
+            ).to_json())
 
+        devices.sort(key=lambda e: e["name"])
         return devices
 
     def get_actuator_lines(self, device_id, line_id, user_identity):
@@ -131,14 +132,15 @@ class Database:
         self.cursor.execute(q, (user_identity))
 
         records = self.cursor.fetchall()
-        groups = dict()
+        groups = list()
         for rec in records:
-            groups[rec["id"]] = Group(
+            groups.append(Group(
                 group_id=rec["id"],
                 name=rec["name"],
                 description=rec["description"],
-            ).to_json()
+            ).to_json())
 
+        groups.sort(key=lambda e: e["name"])
         return groups
 
     def get_group_lines(self, user_identity, group_id):

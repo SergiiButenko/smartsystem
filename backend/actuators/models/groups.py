@@ -17,15 +17,15 @@ groups = Blueprint("groups", __name__)
 
 @groups.route("/", methods=["GET"])
 @groups.route("/<string:group_id>", methods=["GET"])
-# @jwt_required
+@jwt_required
 def groups_route(group_id=None):
     cr_user = get_jwt_identity()
 
-    return jsonify(Db.get_groups(group_id=group_id, user_identity=cr_user))
+    return jsonify(groups=Db.get_groups(group_id=group_id, user_identity=cr_user))
 
 
 @groups.route("/<string:group_id>/lines", methods=["GET"])
-# @jwt_required
+@jwt_required
 def groups_lines_route(group_id):
     cr_user = get_jwt_identity()
 
@@ -33,4 +33,4 @@ def groups_lines_route(group_id):
     for group_id, group in groups.items():
         groups[group_id]["lines"] = Db.get_group_lines(group_id=group_id, user_identity=cr_user)
 
-    return jsonify(groups)
+    return jsonify(groups=groups)

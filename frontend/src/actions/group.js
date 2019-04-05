@@ -1,6 +1,6 @@
 import {createActions} from 'redux-actions';
 import {smartSystemApi} from '../provider';
-import {devices} from './device';
+import {arrayToObj} from "../helpers/common.helper";
 
 const actions = createActions(
     {
@@ -20,12 +20,15 @@ const actions = createActions(
 
 export const {groups, entity} = actions;
 
+const groupKey = 'groups';
+
 export const fetchGroups = () => {
     return async dispatch => {
         dispatch(groups.loading(true));
 
         try {
-            const groups_input = await smartSystemApi.getGroup();
+            let groups_input = await smartSystemApi.getGroup();
+            groups_input = arrayToObj(groups_input[groupKey]);
             dispatch(entity.groups.updateBatch(groups_input));
         }
         catch (e) {
@@ -42,8 +45,8 @@ export const fetchGroupById = (groupId) => {
         try {
 
             const groups_input = await smartSystemApi.getGroupLinesById(groupId);
-            let first = Object.keys(groups_input)
-            dispatch(entity.groups.set(groups_input[first]));
+            let first = groups_input[groupKey][0];
+            dispatch(entity.groups.set(first));
         }
         catch (e) {
             dispatch(groups.failure(e));
