@@ -31,7 +31,7 @@ def devices_lines_route(device_id, line_id=None):
     cr_user = get_jwt_identity()
 
     devices = Db.get_devices(device_id=device_id, user_identity=cr_user)
-    for device_id, device in devices.items():
-        devices[device_id]["lines"] = Db.get_actuator_lines(device_id=device_id, line_id=line_id, user_identity=cr_user)
+    for device in devices:
+        device["lines"] = Db.get_actuator_lines(device_id=device['id'], line_id=line_id, user_identity=cr_user)
 
     return jsonify(devices=devices)

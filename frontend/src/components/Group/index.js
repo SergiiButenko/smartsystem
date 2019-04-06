@@ -4,56 +4,22 @@ import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom'
 
-import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
-import ControlCard from '../ControlCard/index';
 import {getGroups} from '../../selectors/groups';
 import {fetchGroupById} from '../../actions/group';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
-import Link from 'react-router-dom/Link';
-import {apiUri} from '../../constants/uri';
-import queryString from 'query-string'
 
 const styles = theme => ({
-    card: {
-        minWidth: 275,
-        marginBottom: theme.spacing.unit,
-    },
-    content: {
-        minWidth: 275,
-        marginBottom: 0,
-        paddingBottom: theme.spacing.unit - 8,
-    },
-    title: {
-        marginBottom: 5,
-        fontSize: '1.5rem',
-    },
-    pos: {
-        marginBottom: 12,
-    },
-    button_float: {
-        margin: theme.spacing.unit,
-        position: 'fixed',
-        width: '80px',
-        height: '60px',
-        bottom: '20px',
-        right: '20px',
-    },
-    extendedIcon: {
-        marginRight: theme.spacing.unit,
-    },
-    content_main: {
-        flexGrow: 1,
-        padding: theme.spacing.unit * 3,
-        height: '100vh',
-        overflow: 'auto',
-    },
-    appBarSpacer: theme.mixins.toolbar,
     root: {
-        display: 'flex',
+      ...theme.mixins.gutters(),
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      width: '100%',
     },
-});
+  });
 
 const mapStateToProps = (state) => {
     return getGroups(state);
@@ -76,6 +42,7 @@ export default class Group extends React.Component {
 
     render() {
         const {classes, loading, groupFetchError, groups, match: {params}} = this.props;
+        const groupDetails = groups[params.groupId];
 
         if (loading) {
             return <PageSpinner/>;
@@ -86,7 +53,18 @@ export default class Group extends React.Component {
         }
 
         return (
-            <div><pre>{JSON.stringify(groups[params.groupId], null, 2) }</pre></div>
+            <>
+            <Paper className={classes.root} elevation={1}>
+            <Grid container spacing={24}>
+                <Typography variant="h5" component="h3">
+                {groupDetails.name}
+                </Typography>
+                <Typography component="p">
+                {groupDetails.description}
+                </Typography>
+
+            </Paper>
+            </>
         );
     }
 }

@@ -83,6 +83,9 @@ def refresh():
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
 
+    redis.set(
+        access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2
+    )
 
     ret = {"access_token": access_token}
 

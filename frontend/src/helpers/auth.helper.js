@@ -48,8 +48,9 @@ export const parseJwt = (token) => {
 export const isTokenExpired = (accessToken) => {
     let now = new Date();
     let dt = Math.floor( (now.getTime() + now.getTimezoneOffset() * 60 ) / 1000 );
-
-    return accessToken.exp  <= dt;
+    console.log(accessToken.exp)
+    console.log(dt)
+    return accessToken.exp <= dt;
 };
 
 export const setLocalStrorage = (k, v) => {

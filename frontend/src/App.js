@@ -20,9 +20,9 @@ const App = () => {
                 <Route exact path="/login" component={ userIsNotAuthenticated(SignInPage) }/>
                 <Route exact path="/" component={ userIsAuthenticated(GroupsPage) }/>
                 <Route exact path="/groups" component={ userIsAuthenticated(GroupsPage) }/>
-                <Route exact path="/groups/:group_id" component={ userIsAuthenticated(GroupPage) }/>
+                <Route exact path="/groups/:groupId" component={ userIsAuthenticated(GroupPage) }/>
                 <Route exact path="/devices" component={ userIsAuthenticated(DevicesPage) }/>
-                <Route path="/devices/:device_id" component={userIsAuthenticated(DevicePage)}/>
+                <Route path="/devices/:deviceId" component={userIsAuthenticated(DevicePage)}/>
             </div>
         </BrowserRouter>
     );

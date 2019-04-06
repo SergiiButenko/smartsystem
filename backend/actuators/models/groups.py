@@ -30,7 +30,7 @@ def groups_lines_route(group_id):
     cr_user = get_jwt_identity()
 
     groups = Db.get_groups(group_id=group_id, user_identity=cr_user)
-    for group_id, group in groups.items():
-        groups[group_id]["lines"] = Db.get_group_lines(group_id=group_id, user_identity=cr_user)
+    for group in groups:
+        group["lines"] = Db.get_group_lines(group_id=group['id'], user_identity=cr_user)
 
     return jsonify(groups=groups)

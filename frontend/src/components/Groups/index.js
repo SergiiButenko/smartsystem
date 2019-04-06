@@ -82,13 +82,21 @@ export default class Groups extends React.Component {
         }
 
         return (
-            for (let id in groups) {
-                <Link to={webUri.GROUPS(id)}>
-                    <div>
-                        <pre>{JSON.stringify(groups[id], null, 2)}</pre>
-                    </div>
-                </Link>
-            }
+            <>
+                {
+                    Object.keys(groups).map(function (id, index) {
+                        return (
+                            <Link to={webUri.GROUPS(id)}>
+                                <div>
+                                    <pre>{JSON.stringify(groups[id], null, 2)}</pre>
+                                    ;
+                                </div>
+                            </Link>
+                        )
+                    })
+                }
+
+            </>
         )
     }
 }

@@ -82,13 +82,21 @@ export default class Devices extends React.Component {
         }
 
         return (
-            for (let id in devices) {
-                <Link to={webUri.GROUPS(id)}>
-                    <div>
-                        <pre>{JSON.stringify(devices[id], null, 2)}</pre>
-                    </div>
-                </Link>
-            }
+           <>
+               {
+                   Object.keys(devices).map(function (id, index) {
+                   return (
+                       <Link to={webUri.DEVICES(id)}>
+                           <div>
+                               <pre>{JSON.stringify(devices[id], null, 2)}</pre>
+                               ;
+                           </div>
+                       </Link>
+                   )
+                   })
+               }
+
+           </>
         )
     }
 }
