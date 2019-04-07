@@ -4,51 +4,23 @@ import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom'
 
-import Grid from '@material-ui/core/Grid';
 
-import ControlCard from '../ControlCard/index';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import { Button } from '@material-ui/core';
+
 import {getDevices} from '../../selectors/devices';
 import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 
 const styles = theme => ({
-    card: {
-        minWidth: 275,
-        marginBottom: theme.spacing.unit,
-    },
-    content: {
-        minWidth: 275,
-        marginBottom: 0,
-        paddingBottom: theme.spacing.unit - 8,
-    },
-    title: {
-        marginBottom: 5,
-        fontSize: '1.5rem',
-    },
-    pos: {
-        marginBottom: 12,
-    },
-    button_float: {
-        margin: theme.spacing.unit,
-        position: 'fixed',
-        width: '80px',
-        height: '60px',
-        bottom: '20px',
-        right: '20px',
-    },
-    extendedIcon: {
-        marginRight: theme.spacing.unit,
-    },
-    content_main: {
-        flexGrow: 1,
-        padding: theme.spacing.unit * 3,
-        height: '100vh',
-        overflow: 'auto',
-    },
-    appBarSpacer: theme.mixins.toolbar,
     root: {
-        display: 'flex',
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
+        width: '100%',
     },
 });
 
@@ -67,12 +39,12 @@ export default class Devices extends React.Component {
     };
 
     componentWillMount() {
-        console.log(this.props)
         this.props.fetchDeviceById(this.props.match.params.deviceId);
     }
 
     render() {
         const {classes, loading, deviceFetchError, devices, match: {params}} = this.props;   
+        const device = devices[params.deviceId];
 
         if (loading) {
             return <PageSpinner/>;
@@ -83,7 +55,29 @@ export default class Devices extends React.Component {
         }
 
         return (
-            <div><pre>{JSON.stringify(params.deviceId, null, 2) }</pre></div>
+            <>
+            <Paper className={classes.root} elevation={1}>
+                <Grid container spacing={24}>
+                    <Grid item xs={8}>
+                        <Typography variant="h5" component="h3">
+                            {device.name}
+                        </Typography>
+                        <Typography component="p">
+                            {device.description}
+                        </Typography>
+                        <Typography component="p">
+                        <pre>{JSON.stringify(device.settings, null, 2) }</pre>
+                        </Typography>
+
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button>
+                            Почати полив
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Paper>
+            </>
         );
     }
 }

@@ -48,8 +48,6 @@ export const parseJwt = (token) => {
 export const isTokenExpired = (accessToken) => {
     let now = new Date();
     let dt = Math.floor( (now.getTime() + now.getTimezoneOffset() * 60 ) / 1000 );
-    console.log(accessToken.exp)
-    console.log(dt)
     return accessToken.exp <= dt;
 };
 
