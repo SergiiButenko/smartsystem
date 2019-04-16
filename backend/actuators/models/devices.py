@@ -16,22 +16,19 @@ devices = Blueprint("devices", __name__)
 
 
 @devices.route("/", methods=["GET"])
-@devices.route("/<string:device_id>", methods=["GET"])
 @jwt_required
-def devices_route(device_id=None):
+def devices_route(device_id=None, line_id=None):
     cr_user = get_jwt_identity()
 
     return jsonify(devices=Db.get_devices(device_id=device_id, user_identity=cr_user))
 
-
-@devices.route("/<string:device_id>/lines", methods=["GET"])
-@devices.route("/<string:device_id>/lines/<string:line_id>", methods=["GET"])
+@devices.route("/<string:device_id>", methods=["GET"])
 @jwt_required
 def devices_lines_route(device_id, line_id=None):
     cr_user = get_jwt_identity()
 
     devices = Db.get_devices(device_id=device_id, user_identity=cr_user)
     for device in devices:
-        device["lines"] = Db.get_actuator_lines(device_id=device['id'], line_id=line_id, user_identity=cr_user)
+        device["lines"] = Db.get_device_lines(device_id=device['id'], line_id=line_id, user_identity=cr_user)
 
     return jsonify(devices=devices)

@@ -13,6 +13,8 @@ import {getGroups} from '../../selectors/groups';
 import {fetchGroupById} from '../../actions/group';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
+import {webUri} from '../../constants/uri';
+import Link from 'react-router-dom/Link';
 
 
 const styles = theme => ({
@@ -77,13 +79,16 @@ export default class Group extends React.Component {
                     </Paper>
                 </Grid>
 
-                {group.lines.map((item, i) => {
+                {group.devices.map((device, i) => {
+
                     return (
-                        <Grid item xs={12}>
-                            <pre key={i}>
-                                {JSON.stringify(item, null, 2) }
-                            </pre>
-                        </Grid>
+                        <Link to={webUri.DEVICES(device.id)}>
+                            <Grid item xs={12}>
+                                <pre key={i}>
+                                    {JSON.stringify(device, null, 2)}
+                                </pre>
+                            </Grid>
+                        </Link>
                     );
                 })}
             

@@ -29,7 +29,6 @@ export const fetchDevices = () => {
         try {
             let devices_input = await smartSystemApi.getDevice();
             devices_input = arrayToObj(devices_input[deviceKey]);
-            console.log(devices_input)
             dispatch(entity.devices.updateBatch(devices_input));
         }
         catch (e) {
@@ -47,7 +46,6 @@ export const fetchDeviceById = (deviceId) => {
         try {
 
             const devices_input = await smartSystemApi.getDeviceById(deviceId);
-            console.log(devices_input)
             let first = devices_input[deviceKey][0];
 
             dispatch(entity.devices.set(first));

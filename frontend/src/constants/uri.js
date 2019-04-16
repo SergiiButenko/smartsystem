@@ -1,8 +1,8 @@
 export const apiUri = {
-	GROUPS: (groupId='') => 'api/v1/groups/' + (groupId
-    		? `${groupId}/lines`
+    GROUPS: (groupId='') => 'api/v1/groups/' + (groupId
+    		? `${groupId}`
 	    	: ''),
-    DEVICES: (deviceId='') => 'api/v1/devices/' + (deviceId 
+    DEVICES: (deviceId='') => 'api/v1/devices/' + (deviceId
     		? `${deviceId}`
 	    	: ''),
     AUTH: () => 'api/v1/auth/login',

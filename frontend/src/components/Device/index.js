@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 
 import Paper from '@material-ui/core/Paper';
@@ -14,6 +14,8 @@ import {getDevices} from '../../selectors/devices';
 import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
+import Link from 'react-router-dom/Link';
+import {webUri} from '../../constants/uri';
 
 const styles = theme => ({
     root: {
@@ -56,6 +58,8 @@ export default class Devices extends React.Component {
 
         return (
             <>
+            <Grid container spacing={24}>
+            <Grid item xs={12}>
             <Paper className={classes.root} elevation={1}>
                 <Grid container spacing={24}>
                     <Grid item xs={8}>
@@ -66,7 +70,7 @@ export default class Devices extends React.Component {
                             {device.description}
                         </Typography>
                         <Typography component="p">
-                        <pre>{JSON.stringify(device.settings, null, 2) }</pre>
+                            <pre>{JSON.stringify(device.settings, null, 2) }</pre>
                         </Typography>
 
                     </Grid>
@@ -77,6 +81,19 @@ export default class Devices extends React.Component {
                     </Grid>
                 </Grid>
             </Paper>
+            </Grid>
+
+            {device.lines.map((line, i) => {
+                    return (     
+                            <Grid item xs={12}>
+                                <pre key={i}>
+                                    {JSON.stringify(line, null, 2)}
+                                </pre>
+                            </Grid>
+                    );
+                })}
+
+                </Grid>
             </>
         );
     }

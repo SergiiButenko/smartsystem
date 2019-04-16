@@ -73,7 +73,7 @@ class Database:
         devices.sort(key=lambda e: e["name"])
         return devices
 
-    def get_actuator_lines(self, device_id, line_id, user_identity):
+    def get_device_lines(self, device_id, line_id, user_identity):
         line = ""
         if line_id is not None:
             line = " and line_id = '{line_id}'".format(line_id=line_id)
@@ -143,34 +143,27 @@ class Database:
         groups.sort(key=lambda e: e["name"])
         return groups
 
-    def get_group_lines(self, user_identity, group_id):
+    def get_group_devices(self, user_identity, group_id):
         group = ""
         if group_id is not None:
             group = " and group_id = '{group_id}'".format(group_id=group_id)
 
         q = """
             select
-            l.id, l.name, l.description,
+            d.id, d.name, d.description,
             jsonb_object_agg(setting, value) as settings
-            from line_settings as s
-            join lines as l on s.line_id = l.id
-            where l.id in (
-            select line_id from line_device where device_id in (
-                    select device_id from device_user where user_id in (
-                        select id from users where name = '{user_identity}'
-                    )
-                )
-            )
-            and l.id in (
-                select line_id from devices where id in (
-                    select device_id from device_groups where device_id in (
+            from device_settings as s
+            join devices as d on s.device_id = d.id
+            where s.device_id in (
+            select id from devices where id in (
+                select device_id from device_groups where device_id in (
                         select device_id from device_user where user_id in (
                             select id from users where name = '{user_identity}'
                         )
                     ) {group}
-                )
+                ) 
             )
-            group by l.id
+            group by d.id
             """.format(
             group=group,
             user_identity='admin',
@@ -182,8 +175,8 @@ class Database:
         lines = list()
         for rec in records:
             lines.append(
-                Line(
-                    line_id=rec["id"],
+                Device(
+                    device_id=rec["id"],
                     name=rec["name"],
                     description=rec["description"],
                     settings=rec["settings"],

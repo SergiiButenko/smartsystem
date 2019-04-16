@@ -95,7 +95,6 @@ export default class Devices extends React.Component {
                    )
                    })
                }
-
            </>
         )
     }

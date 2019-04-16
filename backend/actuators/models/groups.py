@@ -16,21 +16,20 @@ groups = Blueprint("groups", __name__)
 
 
 @groups.route("/", methods=["GET"])
-@groups.route("/<string:group_id>", methods=["GET"])
 @jwt_required
-def groups_route(group_id=None):
+def groups_route():
     cr_user = get_jwt_identity()
 
-    return jsonify(groups=Db.get_groups(group_id=group_id, user_identity=cr_user))
+    return jsonify(groups=Db.get_groups(group_id=None, user_identity=cr_user))
 
 
-@groups.route("/<string:group_id>/lines", methods=["GET"])
+@groups.route("/<string:group_id>", methods=["GET"])
 @jwt_required
 def groups_lines_route(group_id):
     cr_user = get_jwt_identity()
 
     groups = Db.get_groups(group_id=group_id, user_identity=cr_user)
     for group in groups:
-        group["lines"] = Db.get_group_lines(group_id=group['id'], user_identity=cr_user)
+        group["devices"] = Db.get_group_devices(group_id=group['id'], user_identity=cr_user)
 
     return jsonify(groups=groups)
