@@ -56,7 +56,8 @@ def activate_lines(device_id):
 	# device_exists wrapper exclude device is none
 	device = Db.get_devices(device_id=device_id, user_identity=cr_user)[0]
 	for line in income_json['lines'].items():
-		rule = Rule(device=device, **line)
+		rule = Rule(device=device, start_time=start_time || None, **line)
+		start_time = rule.next_rule_start_time()
 	
 	
 		
