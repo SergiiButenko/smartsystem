@@ -2,13 +2,14 @@ class GeneralError(Exception):
     def_code = 400
     def_message = "Invalid request"
 
-    def __init__(self, message=def_message, code=def_code, payload=None):
+    def __init__(self, message=def_message, code=def_code, description=''):
         Exception.__init__(self)
         self.message = message
         self.code = code
-        self.payload = payload
+        self.description = description
 
     def to_dict(self):
-        rv = dict(self.payload or ())
-        rv["message"] = self.message
-        return rv
+        return dict(message=self.message,
+            code=self.code,
+            description=self.description
+            )

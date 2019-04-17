@@ -1,4 +1,6 @@
 from common.errors.common_errors import handle_common_errors
+from common.errors import * 
+
 from common.config.config import *
 from flask import Flask
 from flask_jwt_extended import (
@@ -78,4 +80,17 @@ def admin_required(fn):
         else:
             return fn(*args, **kwargs)
 
+    return wrapper
+
+
+def check_device(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        device_id=kwargs['device_id']
+        device = Db.get_devices(device_id=device_id, user_identity=get_jwt_identity())
+        if len(device) == 0:
+            raise GeneralError(message='Device {} does not exists'.format(device_id))
+        if len(device) > 1:
+            raise GeneralError(message='Device {} has multiple database records'.format(device_id))
+        return f(*args, **kwargs)
     return wrapper
