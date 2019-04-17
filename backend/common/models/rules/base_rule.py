@@ -1,6 +1,6 @@
 class BaseRule:
     
-    def __init__(self, rule_type, line_id, time, iterations, time_sleep):
+    def __init__(self, rule_type, line_id, time, iterations=1, time_sleep=0):
         self.rule_type=rule_type
         self.line_id=line_id
         self.time=time

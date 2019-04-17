@@ -12,7 +12,22 @@ services:
     depends_on:
       - redis
       - postgres
+      - planner
     command: /usr/local/bin/gunicorn actuators.app:app -w 1 -t 90 -b 0.0.0.0:5000
+
+  planner:
+    build:
+      context: .
+      dockerfile: PlannerDockerfile
+    container_name: planner
+    networks:
+      - backend
+    expose:
+      - 5001
+    depends_on:
+      - redis
+      - postgres
+    command: /usr/local/bin/gunicorn planner.app:app -w 1 -t 90 -b 0.0.0.0:5001
 
   web:
     build:
