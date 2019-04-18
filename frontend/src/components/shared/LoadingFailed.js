@@ -33,12 +33,26 @@ export default class LoadingFailed extends Component {
                         variant='h5'
                         style={{'marginTop': '5rem'}}
                     >
-                        Помилка при завантаженні. Причина: "{errorText.message || 'Сталася помилка'}"
+                        Помилка при завантаженні.
+                    </Typography>
+
+
+                    <Typography
+                        color="error"
+                        variant='h6'>
+                        Повідомлення: "{errorText.message || 'Сталася помилка'}" {"\n"}
                     </Typography>
 
                     <Typography
                         color="error"
-                        variant='h5'>
+                        variant='h6'>
+                        Деталі: "{errorText.description || ''}"
+                    </Typography>
+
+                    <Typography
+                        color="error"
+                        variant='h5'
+                        style={{'marginTop': '1rem'}}>
                         <ContactSupport upper={true}/>
                     </Typography>
                 </div>

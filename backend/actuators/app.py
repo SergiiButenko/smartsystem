@@ -7,7 +7,6 @@ jwt = create_jwt(app)
 app.register_blueprint(devices, url_prefix="/v1/devices")
 app.register_blueprint(auth, url_prefix="/v1/auth")
 app.register_blueprint(groups, url_prefix="/v1/groups")
-app.register_blueprint(test, url_prefix="/v1/test")
 
 
 if __name__ == "__main__":

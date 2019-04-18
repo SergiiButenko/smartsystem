@@ -63,14 +63,16 @@ class Database:
         records = self.cursor.fetchall()
         devices = list()
         for rec in records:
-            devices.append(Device(
-                device_id=rec["id"],
-                name=rec["name"],
-                description=rec["description"],
-                settings=rec["settings"],
-            ).to_json())
+            devices.append(
+                Device(
+                    device_id=rec["id"],
+                    name=rec["name"],
+                    description=rec["description"],
+                    settings=rec["settings"],
+                )
+            )
 
-        devices.sort(key=lambda e: e["name"])
+        devices.sort(key=lambda e: e.name)
         return devices
 
     def get_device_lines(self, device_id, line_id, user_identity):
@@ -105,10 +107,10 @@ class Database:
                     name=rec["name"],
                     description=rec["description"],
                     settings=rec["settings"],
-                ).to_json()
+                )
             )
 
-        lines.sort(key=lambda e: e["name"])
+        lines.sort(key=lambda e: e.name)
         return lines
 
     def get_groups(self, user_identity, group_id):
@@ -134,13 +136,15 @@ class Database:
         records = self.cursor.fetchall()
         groups = list()
         for rec in records:
-            groups.append(Group(
-                group_id=rec["id"],
-                name=rec["name"],
-                description=rec["description"],
-            ).to_json())
+            groups.append(
+                Group(
+                    group_id=rec["id"],
+                    name=rec["name"],
+                    description=rec["description"],
+                )
+            )
 
-        groups.sort(key=lambda e: e["name"])
+        groups.sort(key=lambda e: e.name)
         return groups
 
     def get_group_devices(self, user_identity, group_id):
@@ -180,10 +184,10 @@ class Database:
                     name=rec["name"],
                     description=rec["description"],
                     settings=rec["settings"],
-                ).to_json()
+                )
             )
 
-        lines.sort(key=lambda e: e["name"])
+        lines.sort(key=lambda e: e.name)
         return lines
 
 Db = Database()

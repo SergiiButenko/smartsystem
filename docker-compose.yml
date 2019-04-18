@@ -12,7 +12,6 @@ services:
     depends_on:
       - redis
       - postgres
-      - planner
     command: /usr/local/bin/gunicorn actuators.app:app -w 1 -t 90 -b 0.0.0.0:5000
 
   web:

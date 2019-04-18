@@ -4,16 +4,18 @@
 
 
 class Group:
-    def __init__(self, group_id, name, description):
+    def __init__(self, group_id, name, description, devices=[]):
         self.group_id = group_id
         self.name = name
         self.description = description
+        self.devices = devices
 
     def to_json(self):
         return {
             "id": self.group_id,
             "name": self.name,
             "description": self.description,
+            "devices": self.devices,
         }
 
     serialize = to_json

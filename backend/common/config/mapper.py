@@ -1,0 +1,2 @@
+class DeviceToRuleType():
+	PERIODIC = 'actuator'

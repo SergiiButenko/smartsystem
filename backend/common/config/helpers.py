@@ -2,22 +2,30 @@ from common.errors.common_errors import handle_common_errors
 from common.errors import * 
 
 from common.config.config import *
-from flask import Flask
+from flask.json import JSONEncoder
+from flask import (
+    Flask,
+    jsonify,
+    request,
+)
 from flask_jwt_extended import (
     JWTManager,
-    create_access_token,
-    create_refresh_token,
-    get_jti,
     get_jwt_claims,
     get_jwt_identity,
-    get_raw_jwt,
-    jwt_refresh_token_required,
-    jwt_required,
     verify_jwt_in_request,
 )
 from functools import wraps
 import logging
+
 from common.resources import Db, redis
+from werkzeug.exceptions import BadRequest
+from werkzeug.routing import ValidationError
+
+from common.errors import GeneralError, NoJson, JsonMalformed
+
+from common.resources.rules_factory.periodic_rule import PeriodicRule
+from common.models import Device, User, Line, Group
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,6 +35,7 @@ def create_app(name):
     app = Flask(name)
 
     app = handle_common_errors(app)
+    app.json_encoder = CustomJSONEncoder
 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = REFRESH_EXPIRES
@@ -89,8 +98,53 @@ def check_device(f):
         device_id=kwargs['device_id']
         device = Db.get_devices(device_id=device_id, user_identity=get_jwt_identity())
         if len(device) == 0:
-            raise GeneralError(message='Device {} does not exists'.format(device_id))
+            raise GeneralError(message='Device {} d'
+                                       ''
+                                       ''
+                                       ''
+                                       'oes not exists'.format(device_id))
         if len(device) > 1:
             raise GeneralError(message='Device {} has multiple database records'.format(device_id))
         return f(*args, **kwargs)
     return wrapper
+
+
+def validate_json(f):
+    @wraps(f)
+    def wrapper(*args, **kw):
+        try:
+            if request.is_json is False:
+                raise NoJson()
+
+            request.json
+        except BadRequest as e:
+            raise JsonMalformed(message="Payload must be a valid json")
+        return f(*args, **kw)
+    return wrapper
+
+
+def validate_schema(schema_name):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kw):
+            try:
+                #validate(request.json, current_app.config[schema_name])
+                pass
+            except ValidationError as e:
+                return jsonify({"error": e.message}), 400
+            return f(*args, **kw)
+        return wrapper
+    return decorator
+
+
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, (PeriodicRule, Device, Group, Line, User)):
+                return obj.serialize()
+            iterable = iter(obj)
+        except TypeError as e:
+            logger.error(e)
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
