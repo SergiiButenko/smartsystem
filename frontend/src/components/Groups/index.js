@@ -5,51 +5,18 @@ import {connect} from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
 
-import ControlCard from '../ControlCard/index';
 import {getGroups} from '../../selectors/groups';
 import {fetchGroups} from '../../actions/group';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
-import Link from 'react-router-dom/Link';
-import {apiUri, webUri} from '../../constants/uri';
+import GroupCard from './GroupCard';
 
 const styles = theme => ({
-    card: {
-        minWidth: 275,
-        marginBottom: theme.spacing.unit,
-    },
-    content: {
-        minWidth: 275,
-        marginBottom: 0,
-        paddingBottom: theme.spacing.unit - 8,
-    },
-    title: {
-        marginBottom: 5,
-        fontSize: '1.5rem',
-    },
-    pos: {
-        marginBottom: 12,
-    },
-    button_float: {
-        margin: theme.spacing.unit,
-        position: 'fixed',
-        width: '80px',
-        height: '60px',
-        bottom: '20px',
-        right: '20px',
-    },
-    extendedIcon: {
-        marginRight: theme.spacing.unit,
-    },
-    content_main: {
-        flexGrow: 1,
-        padding: theme.spacing.unit * 3,
-        height: '100vh',
-        overflow: 'auto',
-    },
-    appBarSpacer: theme.mixins.toolbar,
     root: {
-        display: 'flex',
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
+        width: '100%',
     },
 });
 
@@ -71,7 +38,7 @@ export default class Groups extends React.Component {
     }
 
     render() {
-        const {classes, loading, groupFetchError, groups} = this.props;
+        const {loading, groupFetchError, groups} = this.props;
 
         if (loading) {
             return <PageSpinner/>;
@@ -83,20 +50,18 @@ export default class Groups extends React.Component {
 
         return (
             <>
-                {
-                    Object.keys(groups).map(function (id, index) {
-                        return (
-                            <Link to={webUri.GROUPS(id)}>
-                                <div>
-                                    <pre>{JSON.stringify(groups[id], null, 2)}</pre>
-                                    ;
-                                </div>
-                            </Link>
-                        )
-                    })
-                }
-
+                <Grid container spacing={24}>
+                    {
+                        Object.keys(groups).map(function (id, index) {
+                            return (
+                                <Grid item xs={12}>
+                                    <GroupCard group={groups[id]}/>
+                                </Grid>
+                            );
+                        })
+                    }
+                </Grid>
             </>
-        )
+        );
     }
 }

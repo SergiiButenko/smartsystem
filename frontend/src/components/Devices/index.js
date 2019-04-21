@@ -12,6 +12,7 @@ import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import Link from 'react-router-dom/Link';
 import {webUri} from '../../constants/uri';
+import DeviceCard from '../shared/cards/DeviceCard';
 
 const styles = theme => ({
     card: {
@@ -83,19 +84,18 @@ export default class Devices extends React.Component {
 
         return (
            <>
-               {
-                   Object.keys(devices).map(function (id, index) {
-                   return (
-                       <Link to={webUri.DEVICES(id)}>
-                           <div>
-                               <pre>{JSON.stringify(devices[id], null, 2)}</pre>
-                               ;
-                           </div>
-                       </Link>
-                   )
-                   })
-               }
+               <Grid container spacing={24}>
+                   {
+                       Object.keys(devices).map(function (id, index) {
+                           return (
+                               <Grid item xs={12}>
+                                   <DeviceCard device={devices[id]}/>
+                               </Grid>
+                           );
+                       })
+                   }
+               </Grid>
            </>
-        )
+        );
     }
 }

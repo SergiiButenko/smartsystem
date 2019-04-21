@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +15,7 @@ import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import {webUri} from '../../constants/uri';
 import Link from 'react-router-dom/Link';
+import DeviceCard from '../shared/cards/DeviceCard';
 
 
 const styles = theme => ({
@@ -72,7 +73,7 @@ export default class Group extends React.Component {
                             </Grid>
                             <Grid item xs={4}>
                                 <Button>
-                            Почати полив
+                            Налаштування
                                 </Button>
                             </Grid>
                         </Grid>
@@ -80,15 +81,10 @@ export default class Group extends React.Component {
                 </Grid>
 
                 {group.devices.map((device, i) => {
-
                     return (
-                        <Link to={webUri.DEVICES(device.id)}>
-                            <Grid item xs={12}>
-                                <pre key={i}>
-                                    {JSON.stringify(device, null, 2)}
-                                </pre>
-                            </Grid>
-                        </Link>
+                        <Grid item xs={12}>
+                            <DeviceCard device={device}/>
+                        </Grid>
                     );
                 })}
             

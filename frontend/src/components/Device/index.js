@@ -14,8 +14,6 @@ import {getDevices} from '../../selectors/devices';
 import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
-import Link from 'react-router-dom/Link';
-import {webUri} from '../../constants/uri';
 
 const styles = theme => ({
     root: {
@@ -59,41 +57,41 @@ export default class Devices extends React.Component {
         return (
             <>
             <Grid container spacing={24}>
-            <Grid item xs={12}>
-            <Paper className={classes.root} elevation={1}>
-                <Grid container spacing={24}>
-                    <Grid item xs={8}>
-                        <Typography variant="h5" component="h3">
-                            {device.name}
-                        </Typography>
-                        <Typography component="p">
-                            {device.description}
-                        </Typography>
-                        <Typography component="p">
-                            <pre>{JSON.stringify(device.settings, null, 2) }</pre>
-                        </Typography>
+                <Grid item xs={12}>
+                    <Paper className={classes.root} elevation={1}>
+                        <Grid container spacing={24}>
+                            <Grid item xs={8}>
+                                <Typography variant="h5" component="h3">
+                                    {device.name}
+                                </Typography>
+                                <Typography component="p">
+                                    {device.description}
+                                </Typography>
+                                <Typography component="p">
+                                    <pre>{JSON.stringify(device.settings, null, 2) }</pre>
+                                </Typography>
 
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Button>
-                            Почати полив
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Paper>
-            </Grid>
-
-            {device.lines.map((line, i) => {
-                    return (     
-                            <Grid item xs={12}>
-                                <pre key={i}>
-                                    {JSON.stringify(line, null, 2)}
-                                </pre>
                             </Grid>
+                            <Grid item xs={4}>
+                                <Button>
+                            Почати полив
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+
+                {device.lines.map((line, i) => {
+                    return (     
+                        <Grid item xs={12}>
+                            <pre key={i}>
+                                {JSON.stringify(line, null, 2)}
+                            </pre>
+                        </Grid>
                     );
                 })}
 
-                </Grid>
+            </Grid>
             </>
         );
     }
