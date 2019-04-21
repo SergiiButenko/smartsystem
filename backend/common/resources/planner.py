@@ -7,20 +7,30 @@ logger = logging.getLogger(__name__)
 
 
 class Planner():
-	"""docstring for Planner"""
-	def __init__(self):
-		pass
+    """docstring for Planner"""
 
-	def add_rules(self, device_id, lines, user_identity):
-		# check input
-		# form transaction with marker removal
-		# return ids
-		rules = RulesFactory.create_rules(device_id=device_id, lines=lines, user_identity=user_identity)
-		return rules
+    def __init__(self):
+        pass
 
-	def get_next_rules(self, device_id, user_identity):
-		# check input
-		# get all lines and first pair of enable and disable rules
-		pass
+    @staticmethod
+    def add_rules(device, lines):
+        device_type = device.settings['type']
+        device_id = device.id
+
+        rules = RulesFactory.create_rules(device_id=device_id, device_type=device_type, lines=lines)
+        Db.register_rule_tasks(rules)
+
+        return rules
+
+    @staticmethod
+    def get_next_rules(device):
+        device_id = device.id
+
+        return Db.get_device_lines_next_tasks(device_id=device_id)
+
+    @staticmethod
+    def remove_rules(rules):
+        return Db.get_device_lines_next_tasks(rules)
+
 
 RulesPlanner = Planner()

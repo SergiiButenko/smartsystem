@@ -33,33 +33,21 @@ def devices_lines_route(device_id):
 
     devices = Db.get_devices(device_id=device_id, user_identity=cr_user)
     for device in devices:
-        device.lines = Db.get_device_lines(device_id=device.device_id, line_id=None, user_identity=cr_user)
+        device.lines = Db.get_device_lines(device_id=device.id, line_id=None, user_identity=cr_user)
 
     return jsonify(devices=devices)
 
 
 @devices.route("/<string:device_id>/lines/rules", methods=["GET"])
-#@jwt_required
-#@check_device
+@jwt_required
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 
-    income_json = {
-        'lines':
-            [
-                {'line_id': '1', 'time': 10, 'iterations': 2, 'time_sleep': 15},
-            {'line_id': '2', 'time': 10, 'iterations': 2, 'time_sleep': 15}
-                ],
+    device = Db.get_devices(device_id=device_id, user_identity=cr_user)[0]
 
-    }
-    ids = RulesPlanner.add_rules(device_id=device_id, lines=income_json['lines'], user_identity=cr_user)
+    rules = RulesPlanner.get_next_rules(device=device)
 
-    return jsonify(rules=ids)
-
-    # # 'device_exists' wrapper exclude device is none
-    # rules = RulesPlanner.get_next_rules(device_id=device_id, user_identity=cr_user)
-    #
-    # return jsonify(rules=ids)
+    return jsonify(rules=rules)
 
 
 @devices.route("/<string:device_id>/lines/rules", methods=["POST"])
@@ -68,14 +56,17 @@ def get_rules_for_device(device_id):
 def set_rules_for_device(device_id):
     cr_user = get_jwt_identity()
     income_json = request.json
-    # {'lines': {
-    # 	'id': {'line_id': 'id', 'time': 10, 'iterations': 2, 'time_sleep': 15},
-    # 	'id': {'line_id': 'id', 'time': 10, 'iterations': 2, 'time_sleep': 15}...
-    # 	}
+    # income_json = {
+    #     'lines':
+    #         [
+    #             {'line_id': '80122552-18bc-4846-9799-0b728324251c', 'time': 10, 'iterations': 2, 'time_sleep': 15},
+    #         ],
     # }
-    ids = RulesPlanner.add_rules(device_id=device_id, lines=income_json['lines'], user_identity=cr_user)
+    device = Db.get_devices(device_id=device_id, user_identity=cr_user)[0]
+    lines = income_json['lines']
+    rules = RulesPlanner.add_rules(device=device, lines=lines)
 
-    return jsonify(rules=ids)
+    return jsonify(rules=rules)
 
 
 @devices.route("/<string:device_id>/lines/rules", methods=["DELETE"])
@@ -83,8 +74,8 @@ def set_rules_for_device(device_id):
 @validate_json
 def delete_rules_for_device(device_id):
     cr_user = get_jwt_identity()
-    income_json = request.json
+    #income_json = request.json
 
-    ids = RulesPlanner.add_rules(device_id=device_id, lines=income_json['lines'], user_identity=cr_user)
+    ids = RulesPlanner.remove_rules(rules=rules)
 
     return jsonify(rules=ids)

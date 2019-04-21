@@ -30,6 +30,6 @@ def groups_lines_route(group_id):
 
     groups = Db.get_groups(group_id=group_id, user_identity=cr_user)
     for group in groups:
-        group.devices = Db.get_group_devices(group_id=group.group_id, user_identity=cr_user)
+        group.devices = Db.get_group_devices(group_id=group.id, user_identity=cr_user)
 
     return jsonify(groups=groups)

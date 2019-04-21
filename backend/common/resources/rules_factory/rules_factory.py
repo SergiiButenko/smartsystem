@@ -10,34 +10,30 @@ logger = logging.getLogger(__name__)
 
 
 class RuleFactory():
-	"""docstring for Planner"""
+    """docstring for Planner"""
 
-	def __init__(self):
-		pass
+    def __init__(self):
+        pass
 
-	def create_rules(self, device_id, lines, user_identity):
-		rules = []
-		Rule = self._rule_cls(device_id=device_id, user_identity=user_identity)
+    def create_rules(self, device_type, device_id, lines):
+        Rule = self._rule_cls(device_type=device_type)
 
-		exec_time = datetime.now()
-		for line in lines:
-			rule = Rule()
-			rule.init_from_json(exec_time=exec_time, **line)
-			exec_time = rule.next_rule_start_time
-			rules.append(rule)
+        rules = []
+        exec_time = datetime.now()
+        for line in lines:
+            rule = Rule()
+            rule.init_from_json(exec_time=exec_time, device_id=device_id, **line)
+            exec_time = rule.next_rule_start_time
+            rules.append(rule)
 
-		return rules
+        return rules
 
-	@staticmethod
-	def _rule_cls(device_id, user_identity):
-		devices = Db.get_devices(device_id=device_id, user_identity=user_identity)[0]
+    @staticmethod
+    def _rule_cls(device_type):
+        if device_type == DeviceToRuleType.PERIODIC:
+            return PeriodicRule
 
-		device_type = devices['settings']['type']
-
-		if device_type == DeviceToRuleType.PERIODIC:
-			return PeriodicRule
-
-		raise ValueError("Rule type for device doesn't exists")
+        raise ValueError("Rule type for device doesn't exists")
 
 
 RulesFactory = RuleFactory()

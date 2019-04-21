@@ -14,9 +14,12 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='localhost' port='5432' dbname='irrigation' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    def __del__(self):
+        self.conn.close()
 
     def get_user(self, user_identity):
         self.cursor.execute(
@@ -62,15 +65,12 @@ class Database:
 
         records = self.cursor.fetchall()
         devices = list()
+
+        if len(records) == 0:
+            raise Exception("No device found")
+
         for rec in records:
-            devices.append(
-                Device(
-                    device_id=rec["id"],
-                    name=rec["name"],
-                    description=rec["description"],
-                    settings=rec["settings"],
-                )
-            )
+            devices.append(Device(**rec))
 
         devices.sort(key=lambda e: e.name)
         return devices
@@ -101,14 +101,7 @@ class Database:
         
         lines = list()
         for rec in records:
-            lines.append(
-                Line(
-                    line_id=rec["id"],
-                    name=rec["name"],
-                    description=rec["description"],
-                    settings=rec["settings"],
-                )
-            )
+            lines.append(Line(**rec))
 
         lines.sort(key=lambda e: e.name)
         return lines
@@ -136,13 +129,7 @@ class Database:
         records = self.cursor.fetchall()
         groups = list()
         for rec in records:
-            groups.append(
-                Group(
-                    group_id=rec["id"],
-                    name=rec["name"],
-                    description=rec["description"],
-                )
-            )
+            groups.append(Group(**rec))
 
         groups.sort(key=lambda e: e.name)
         return groups
@@ -179,15 +166,69 @@ class Database:
         lines = list()
         for rec in records:
             lines.append(
-                Device(
-                    device_id=rec["id"],
-                    name=rec["name"],
-                    description=rec["description"],
-                    settings=rec["settings"],
-                )
+                Device(**rec)
             )
 
         lines.sort(key=lambda e: e.name)
         return lines
+
+    def register_rule_tasks(self, rules):
+        """
+        Add tasks into database.
+
+        :param rules: array of rules
+        :return: void
+        """
+        for rule in rules:
+            for task in rule.tasks:
+                query = """
+                INSERT INTO rules_line 
+                (rule_id, line_id, device_id, action, exec_time) 
+                VALUES (%(rule_id)s, %(line_id)s, %(device_id)s, %(action)s, %(exec_time)s)
+                """
+                self.cursor.execute(query, task.to_json())
+            self.conn.commit()
+
+    def remove_rule_tasks(self, rules):
+        """
+        Add tasks into database.
+
+        :param rules: array of rules
+        :return: void
+        """
+        for rule in rules:
+            for task in rule.tasks:
+                query = """
+                REMOVE FROM rules_line 
+                WHERE rule_id = %(rule_id)s 
+                """
+                self.cursor.execute(query, task.to_json())
+            self.conn.commit()
+
+    def get_device_lines_next_tasks(self, device_id, user_identity):
+        """
+        Return first rule to execute
+        :param device_id:
+        :return: array of further tasks
+        """
+
+        query = """
+        SELECT * from rules_line 
+        WHERE exec_time > now()
+        AND device_id = %(device_id)s
+        ORDER BY exec_time ASC
+        LIMIT 1
+        """
+        self.cursor.execute(query, {'device_id': device_id})
+        records = self.cursor.fetchall()
+
+        logger.info(len(records))
+        tasks = list()
+        for rec in records:
+            tasks.append(Task(**rec))
+
+        tasks.sort(key=lambda e: e.exec_time)
+        return tasks
+
 
 Db = Database()

@@ -4,15 +4,15 @@
 
 
 class Line:
-    def __init__(self, line_id, name, description, settings):
-        self.line_id = line_id
+    def __init__(self, id, name, description, settings):
+        self.id = id
         self.name = name
         self.description = description
         self.settings = settings
 
     def to_json(self):
         return {
-            "id": self.line_id,
+            "id": self.id,
             "name": self.name,
             "description": self.description,
             "settings": self.settings,

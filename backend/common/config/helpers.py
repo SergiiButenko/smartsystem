@@ -24,7 +24,7 @@ from werkzeug.routing import ValidationError
 from common.errors import GeneralError, NoJson, JsonMalformed
 
 from common.resources.rules_factory.periodic_rule import PeriodicRule
-from common.models import Device, User, Line, Group
+from common.models import Device, User, Line, Group, Task
 
 
 logging.basicConfig(level=logging.INFO)
@@ -140,7 +140,7 @@ def validate_schema(schema_name):
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:
-            if isinstance(obj, (PeriodicRule, Device, Group, Line, User)):
+            if isinstance(obj, (PeriodicRule, Device, Group, Line, User, Task)):
                 return obj.serialize()
             iterable = iter(obj)
         except TypeError as e:

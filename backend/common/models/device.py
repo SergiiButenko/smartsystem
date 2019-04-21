@@ -5,8 +5,8 @@
 
 class Device:
 
-    def __init__(self, device_id, name, description, settings, lines=[]):
-        self.device_id = device_id
+    def __init__(self, id, name, description, settings, lines=[]):
+        self.id = id
         self.name = name
         self.description = description
         self.settings = settings
@@ -14,7 +14,7 @@ class Device:
 
     def to_json(self):
         return {
-            "id": self.device_id,
+            "id": self.id,
             "name": self.name,
             "description": self.description,
             "settings": self.settings,

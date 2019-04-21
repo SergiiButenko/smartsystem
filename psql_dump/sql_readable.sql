@@ -235,38 +235,23 @@ CREATE TABLE rule_states (
     name text NOT NULL PRIMARY KEY,
     description text NOT NULL
 );
-INSERT INTO rule_states VALUES('Pending', 'Заплановано');
-INSERT INTO rule_states VALUES('Done', 'Виконано');
-INSERT INTO rule_states VALUES('Failed', 'Не виконано');
-INSERT INTO rule_states VALUES('Canceled', 'Скасовано');
-INSERT INTO rule_states VALUES('Canceled_by_rain', 'Скасовано через дощ');
-INSERT INTO rule_states VALUES('Canceled_by_humidity', 'Скасовано через вологість');
-INSERT INTO rule_states VALUES('Canceled_by_mistime', 'Скасовано через помилку з часом');
+INSERT INTO rule_states VALUES('pending', 'Заплановано');
+INSERT INTO rule_states VALUES('done', 'Виконано');
+INSERT INTO rule_states VALUES('failed', 'Не виконано');
+INSERT INTO rule_states VALUES('canceled', 'Скасовано');
+INSERT INTO rule_states VALUES('canceled_rain', 'Скасовано через дощ');
+INSERT INTO rule_states VALUES('canceled_humidity', 'Скасовано через вологість');
+INSERT INTO rule_states VALUES('canceled_mistime', 'Скасовано через помилку з часом');
 
 CREATE TABLE rules_line(
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    rule_id uuid,
     line_id uuid NOT NULL,
-    rule text NOT NULL,
     device_id uuid NOT NULL,
-    desired_state text DEFAULT 'pending' NOT NULL,
-    interval_id uuid,
-    -- ongoing rule ???
+    action text NOT NULL,
+    exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    state text DEFAULT 'pending' NOT NULL,
     FOREIGN KEY(line_id) REFERENCES lines(id),
-    FOREIGN KEY(rule) REFERENCES rule_type(name),
-    FOREIGN KEY(desired_state) REFERENCES rule_states(name),
+    FOREIGN KEY(action) REFERENCES rule_type(name),
     FOREIGN KEY(device_id) REFERENCES devices(id)
 );
-
--- CREATE TABLE ongoing_rules (
---     id INTEGER PRIMARY KEY,
---     line_id integer NOT NULL,
---     time integer NOT NULL,
---     intervals integer NOT NULL,
---     time_wait integer NOT NULL,
---     repeat_value integer NOT NULL,
---     date_time_start timestamp without time zone NOT NULL,
---     end_date timestamp without time zone,
---     active integer NOT NULL DEFAULT 1, 
---     rule_id text, 
---     FOREIGN KEY(line_id) REFERENCES lines(number)
--- );
