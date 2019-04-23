@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --env.ENV=DEV --hot --progress",
+    "start-work": "webpack-dev-server --env.ENV=WORK --hot --progress",
     "start-prod": "http-server ./dist -p 8008",
     "build": "webpack --env.ENV=PRODUCTION",
     "test": "jest",
