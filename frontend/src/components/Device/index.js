@@ -84,9 +84,7 @@ export default class Devices extends React.Component {
                 {device.lines.map((line, i) => {
                     return (     
                         <Grid item xs={12}>
-                            <pre key={i}>
-                                {JSON.stringify(line, null, 2)}
-                            </pre>
+                            <LineCard line={line} key={line.id}/>
                         </Grid>
                     );
                 })}

@@ -55,7 +55,7 @@ export default class Groups extends React.Component {
                         Object.keys(groups).map(function (id, index) {
                             return (
                                 <Grid item xs={12}>
-                                    <GroupCard group={groups[id]}/>
+                                    <GroupCard group={groups[id]} key={groups[id].id}/>
                                 </Grid>
                             );
                         })

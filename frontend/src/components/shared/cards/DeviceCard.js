@@ -32,8 +32,12 @@ export default class DeviceCard extends React.Component {
         router: PropTypes.object
     };
 
-    redirectToGroup = (id) => (e) => {
+    redirectToDevice = (id) => (e) => {
         this.context.router.history.push(webUri.DEVICES(id));
+    };
+
+    redirectToSettings = (id) => (e) => {
+        console.log(this.context.router.history)
     };
 
     render() {
@@ -47,7 +51,6 @@ export default class DeviceCard extends React.Component {
             <Paper
                 className={classes.root}
                 elevation={1}
-                onClick={this.redirectToGroup(device.id)}
             >
                 <Grid
                     container
@@ -56,19 +59,24 @@ export default class DeviceCard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                 >
-                    <Grid item xs={8}>
-                        <Typography variant="h5" component="h3">
-                            {device.name}
-                        </Typography>
-                        <Typography component="p">
-                            {device.description}
-                        </Typography>
-                        <Typography component="p">
-                            {JSON.stringify(device.settings, null, 2) }
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                            <ArrowForwardIos />
+                    <div onClick={this.redirectToDevice(device.id)}>
+                        <Grid item xs={8}>
+                            <Typography variant="h5" component="h3">
+                                {device.name}
+                            </Typography>
+                            <Typography component="p">
+                                {device.description}
+                            </Typography>
+                            <Typography component="p">
+                                {JSON.stringify(device.settings, null, 2)}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                                <ArrowForwardIos />
+                        </Grid>
+                    </div>
+                    <Grid item onClick={this.redirectToSettings(device.id)}>
+                        <Settings />
                     </Grid>
                 </Grid>
             </Paper>

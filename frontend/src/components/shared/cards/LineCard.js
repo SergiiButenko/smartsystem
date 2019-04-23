@@ -6,11 +6,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-import PageSpinner from '../shared/PageSpinner';
+import PageSpinner from '../PageSpinner';
 import Button from '@material-ui/core/Button';
-import {webUri} from '../../constants/uri';
+import {webUri} from '../../../constants/uri';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
-import Settings from '@material-ui/icons/Settings';
 
 const styles = theme => ({
     root: {
@@ -22,10 +21,10 @@ const styles = theme => ({
 });
 
 @withStyles(styles)
-export default class GroupCard extends React.Component {
+export default class LineCard extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        group: PropTypes.object.isRequired,
+        line: PropTypes.object.isRequired,
         loading: PropTypes.bool.isRequired,
     };
 
@@ -33,8 +32,9 @@ export default class GroupCard extends React.Component {
         router: PropTypes.object
     };
 
-    redirectToGroup = (id) => (e) => {
-        this.context.router.history.push(webUri.GROUPS(id));
+    redirectToLine = (id) => (e) => {
+        console.log(this.context.router.history)
+        //this.context.router.history.push(webUri.DEVICES(id));
     };
 
     redirectToSettings = (id) => (e) => {
@@ -42,7 +42,7 @@ export default class GroupCard extends React.Component {
     };
 
     render() {
-        const {classes, loading, group} = this.props;
+        const {classes, loading, line} = this.props;
 
         if (loading) {
             return <PageSpinner/>;
@@ -60,20 +60,23 @@ export default class GroupCard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                 >
-                    <div onClick={this.redirectToGroup(group.id)}>
+                    <div onClick={this.redirectToLine(line.id)}>
                         <Grid item xs={8}>
                             <Typography variant="h5" component="h3">
-                                {group.name}
+                                {line.name}
                             </Typography>
                             <Typography component="p">
-                                {group.description}
+                                {line.description}
+                            </Typography>
+                            <Typography component="p">
+                                {JSON.stringify(line.settings, null, 2)}
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <ArrowForwardIos />
+                                <ArrowForwardIos />
                         </Grid>
                     </div>
-                    <Grid item onClick={this.redirectToSettings(group.id)}>
+                    <Grid item onClick={this.redirectToSettings(line.id)}>
                         <Settings />
                     </Grid>
                 </Grid>

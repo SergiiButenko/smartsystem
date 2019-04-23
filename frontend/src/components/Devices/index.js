@@ -89,7 +89,7 @@ export default class Devices extends React.Component {
                        Object.keys(devices).map(function (id, index) {
                            return (
                                <Grid item xs={12}>
-                                   <DeviceCard device={devices[id]}/>
+                                   <DeviceCard device={devices[id]} key={devices[id].id}/>
                                </Grid>
                            );
                        })
