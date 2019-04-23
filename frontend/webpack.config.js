@@ -19,7 +19,7 @@ function checkEndpoint(endpoint) {
 }
 
 function isDevMode(env) {
-    let devs = ['DEV', 'QA'];
+    let devs = ['DEV', 'WORK'];
     return devs.indexOf(env) !== -1;
 }
 
