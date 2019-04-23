@@ -14,6 +14,7 @@ import {getDevices} from '../../selectors/devices';
 import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
+import LineCard from '../shared/cards/LineCard';
 
 const styles = theme => ({
     root: {

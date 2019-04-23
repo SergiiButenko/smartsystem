@@ -7,9 +7,14 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 import PageSpinner from '../PageSpinner';
-import Button from '@material-ui/core/Button';
-import {webUri} from '../../../constants/uri';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import Settings from '@material-ui/icons/Settings';
+import Battery20 from '@material-ui/icons/Battery20';
+import Battery60 from '@material-ui/icons/Battery60';
+import Battery90 from '@material-ui/icons/Battery90';
+
+
+
 
 const styles = theme => ({
     root: {
@@ -33,12 +38,12 @@ export default class LineCard extends React.Component {
     };
 
     redirectToLine = (id) => (e) => {
-        console.log(this.context.router.history)
+        console.log(this.context.router.history);
         //this.context.router.history.push(webUri.DEVICES(id));
     };
 
     redirectToSettings = (id) => (e) => {
-        console.log(this.context.router.history)
+        console.log(this.context.router.history);
     };
 
     render() {
@@ -60,24 +65,21 @@ export default class LineCard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                 >
-                    <div onClick={this.redirectToLine(line.id)}>
-                        <Grid item xs={8}>
-                            <Typography variant="h5" component="h3">
-                                {line.name}
-                            </Typography>
-                            <Typography component="p">
-                                {line.description}
-                            </Typography>
-                            <Typography component="p">
-                                {JSON.stringify(line.settings, null, 2)}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                                <ArrowForwardIos />
-                        </Grid>
-                    </div>
-                    <Grid item onClick={this.redirectToSettings(line.id)}>
-                        <Settings />
+                    <Grid item xs={6} onClick={this.redirectToLine(line.id)}>
+                        <Typography variant="h5" component="h3">
+                            {line.name}
+                        </Typography>
+                        <Typography component="p">
+                            {line.description}
+                        </Typography>
+                        <Typography component="p">
+                            {JSON.stringify(line.settings, null, 2)}
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Battery20 />
+                        <Battery60 />
+                        <Battery90 />
                     </Grid>
                 </Grid>
             </Paper>

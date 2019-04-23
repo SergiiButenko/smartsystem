@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 import PageSpinner from '../shared/PageSpinner';
-import Button from '@material-ui/core/Button';
+import Settings from '@material-ui/icons/Settings';
+
 
 const styles = theme => ({
     root: {
@@ -19,7 +20,7 @@ const styles = theme => ({
 });
 
 @withStyles(styles)
-export default class GroupCard extends React.Component {
+export default class GroupHeader extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         group: PropTypes.object.isRequired,
@@ -30,8 +31,8 @@ export default class GroupCard extends React.Component {
         router: PropTypes.object
     };
 
-    redirectToGroup = (id) => (e) => {
-        this.context.router.history.push(webUri.GROUPS(id));
+    redirectToSettings = (id) => (e) => {
+        console.log(this.context.router.history)
     };
 
     render() {
@@ -45,13 +46,12 @@ export default class GroupCard extends React.Component {
             <Paper
                 className={classes.root}
                 elevation={1}
-                onClick={this.redirectToGroup(group.id)}
             >
                 <Grid
                     container
                     spacing={24}
                     direction="row"
-                    justify="center"
+                    justify="space-between"
                     alignItems="center"
                 >
                     <Grid item xs={8}>
@@ -62,11 +62,10 @@ export default class GroupCard extends React.Component {
                             {group.description}
                         </Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Button>
-                            Налаштування
-                        </Button>
+                    <Grid item xs={1} onClick={this.redirectToSettings(group.id)}>
+                        <Settings />
                     </Grid>
+
                 </Grid>
             </Paper>
         );

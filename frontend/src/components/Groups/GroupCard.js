@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 import PageSpinner from '../shared/PageSpinner';
-import Button from '@material-ui/core/Button';
 import {webUri} from '../../constants/uri';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
 import Settings from '@material-ui/icons/Settings';
@@ -60,20 +59,18 @@ export default class GroupCard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                 >
-                    <div onClick={this.redirectToGroup(group.id)}>
-                        <Grid item xs={8}>
-                            <Typography variant="h5" component="h3">
-                                {group.name}
-                            </Typography>
-                            <Typography component="p">
-                                {group.description}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <ArrowForwardIos />
-                        </Grid>
-                    </div>
-                    <Grid item onClick={this.redirectToSettings(group.id)}>
+                    <Grid item xs={8} onClick={this.redirectToGroup(group.id)}>
+                        <Typography variant="h5" component="h3">
+                            {group.name}
+                        </Typography>
+                        <Typography component="p">
+                            {group.description}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1} onClick={this.redirectToGroup(group.id)}>
+                        <ArrowForwardIos />
+                    </Grid>
+                    <Grid item xs={1} onClick={this.redirectToSettings(group.id)}>
                         <Settings />
                     </Grid>
                 </Grid>

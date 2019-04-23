@@ -10,6 +10,7 @@ import {fetchGroups} from '../../actions/group';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import GroupCard from './GroupCard';
+import Button from '@material-ui/core/es/Button/Button';
 
 const styles = theme => ({
     root: {
@@ -50,7 +51,12 @@ export default class Groups extends React.Component {
 
         return (
             <>
-                <Grid container spacing={24}>
+                <Grid container spacing={8}>
+                    <Grid item xs={12}>
+                        <Button>
+                            Назад
+                        </Button>
+                    </Grid>
                     {
                         Object.keys(groups).map(function (id, index) {
                             return (

@@ -7,9 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 import PageSpinner from '../PageSpinner';
-import Button from '@material-ui/core/Button';
 import {webUri} from '../../../constants/uri';
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import Settings from '@material-ui/icons/Settings';
 
 const styles = theme => ({
     root: {
@@ -37,7 +37,7 @@ export default class DeviceCard extends React.Component {
     };
 
     redirectToSettings = (id) => (e) => {
-        console.log(this.context.router.history)
+        console.log(this.context.router.history);
     };
 
     render() {
@@ -54,28 +54,27 @@ export default class DeviceCard extends React.Component {
             >
                 <Grid
                     container
-                    spacing={24}
+                    spacing={16}
                     direction="row"
                     justify="space-between"
                     alignItems="center"
                 >
-                    <div onClick={this.redirectToDevice(device.id)}>
-                        <Grid item xs={8}>
-                            <Typography variant="h5" component="h3">
-                                {device.name}
-                            </Typography>
-                            <Typography component="p">
-                                {device.description}
-                            </Typography>
-                            <Typography component="p">
-                                {JSON.stringify(device.settings, null, 2)}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                                <ArrowForwardIos />
-                        </Grid>
-                    </div>
-                    <Grid item onClick={this.redirectToSettings(device.id)}>
+                    <Grid item xs={8} onClick={this.redirectToDevice(device.id)}>
+                        <Typography variant="h5" component="h3">
+                            {device.name}
+                        </Typography>
+                        <Typography component="p">
+                            {device.description}
+                        </Typography>
+                        <Typography component="p">
+                            {JSON.stringify(device.settings, null, 2)}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1} onClick={this.redirectToDevice(device.id)}>
+                        <ArrowForwardIos />
+                    </Grid>
+
+                    <Grid item xs={1} onClick={this.redirectToSettings(device.id)}>
                         <Settings />
                     </Grid>
                 </Grid>

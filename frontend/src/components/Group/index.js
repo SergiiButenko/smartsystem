@@ -16,6 +16,7 @@ import LoadingFailed from '../shared/LoadingFailed';
 import {webUri} from '../../constants/uri';
 import Link from 'react-router-dom/Link';
 import DeviceCard from '../shared/cards/DeviceCard';
+import GroupHeader from './GroupHeader';
 
 
 const styles = theme => ({
@@ -61,25 +62,8 @@ export default class Group extends React.Component {
             <>
             <Grid container spacing={24}>
                 <Grid item xs={12}>
-                    <Paper className={classes.root} elevation={1}>
-                        <Grid container spacing={24}>
-                            <Grid item xs={8}>
-                                <Typography variant="h5" component="h3">
-                                    {group.name}
-                                </Typography>
-                                <Typography component="p">
-                                    {group.description}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Button>
-                            Налаштування
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                    <GroupHeader group={group}/>
                 </Grid>
-
                 {group.devices.map((device, i) => {
                     return (
                         <Grid item xs={12}>
