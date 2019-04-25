@@ -14,7 +14,7 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='localhost' port='5432' dbname='irrigation' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -37,7 +37,7 @@ class Database:
 
         return None
 
-    def get_devices(self, user_identity, device_id):
+    def _get_devices(self, user_identity, device_id):
         device = ""
         if device_id is not None:
             device = " and device_id = '{device_id}'".format(device_id=device_id)
@@ -70,12 +70,12 @@ class Database:
             raise Exception("No device found")
 
         for rec in records:
-            devices.append(Device(**rec))
+            devices.append(Device(user_identity=user_identity, **rec))
 
         devices.sort(key=lambda e: e.name)
         return devices
 
-    def _get_device_lines(self, device_id, line_id, user_identity):
+    def get_device_lines(self, device_id, line_id):
         line = ""
         if line_id is not None:
             line = " and line_id = '{line_id}'".format(line_id=line_id)
@@ -109,10 +109,10 @@ class Database:
         return lines
 
     def get_device_by_id(self, device_id, user_identity):
-        return self._get_device_lines(device_id=device_id, line_id=None, user_identity=user_identity)[0]
+        return self._get_devices(device_id=device_id, user_identity=user_identity)[0]
 
     def get_all_devices(self, device_id, user_identity):
-        return self._get_device_lines(device_id=device_id, line_id=None, user_identity=user_identity)
+        return self._get_devices(device_id=device_id, user_identity=user_identity)
 
     def get_groups(self, user_identity, group_id):
         group = ""

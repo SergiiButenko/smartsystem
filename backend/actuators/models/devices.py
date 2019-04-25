@@ -78,11 +78,11 @@ def delete_rules_for_device(device_id):
 
 
 @devices.route("/<string:device_id>/state", methods=["GET"])
-@jwt_required
+#@jwt_required
 def get_state(device_id):
     cr_user = get_jwt_identity()
 
     device = Db.get_device_by_id(device_id=device_id, user_identity=cr_user)
-    device.init_status()
+    device.init_state()
 
     return jsonify(state='ok')
