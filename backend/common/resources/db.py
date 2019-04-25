@@ -75,7 +75,7 @@ class Database:
         devices.sort(key=lambda e: e.name)
         return devices
 
-    def get_device_lines(self, device_id, line_id, user_identity):
+    def _get_device_lines(self, device_id, line_id, user_identity):
         line = ""
         if line_id is not None:
             line = " and line_id = '{line_id}'".format(line_id=line_id)
@@ -98,13 +98,21 @@ class Database:
         self.cursor.execute(q, (device_id))
 
         records = self.cursor.fetchall()
-        
+        if len(records) == 0:
+            raise Exception('No device_id={}'.format(device_id))
+
         lines = list()
         for rec in records:
             lines.append(Line(**rec))
 
         lines.sort(key=lambda e: e.name)
         return lines
+
+    def get_device_by_id(self, device_id, user_identity):
+        return self._get_device_lines(device_id=device_id, line_id=None, user_identity=user_identity)[0]
+
+    def get_all_devices(self, device_id, user_identity):
+        return self._get_device_lines(device_id=device_id, line_id=None, user_identity=user_identity)
 
     def get_groups(self, user_identity, group_id):
         group = ""
