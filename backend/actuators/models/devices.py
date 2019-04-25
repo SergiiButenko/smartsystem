@@ -38,7 +38,7 @@ def devices_lines_route(device_id):
     return jsonify(devices=devices)
 
 
-@devices.route("/<string:device_id>/lines/rules", methods=["GET"])
+@devices.route("/<string:device_id>/rules", methods=["GET"])
 @jwt_required
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
@@ -50,7 +50,7 @@ def get_rules_for_device(device_id):
     return jsonify(rules=rules)
 
 
-@devices.route("/<string:device_id>/lines/rules", methods=["POST"])
+@devices.route("/<string:device_id>/rules", methods=["POST"])
 @jwt_required
 @validate_json
 def set_rules_for_device(device_id):
@@ -69,7 +69,7 @@ def set_rules_for_device(device_id):
     return jsonify(rules=rules)
 
 
-@devices.route("/<string:device_id>/lines/rules", methods=["DELETE"])
+@devices.route("/<string:device_id>/rules", methods=["DELETE"])
 @jwt_required
 @validate_json
 def delete_rules_for_device(device_id):
@@ -79,3 +79,17 @@ def delete_rules_for_device(device_id):
     ids = RulesPlanner.remove_rules(rules=rules)
 
     return jsonify(rules=ids)
+
+
+@devices.route("/<string:device_id>/state", methods=["GET"])
+@jwt_required
+def delete_rules_for_device(device_id):
+
+    return jsonify(state='ok')
+
+
+@devices.route("/<string:device_id>/state", methods=["PUT"])
+@jwt_required
+def delete_rules_for_device(device_id):
+
+    return jsonify(state="ok")
