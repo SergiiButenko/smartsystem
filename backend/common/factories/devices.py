@@ -1,12 +1,12 @@
-from common.models import Device
-from common.resources import Db
+from common.models.device import Device
+from common.resources import *
 
 
 class Devices:
     @staticmethod
     def get_by_id(device_id, user_identity):
         device = Db.get_device_by_id(
-            device_id=device_id, line_id=None, user_identity=user_identity
+            device_id=device_id, user_identity=user_identity
         )
         device = Device(user_identity=user_identity, **device)
         device.init_lines()
@@ -16,7 +16,7 @@ class Devices:
     @staticmethod
     def get_all(user_identity):
         records = Db.get_all_devices(
-            device_id=None, line_id=None, user_identity=user_identity
+            user_identity=user_identity
         )
 
         devices = list()

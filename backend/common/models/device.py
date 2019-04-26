@@ -3,8 +3,9 @@
 # like a SQLAlchemy instance.
 import requests
 import logging
-from common.models import Line
-from common.resources import Db
+
+from common.models.line import Line
+from common.resources import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class Device:
 
     def init_lines(self):
         records = Db.get_device_lines(
-            device_id=self.id, line_id=None, user_identity=self.user_identity
+            device_id=self.id, line_id=None
         )
 
         lines = list()
@@ -31,7 +32,9 @@ class Device:
 
         lines.sort(key=lambda e: e.name)
 
-        return lines
+        self.lines = lines
+
+        return self
 
     def init_state(self):
         if self.lines is None:

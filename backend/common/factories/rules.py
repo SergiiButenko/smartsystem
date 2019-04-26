@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from common.config.mapper import DeviceToRuleType
-from common.resources.models.periodic_rule import PeriodicRule
+from common.models import PeriodicRule
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

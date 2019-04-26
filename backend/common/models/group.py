@@ -15,12 +15,12 @@ class Group:
 
     def init_devices(self):
         records = Db.get_group_devices(
-            device_id=self.id, user_identity=self.user_identity
+            group_id=self.id, user_identity=self.user_identity
         )
 
         devices = list()
         for rec in records:
-            devices.append(Device(**rec))
+            devices.append(Device(user_identity=self.user_identity, **rec))
 
         devices.sort(key=lambda e: e.name)
 

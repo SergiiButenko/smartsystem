@@ -2,9 +2,9 @@
 from flask import jsonify, request, Blueprint
 
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from common.resources.db import Db
-from common.models import Devices, Groups
-from common.config.helpers import validate_json, check_device
+from common.models import *
+from common.factories import *
+from common.config.helpers import validate_json
 
 import logging
 
@@ -16,16 +16,15 @@ devices = Blueprint("devices", __name__)
 
 
 @devices.route("/", methods=["GET"])
-@jwt_required
+#@jwt_required
 def devices_route(device_id=None):
     cr_user = get_jwt_identity()
 
-    return jsonify(devices=Devices.get_all(device_id=device_id, user_identity=cr_user))
+    return jsonify(devices=Devices.get_all(user_identity=cr_user))
 
 
 @devices.route("/<string:device_id>", methods=["GET"])
-@jwt_required
-@check_device
+#@jwt_required
 def devices_lines_route(device_id):
     cr_user = get_jwt_identity()
 
@@ -35,7 +34,7 @@ def devices_lines_route(device_id):
 
 
 @devices.route("/<string:device_id>/rules", methods=["GET"])
-@jwt_required
+#@jwt_required
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 

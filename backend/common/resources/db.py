@@ -87,11 +87,7 @@ class Database:
 
         self.cursor.execute(q, (device_id))
 
-        records = self.cursor.fetchall()
-        if len(records) == 0:
-            raise Exception("No device_id={}".format(device_id))
-
-        return records
+        return self.cursor.fetchall()
 
     def get_device_by_id(self, device_id, user_identity):
         return self._get_devices(device_id=device_id, user_identity=user_identity)[0]
@@ -158,7 +154,7 @@ class Database:
         return records
 
     def get_group_by_id(self, group_id, user_identity):
-        return self._get_groups(group_id=group_id, user_identity=user_identity)
+        return self._get_groups(group_id=group_id, user_identity=user_identity)[0]
 
     def get_all_groups(self, user_identity):
         return self._get_groups(group_id=None, user_identity=user_identity)

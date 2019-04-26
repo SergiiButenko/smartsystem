@@ -1,6 +1,6 @@
 import logging
 from common.resources.db import Db
-from common.resources.rules_factory.rules_factory import RulesFactory
+from common.factories.rules import Rules
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class Planner:
         device_type = device.settings["type"]
         device_id = device.id
 
-        rules = RulesFactory.create_rules(
+        rules = Rules.create_rules(
             device_id=device_id, device_type=device_type, lines=lines
         )
         Db.register_rule_tasks(rules)

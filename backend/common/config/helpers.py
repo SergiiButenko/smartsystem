@@ -19,8 +19,7 @@ from werkzeug.routing import ValidationError
 
 from common.errors import GeneralError, NoJson, JsonMalformed
 
-from common.resources.rules_factory.periodic_rule import PeriodicRule
-from common.models import Device, User, Line, Group, Task
+from common.models import Device, User, Line, Group, Task, PeriodicRule
 
 
 logging.basicConfig(level=logging.INFO)
@@ -84,24 +83,6 @@ def admin_required(fn):
             raise UnexpectedRole()
         else:
             return fn(*args, **kwargs)
-
-    return wrapper
-
-
-def check_device(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        device_id = kwargs["device_id"]
-        device = Db.get_devices(device_id=device_id, user_identity=get_jwt_identity())
-        if len(device) == 0:
-            raise GeneralError(
-                message="Device {} d" "" "" "" "oes not exists".format(device_id)
-            )
-        if len(device) > 1:
-            raise GeneralError(
-                message="Device {} has multiple database records".format(device_id)
-            )
-        return f(*args, **kwargs)
 
     return wrapper
 
