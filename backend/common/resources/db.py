@@ -3,8 +3,6 @@ import logging
 import psycopg2
 import psycopg2.extras
 
-from common.models import *
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -57,23 +55,16 @@ class Database:
             )
             group by d.id
             """.format(
-            device=device,
-            user_identity='admin',
+            device=device, user_identity="admin"
         )
 
         self.cursor.execute(q, (user_identity))
 
         records = self.cursor.fetchall()
-        devices = list()
-
         if len(records) == 0:
             raise Exception("No device found")
 
-        for rec in records:
-            devices.append(Device(user_identity=user_identity, **rec))
-
-        devices.sort(key=lambda e: e.name)
-        return devices
+        return records
 
     def get_device_lines(self, device_id, line_id):
         line = ""
@@ -91,30 +82,24 @@ class Database:
             ) {line}
             group by l.id
         """.format(
-            device_id=device_id,
-            line=line
+            device_id=device_id, line=line
         )
 
         self.cursor.execute(q, (device_id))
 
         records = self.cursor.fetchall()
         if len(records) == 0:
-            raise Exception('No device_id={}'.format(device_id))
+            raise Exception("No device_id={}".format(device_id))
 
-        lines = list()
-        for rec in records:
-            lines.append(Line(**rec))
-
-        lines.sort(key=lambda e: e.name)
-        return lines
+        return records
 
     def get_device_by_id(self, device_id, user_identity):
         return self._get_devices(device_id=device_id, user_identity=user_identity)[0]
 
-    def get_all_devices(self, device_id, user_identity):
-        return self._get_devices(device_id=device_id, user_identity=user_identity)
+    def get_all_devices(self, user_identity):
+        return self._get_devices(device_id=None, user_identity=user_identity)
 
-    def get_groups(self, user_identity, group_id):
+    def _get_groups(self, user_identity, group_id):
         group = ""
         if group_id is not None:
             group = " and group_id = '{group_id}'".format(group_id=group_id)
@@ -128,19 +113,16 @@ class Database:
                 ) {group}
             )
             """.format(
-            group=group,
-            user_identity='admin',
+            group=group, user_identity="admin"
         )
 
         self.cursor.execute(q, (user_identity))
 
         records = self.cursor.fetchall()
-        groups = list()
-        for rec in records:
-            groups.append(Group(**rec))
+        if len(records) == 0:
+            raise Exception("No group_id {} found".format(group_id))
 
-        groups.sort(key=lambda e: e.name)
-        return groups
+        return records
 
     def get_group_devices(self, user_identity, group_id):
         group = ""
@@ -164,21 +146,22 @@ class Database:
             )
             group by d.id
             """.format(
-            group=group,
-            user_identity='admin',
+            group=group, user_identity="admin"
         )
 
         self.cursor.execute(q, (user_identity))
 
         records = self.cursor.fetchall()
-        lines = list()
-        for rec in records:
-            lines.append(
-                Device(**rec)
-            )
+        if len(records) == 0:
+            raise Exception("No devices in group_id={}".format(group_id))
 
-        lines.sort(key=lambda e: e.name)
-        return lines
+        return records
+
+    def get_group_by_id(self, group_id, user_identity):
+        return self._get_groups(group_id=group_id, user_identity=user_identity)
+
+    def get_all_groups(self, user_identity):
+        return self._get_groups(group_id=None, user_identity=user_identity)
 
     def register_rule_tasks(self, rules):
         """
@@ -190,8 +173,8 @@ class Database:
         for rule in rules:
             for task in rule.tasks:
                 query = """
-                INSERT INTO rules_line 
-                (rule_id, line_id, device_id, action, exec_time) 
+                INSERT INTO rules_line
+                (rule_id, line_id, device_id, action, exec_time)
                 VALUES (%(rule_id)s, %(line_id)s, %(device_id)s, %(action)s, %(exec_time)s)
                 """
                 self.cursor.execute(query, task.to_json())
@@ -207,8 +190,8 @@ class Database:
         for rule in rules:
             for task in rule.tasks:
                 query = """
-                REMOVE FROM rules_line 
-                WHERE rule_id = %(rule_id)s 
+                REMOVE FROM rules_line
+                WHERE rule_id = %(rule_id)s
                 """
                 self.cursor.execute(query, task.to_json())
             self.conn.commit()
@@ -221,21 +204,22 @@ class Database:
         """
 
         query = """
-        SELECT * from rules_line 
+        SELECT * from rules_line
         WHERE exec_time > now()
         AND device_id = %(device_id)s
         ORDER BY exec_time ASC
         LIMIT 1
         """
-        self.cursor.execute(query, {'device_id': device_id})
+        self.cursor.execute(query, {"device_id": device_id})
         records = self.cursor.fetchall()
 
         logger.info(len(records))
         tasks = list()
         for rec in records:
-            tasks.append(Task(**rec))
+            # tasks.append(Task(**rec))
+            tasks.append(rec)
 
-        tasks.sort(key=lambda e: e.exec_time)
+        tasks.sort(key=lambda e: e["exec_time"])
         return tasks
 
 

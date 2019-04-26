@@ -1,13 +1,9 @@
 from common.errors.common_errors import handle_common_errors
-from common.errors import * 
+from common.errors import *
 
 from common.config.config import *
 from flask.json import JSONEncoder
-from flask import (
-    Flask,
-    jsonify,
-    request,
-)
+from flask import Flask, jsonify, request
 from flask_jwt_extended import (
     JWTManager,
     get_jwt_claims,
@@ -95,17 +91,18 @@ def admin_required(fn):
 def check_device(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        device_id=kwargs['device_id']
+        device_id = kwargs["device_id"]
         device = Db.get_devices(device_id=device_id, user_identity=get_jwt_identity())
         if len(device) == 0:
-            raise GeneralError(message='Device {} d'
-                                       ''
-                                       ''
-                                       ''
-                                       'oes not exists'.format(device_id))
+            raise GeneralError(
+                message="Device {} d" "" "" "" "oes not exists".format(device_id)
+            )
         if len(device) > 1:
-            raise GeneralError(message='Device {} has multiple database records'.format(device_id))
+            raise GeneralError(
+                message="Device {} has multiple database records".format(device_id)
+            )
         return f(*args, **kwargs)
+
     return wrapper
 
 
@@ -120,6 +117,7 @@ def validate_json(f):
         except BadRequest as e:
             raise JsonMalformed(message="Payload must be a valid json")
         return f(*args, **kw)
+
     return wrapper
 
 
@@ -128,12 +126,14 @@ def validate_schema(schema_name):
         @wraps(f)
         def wrapper(*args, **kw):
             try:
-                #validate(request.json, current_app.config[schema_name])
+                # validate(request.json, current_app.config[schema_name])
                 pass
             except ValidationError as e:
                 return jsonify({"error": e.message}), 400
             return f(*args, **kw)
+
         return wrapper
+
     return decorator
 
 

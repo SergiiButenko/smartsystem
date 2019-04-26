@@ -2,12 +2,8 @@
 from flask import Blueprint
 from flask import jsonify
 
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required,
-)
-from common.resources.db import Db
-
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from common.models import Groups
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +16,7 @@ groups = Blueprint("groups", __name__)
 def groups_route():
     cr_user = get_jwt_identity()
 
-    return jsonify(groups=Db.get_groups(group_id=None, user_identity=cr_user))
+    return jsonify(groups=Groups.get_all(user_identity=cr_user))
 
 
 @groups.route("/<string:group_id>", methods=["GET"])
@@ -28,8 +24,4 @@ def groups_route():
 def groups_lines_route(group_id):
     cr_user = get_jwt_identity()
 
-    groups = Db.get_groups(group_id=group_id, user_identity=cr_user)
-    for group in groups:
-        group.devices = Db.get_group_devices(group_id=group.id, user_identity=cr_user)
-
-    return jsonify(groups=groups)
+    return jsonify(groups=Groups.get_by_id(group_id=group_id, user_identity=cr_user))

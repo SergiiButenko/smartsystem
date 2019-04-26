@@ -1,11 +1,9 @@
 # An example
 from flask import jsonify, request, Blueprint
 
-from flask_jwt_extended import (
-    get_jwt_identity,
-    jwt_required,
-)
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from common.resources.db import Db
+from common.models import Devices, Groups
 from common.config.helpers import validate_json, check_device
 
 import logging
@@ -22,7 +20,7 @@ devices = Blueprint("devices", __name__)
 def devices_route(device_id=None):
     cr_user = get_jwt_identity()
 
-    return jsonify(devices=Db.get_all_devices(device_id=device_id, user_identity=cr_user))
+    return jsonify(devices=Devices.get_all(device_id=device_id, user_identity=cr_user))
 
 
 @devices.route("/<string:device_id>", methods=["GET"])
@@ -31,9 +29,9 @@ def devices_route(device_id=None):
 def devices_lines_route(device_id):
     cr_user = get_jwt_identity()
 
-    device = Db.get_device_by_id(device_id=device_id, user_identity=cr_user)
-
-    return jsonify(devices=device)
+    return jsonify(
+        devices=Devices.get_by_id(device_id=device_id, user_identity=cr_user)
+    )
 
 
 @devices.route("/<string:device_id>/rules", methods=["GET"])
@@ -41,7 +39,7 @@ def devices_lines_route(device_id):
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 
-    device = Db.get_device_by_id(device_id=device_id, user_identity=cr_user)
+    device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
     rules = RulesPlanner.get_next_rules(device=device)
 
     return jsonify(rules=rules)
@@ -60,8 +58,8 @@ def set_rules_for_device(device_id):
     #         ],
     # }
 
-    device = Db.get_device_by_id(device_id=device_id, user_identity=cr_user)
-    lines = income_json['lines']
+    device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
+    lines = income_json["lines"]
     rules = RulesPlanner.add_rules(device=device, lines=lines)
 
     return jsonify(rules=rules)
@@ -72,17 +70,17 @@ def set_rules_for_device(device_id):
 @validate_json
 def delete_rules_for_device(device_id):
     income_json = request.json
-    RulesPlanner.remove_rules(rules=income_json['rules'])
+    RulesPlanner.remove_rules(rules=income_json["rules"])
 
-    return jsonify(state='ok')
+    return jsonify(state="ok")
 
 
 @devices.route("/<string:device_id>/state", methods=["GET"])
-#@jwt_required
+# @jwt_required
 def get_state(device_id):
     cr_user = get_jwt_identity()
 
-    device = Db.get_device_by_id(device_id=device_id, user_identity=cr_user)
+    device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
     device.init_state()
 
-    return jsonify(state='ok')
+    return jsonify(state="ok")

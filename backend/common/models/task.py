@@ -1,5 +1,5 @@
 class Task:
-    def __init__(self, id, rule_id, line_id, device_id, action, exec_time, state=''):
+    def __init__(self, id, rule_id, line_id, device_id, action, exec_time, state=""):
         self.id = id
         self.rule_id = rule_id
         self.line_id = line_id

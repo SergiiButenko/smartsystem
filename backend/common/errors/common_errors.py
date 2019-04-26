@@ -23,11 +23,9 @@ def error_obj(message, code, description):
 def handle_error(error):
     def_code = 500
     def_message = "Unexpected error"
-    
+
     if isinstance(error, GeneralError):
-        return error_obj(
-            message=error.message, code=error.code, description=error
-        )
+        return error_obj(message=error.message, code=error.code, description=error)
 
     if isinstance(error, HTTPException):
         return error_obj(message=error.description, code=error.code, description=error)

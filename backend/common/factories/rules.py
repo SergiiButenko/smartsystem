@@ -1,20 +1,20 @@
 import logging
 from datetime import datetime
 
-from common.resources.db import Db
 from common.config.mapper import DeviceToRuleType
-from common.resources.rules_factory.periodic_rule import PeriodicRule
+from common.resources.models.periodic_rule import PeriodicRule
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class RuleFactory():
+class Rules:
     """docstring for Planner"""
 
     def __init__(self):
         pass
 
+    @staticmethod
     def create_rules(self, device_type, device_id, lines):
         Rule = self._rule_cls(device_type=device_type)
 
@@ -34,6 +34,3 @@ class RuleFactory():
             return PeriodicRule
 
         raise ValueError("Rule type for device doesn't exists")
-
-
-RulesFactory = RuleFactory()

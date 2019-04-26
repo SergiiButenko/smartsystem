@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 auth = Blueprint("auth", __name__)
 
+
 @auth.route("/login", methods=["POST"])
 def login():
     logger.info(request.is_json)
@@ -52,12 +53,8 @@ def login():
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
 
-    redis.set(
-        access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2
-    )
-    redis.set(
-        refresh_jti, "false", app.config["JWT_REFRESH_TOKEN_EXPIRES"] * 1.2
-    )
+    redis.set(access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
+    redis.set(refresh_jti, "false", app.config["JWT_REFRESH_TOKEN_EXPIRES"] * 1.2)
 
     ret = {"access_token": access_token, "refresh_token": refresh_token}
 
@@ -83,9 +80,7 @@ def refresh():
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
 
-    redis.set(
-        access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2
-    )
+    redis.set(access_jti, "false", app.config["JWT_ACCESS_TOKEN_EXPIRES"] * 1.2)
 
     ret = {"access_token": access_token}
 

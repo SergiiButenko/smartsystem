@@ -1,2 +1,2 @@
-class DeviceToRuleType():
-	PERIODIC = 'actuator'
+class DeviceToRuleType:
+    PERIODIC = "actuator"
