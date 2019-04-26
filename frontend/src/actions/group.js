@@ -43,7 +43,6 @@ export const fetchGroupById = (groupId) => {
         dispatch(groups.loading(true));
 
         try {
-
             const groups_input = await smartSystemApi.getGroupLinesById(groupId);
             let first = groups_input[groupKey][0];
             dispatch(entity.groups.set(first));

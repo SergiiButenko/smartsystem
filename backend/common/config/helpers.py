@@ -62,10 +62,16 @@ def create_jwt(app):
 
     @jwt.user_loader_callback_loader
     def user_loader_callback(identity):
-        cr_user = Db.get_user(user_identity=identity)
-        if identity != cr_user.username:
+        current_user = Db.get_user(user_identity=identity)
+        current_user = User(
+            username=current_user["name"],
+            password=current_user["password"],
+            roles=["admin"],
+            permissions=["rw"],
+        )
+        if identity != current_user.username:
             return None
-        return cr_user
+        return current_user
 
     @jwt.user_loader_error_loader
     def custom_user_loader_error(identity):

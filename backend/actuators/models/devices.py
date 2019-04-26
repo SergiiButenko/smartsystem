@@ -16,7 +16,7 @@ devices = Blueprint("devices", __name__)
 
 
 @devices.route("/", methods=["GET"])
-#@jwt_required
+@jwt_required
 def devices_route(device_id=None):
     cr_user = get_jwt_identity()
 
@@ -24,17 +24,17 @@ def devices_route(device_id=None):
 
 
 @devices.route("/<string:device_id>", methods=["GET"])
-#@jwt_required
+@jwt_required
 def devices_lines_route(device_id):
     cr_user = get_jwt_identity()
 
     return jsonify(
-        devices=Devices.get_by_id(device_id=device_id, user_identity=cr_user)
+        devices=[Devices.get_by_id(device_id=device_id, user_identity=cr_user)]
     )
 
 
 @devices.route("/<string:device_id>/rules", methods=["GET"])
-#@jwt_required
+@jwt_required
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 

@@ -12,7 +12,7 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='localhost' port='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -25,15 +25,10 @@ class Database:
             (user_identity, user_identity),
         )
         records = self.cursor.fetchone()
-        if records is not None:
-            return User(
-                username=records["name"],
-                password=records["password"],
-                roles=["admin"],
-                permissions=["rw"],
-            )
+        if len(records) == 0:
+            raise Exception("No user_id={}".format(user_identity))
 
-        return None
+        return records
 
     def _get_devices(self, user_identity, device_id):
         device = ""

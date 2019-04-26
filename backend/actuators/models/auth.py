@@ -18,6 +18,7 @@ from flask_jwt_extended import (
 )
 
 from common.resources import Db, redis
+from common.models.user import User
 from common.errors import *
 
 logging.basicConfig(level=logging.INFO)
@@ -38,6 +39,12 @@ def login():
         raise GeneralError(message="Empty password or username")
 
     current_user = Db.get_user(user_identity=username)
+    current_user = User(
+            username=current_user["name"],
+            password=current_user["password"],
+            roles=["admin"],
+            permissions=["rw"],
+        )
 
     if current_user is None or bcrypt.hashpw(
         password.encode("utf-8"), current_user.password.encode("utf-8")
@@ -74,8 +81,12 @@ def refresh():
 
     username = get_jwt_identity()
     current_user = Db.get_user(user_identity=username)
-    if current_user is None:
-        raise WrongCreds()
+    current_user = User(
+        username=current_user["name"],
+        password=current_user["password"],
+        roles=["admin"],
+        permissions=["rw"],
+    )
 
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)

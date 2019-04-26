@@ -18,13 +18,13 @@ class Group:
             group_id=self.id, user_identity=self.user_identity
         )
 
-        devices = list()
         for rec in records:
-            devices.append(Device(user_identity=self.user_identity, **rec))
+            device = Device(user_identity=self.user_identity, **rec)
+            device.init_lines()
 
-        devices.sort(key=lambda e: e.name)
+            self.devices.append(device)
 
-        self.devices = devices
+        self.devices.sort(key=lambda e: e.name)
 
         return self
 

@@ -13,7 +13,7 @@ groups = Blueprint("groups", __name__)
 
 
 @groups.route("/", methods=["GET"])
-#@jwt_required
+@jwt_required
 def groups_route():
     cr_user = get_jwt_identity()
 
@@ -21,8 +21,9 @@ def groups_route():
 
 
 @groups.route("/<string:group_id>", methods=["GET"])
-#@jwt_required
+@jwt_required
 def groups_lines_route(group_id):
     cr_user = get_jwt_identity()
 
-    return jsonify(groups=Groups.get_by_id(group_id=group_id, user_identity=cr_user))
+    # list is applied here for so frontend can work with arrays only
+    return jsonify(groups=[Groups.get_by_id(group_id=group_id, user_identity=cr_user)])

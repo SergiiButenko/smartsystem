@@ -26,13 +26,10 @@ class Device:
             device_id=self.id, line_id=None
         )
 
-        lines = list()
         for rec in records:
-            lines.append(Line(**rec))
+            self.lines.append(Line(**rec))
 
-        lines.sort(key=lambda e: e.name)
-
-        self.lines = lines
+        self.lines.sort(key=lambda e: e.name)
 
         return self
 
