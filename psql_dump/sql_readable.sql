@@ -259,9 +259,12 @@ CREATE TABLE rules_line(
 
 CREATE OR REPLACE FUNCTION notify_rules_change()
 RETURNS trigger AS $$
+DECLARE
+  queue_name text;
 BEGIN
+  SELECT d.concole into queue_name from devices d where id = NEW.device_id;
   PERFORM pg_notify(
-    'rules',
+    queue_name,
     json_build_object(
       'operation', TG_OP,
       'record', row_to_json(NEW)

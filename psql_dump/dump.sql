@@ -172,9 +172,12 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 CREATE FUNCTION public.notify_rules_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+DECLARE
+  queue_name text;
 BEGIN
+  SELECT d.concole into queue_name from devices d where d.id = NEW.device_id;
   PERFORM pg_notify(
-    'rules',
+    queue_name,
     json_build_object(
       'operation', TG_OP,
       'record', row_to_json(NEW)
@@ -700,6 +703,9 @@ COPY public.rules_line (id, rule_id, line_id, device_id, action, exec_time, stat
 e1cf19b6-3543-49b9-8970-f03b3b1c3b56	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	deactivate	2019-04-21 01:22:38.753761+00	pending
 11ea0c07-1745-4d7f-942a-c0dbff3eb209	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
 def21db7-0136-48c9-9738-4622b9ccd8e4	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
+35080fba-56be-481c-9de5-f26ede14cbdc	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
+6170e861-f559-49c6-8d59-6d3e16314e44	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
+2a568647-6906-4a59-9043-b6baec23222f	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
 \.
 
 
