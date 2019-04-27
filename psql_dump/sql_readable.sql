@@ -220,7 +220,6 @@ INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_execution_time', '10');
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_intervals', '2');
 INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'operation_time_wait', '15');
-INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'relay_num', '1');
 INSERT INTO line_device (line_id, device_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'c66f67ec-84b1-484f-842f-5624415c5841');
 
 
