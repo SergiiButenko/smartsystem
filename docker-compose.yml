@@ -14,6 +14,17 @@ services:
       - postgres
     command: /usr/local/bin/gunicorn actuators.app:app -w 1 -t 90 -b 0.0.0.0:5000
 
+  worker:
+    build:
+      context: .
+      dockerfile: WorkerDockerfile
+    container_name: worker
+    networks:
+      - backend
+    depends_on:
+      - postgres
+    command: python -m worker.app
+
   web:
     build:
       context: .

@@ -165,6 +165,29 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
+--
+-- Name: notify_rules_change(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.notify_rules_change() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  PERFORM pg_notify(
+    'rules',
+    json_build_object(
+      'operation', TG_OP,
+      'record', row_to_json(NEW)
+    )::text
+  );
+
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.notify_rules_change() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -671,6 +694,12 @@ deactivate	Деактивувати
 --
 
 COPY public.rules_line (id, rule_id, line_id, device_id, action, exec_time, state) FROM stdin;
+682e9abb-ec83-4333-853b-ebd8859024bf	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
+3fac8dd3-a952-4413-8a99-204ac93649cd	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	deactivate	2019-04-21 01:07:38.753761+00	pending
+9c9353b3-2c61-4f8f-8028-ed69c5b1da34	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 01:12:38.753761+00	pending
+e1cf19b6-3543-49b9-8970-f03b3b1c3b56	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	deactivate	2019-04-21 01:22:38.753761+00	pending
+11ea0c07-1745-4d7f-942a-c0dbff3eb209	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
+def21db7-0136-48c9-9738-4622b9ccd8e4	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
 \.
 
 
@@ -843,6 +872,13 @@ ALTER TABLE ONLY public.rules_line
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rules_line rules_changed; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER rules_changed AFTER INSERT OR UPDATE ON public.rules_line FOR EACH ROW EXECUTE PROCEDURE public.notify_rules_change();
 
 
 --

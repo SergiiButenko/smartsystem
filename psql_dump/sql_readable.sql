@@ -159,6 +159,7 @@ CREATE TABLE lines (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     name text NOT NULL,
     description text,
+    relay_num int NOT NULL DEFAULT 0,
     state text NOT NULL,
     FOREIGN KEY (state) REFERENCES line_state(name)
 );
@@ -211,7 +212,7 @@ CREATE TABLE allowed_status_for_line (
 );
 
 
-INSERT INTO lines(id, name, state) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'Полуниця клумба', 'deactivated');
+INSERT INTO lines(id, name, state, relay_num) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'Полуниця клумба', 'deactivated', 0);
 INSERT INTO line_settings (line_id, setting, value, readonly) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'type', 'irrigation', 'FALSE');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'activated');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'deactivated');
@@ -255,3 +256,24 @@ CREATE TABLE rules_line(
     FOREIGN KEY(action) REFERENCES rule_type(name),
     FOREIGN KEY(device_id) REFERENCES devices(id)
 );
+
+CREATE OR REPLACE FUNCTION notify_rules_change()
+RETURNS trigger AS $$
+BEGIN
+  PERFORM pg_notify(
+    'rules',
+    json_build_object(
+      'operation', TG_OP,
+      'record', row_to_json(NEW)
+    )::text
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER rules_changed
+AFTER INSERT OR UPDATE
+ON rules_line
+FOR EACH ROW
+EXECUTE PROCEDURE notify_rules_change();
