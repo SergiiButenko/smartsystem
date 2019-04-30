@@ -26,6 +26,17 @@ services:
       - redis
     command: python -m actuators.app
 
+  sensors:
+    build:
+      context: .
+      dockerfile: SensorsDockerfile
+    container_name: sensors
+    networks:
+      - backend
+    depends_on:
+      - mosquitto
+    command: python -m sensors.app
+
   frontend:
     build:
       context: .
