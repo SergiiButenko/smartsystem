@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const path = require('path');
@@ -53,11 +54,13 @@ module.exports =  env => {
         },
         optimization: isDevMode(ENV) ? {} : {
             minimize: true,
-            minimizer: [new UglifyJsPlugin({
-                uglifyOptions: {
-                    parallel: true,
-                },
-            })],
+            minimizer: [
+              new TerserPlugin({
+                parallel: true,
+                cache: true,
+                test: /\.js(\?.*)?$/i,
+              }),
+            ],
             usedExports: true,
             sideEffects: true
         },
@@ -124,11 +127,13 @@ module.exports =  env => {
                 config: path.join(__dirname, 'src/config'),
             },
         },
-
-        // plugins: [
-        //   new webpack.HotModuleReplacementPlugin()
-        // ],
         plugins: [
+            new TerserPlugin({
+                parallel: true,
+                terserOptions: {
+                    ecma: 6,
+                },
+            }),
             new HtmlWebPackPlugin({
                 template: './src/index.html',
                 filename: './index.html',

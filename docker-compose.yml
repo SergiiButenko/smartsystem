@@ -1,10 +1,10 @@
 version: '3.6'
 services:
-  actuators:
+  web:
     build:
       context: .
-      dockerfile: ActuatorsDockerfile
-    container_name: actuators
+      dockerfile: WebDockerfile
+    container_name: web
     networks:
       - backend
     expose:
@@ -12,26 +12,27 @@ services:
     depends_on:
       - redis
       - postgres
-    command: /usr/local/bin/gunicorn actuators.app:app -w 1 -t 90 -b 0.0.0.0:5000
+    command: /usr/local/bin/gunicorn web.app:app -w 1 -t 90 -b 0.0.0.0:5000
 
-  worker:
+  actuators:
     build:
       context: .
-      dockerfile: WorkerDockerfile
-    container_name: worker
+      dockerfile: ActuatorsDockerfile
+    container_name: actuators
     networks:
       - backend
     depends_on:
       - postgres
-    command: python -m worker.app
+      - redis
+    command: python -m actuators.app
 
-  web:
+  frontend:
     build:
       context: .
       dockerfile: FrontendDockerfile
-    container_name: web
+    container_name: frontend
     depends_on:
-      - actuators
+      - web
     networks:
       - frontend
     expose:
@@ -95,6 +96,34 @@ services:
       - backend
     restart: unless-stopped
 
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    expose:
+      - "1883"
+      - "9001"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./backend/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - backend
+
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-data:/data
+
 networks:
   frontend:
   backend:
@@ -103,3 +132,4 @@ volumes:
   redis_data:
   postgres-data:
   pgadmin-data:
+  mongo-data:

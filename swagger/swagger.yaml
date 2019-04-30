@@ -17,8 +17,8 @@ produces:
   - application/json
 
 tags:
-- name: actuators
-  description: All operations related to actuators
+- name: web
+  description: All operations related to web
 - name: sensors
   description: All operations related to sensors
 - name: rules
@@ -30,8 +30,8 @@ paths:
   /actuators:
     get:
       tags:
-      - actuators
-      summary: Get summary for all actuators
+      - web
+      summary: Get summary for all web
       description: Returns an array of actuator objects
       operationId: getAllActuators
       responses:
