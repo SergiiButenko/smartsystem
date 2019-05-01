@@ -6,10 +6,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from common.resourses.db import Db
 
 def main():
-    conn_string = "host='postgres' port='5432' dbname='smart_house' user='postgres' password='changeme'"
-    conn = psycopg2.connect(conn_string)
+    conn = psycopg2.connect(Db.conn_string)
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     curs = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)

@@ -8,12 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 class Database:
-    conn = None
-    cursor = None
+    conn_string = "host='postgres' port='5432' dbname='smart_house' user='postgres' password='changeme'"
 
     def __init__(self):
-        conn_string = "host='localhost' port='5432' dbname='smart_house' user='postgres' password='changeme'"
-        self.conn = psycopg2.connect(conn_string)
+        self.conn = psycopg2.connect(Database.conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def __del__(self):
