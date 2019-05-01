@@ -11,7 +11,7 @@ SET standard_conforming_strings = on;
 -- Drop databases (except postgres and template1)
 --
 
-DROP DATABASE irrigation;
+DROP DATABASE smart_house;
 
 
 
@@ -130,16 +130,66 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
+DROP DATABASE postgres;
 --
--- Name: irrigation; Type: DATABASE; Schema: -; Owner: postgres
+-- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE irrigation WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
 
 
-ALTER DATABASE irrigation OWNER TO postgres;
+ALTER DATABASE postgres OWNER TO postgres;
 
-\connect irrigation
+\connect postgres
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
+-- Dumped by pg_dump version 11.2 (Debian 11.2-1.pgdg90+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: smart_house; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE smart_house WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+
+
+ALTER DATABASE smart_house OWNER TO postgres;
+
+\connect smart_house
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -166,16 +216,16 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 
 --
--- Name: notify_rules_change(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: notify_jobs_queue_change(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.notify_rules_change() RETURNS trigger
+CREATE FUNCTION public.notify_jobs_queue_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE
   queue_name text;
 BEGIN
-  SELECT d.concole into queue_name from devices d where d.id = NEW.device_id;
+  SELECT d.concole into queue_name from devices d where id = NEW.device_id;
   PERFORM pg_notify(
     queue_name,
     json_build_object(
@@ -189,7 +239,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.notify_rules_change() OWNER TO postgres;
+ALTER FUNCTION public.notify_jobs_queue_change() OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -290,6 +340,47 @@ CREATE TABLE public.groups (
 ALTER TABLE public.groups OWNER TO postgres;
 
 --
+-- Name: job_states; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.job_states (
+    name text NOT NULL,
+    description text NOT NULL
+);
+
+
+ALTER TABLE public.job_states OWNER TO postgres;
+
+--
+-- Name: job_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.job_type (
+    name text NOT NULL,
+    description text NOT NULL
+);
+
+
+ALTER TABLE public.job_type OWNER TO postgres;
+
+--
+-- Name: jobs_queue; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.jobs_queue (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    task_id uuid,
+    line_id uuid NOT NULL,
+    device_id uuid NOT NULL,
+    action text NOT NULL,
+    exec_time timestamp with time zone NOT NULL,
+    state text DEFAULT 'pending'::text NOT NULL
+);
+
+
+ALTER TABLE public.jobs_queue OWNER TO postgres;
+
+--
 -- Name: line_device; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -365,6 +456,7 @@ CREATE TABLE public.lines (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     name text NOT NULL,
     description text,
+    relay_num integer DEFAULT 0 NOT NULL,
     state text NOT NULL
 );
 
@@ -409,47 +501,6 @@ CREATE TABLE public.roles (
 ALTER TABLE public.roles OWNER TO postgres;
 
 --
--- Name: rule_states; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.rule_states (
-    name text NOT NULL,
-    description text NOT NULL
-);
-
-
-ALTER TABLE public.rule_states OWNER TO postgres;
-
---
--- Name: rule_type; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.rule_type (
-    name text NOT NULL,
-    description text NOT NULL
-);
-
-
-ALTER TABLE public.rule_type OWNER TO postgres;
-
---
--- Name: rules_line; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.rules_line (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    rule_id uuid,
-    line_id uuid NOT NULL,
-    device_id uuid NOT NULL,
-    action text NOT NULL,
-    exec_time timestamp with time zone NOT NULL,
-    state text DEFAULT 'pending'::text NOT NULL
-);
-
-
-ALTER TABLE public.rules_line OWNER TO postgres;
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -468,8 +519,8 @@ ALTER TABLE public.users OWNER TO postgres;
 --
 
 COPY public.allowed_status_for_line (id, line_id, allowed_status) FROM stdin;
-9f400395-743e-459a-91d7-d518d7747c65	80122552-18bc-4846-9799-0b728324251c	activated
-cad8ecbb-e581-4b87-9e2b-e40061899f77	80122552-18bc-4846-9799-0b728324251c	deactivated
+7fd88435-d372-4527-8fc4-459a4d29fa4f	80122552-18bc-4846-9799-0b728324251c	activated
+1e32c621-152d-485b-a2bd-8741222acfcd	80122552-18bc-4846-9799-0b728324251c	deactivated
 \.
 
 
@@ -478,7 +529,7 @@ cad8ecbb-e581-4b87-9e2b-e40061899f77	80122552-18bc-4846-9799-0b728324251c	deacti
 --
 
 COPY public.device_groups (id, device_id, group_id) FROM stdin;
-c9627226-2939-4953-8d17-baad182ed14a	c66f67ec-84b1-484f-842f-5624415c5841	80122551-18bc-4846-9799-0b728324251c
+71565230-c735-4c1d-abf3-147c619a02be	c66f67ec-84b1-484f-842f-5624415c5841	80122551-18bc-4846-9799-0b728324251c
 \.
 
 
@@ -503,24 +554,24 @@ relay_quantity	Кількість реле
 --
 
 COPY public.device_settings (id, device_id, setting, value, type, readonly) FROM stdin;
-b055e4f1-c9f1-443e-8e55-b4310168da86	a1106ae2-b537-45c8-acb6-aca85dcee675	type	actuator	str	t
-8e260474-c786-4b85-9553-a75c64a29b6e	a1106ae2-b537-45c8-acb6-aca85dcee675	device_type	console	str	t
-7bf600a3-08d1-4c68-9b7b-e84995519cc3	a1106ae2-b537-45c8-acb6-aca85dcee675	model	rasbpery_pi	str	t
-2e7bb84b-c46f-4edd-92a1-bf342cd58cdf	a1106ae2-b537-45c8-acb6-aca85dcee675	version	0.1	str	t
-5e88c157-59d1-460c-aa4a-8c1cc29cd764	c66f67ec-84b1-484f-842f-5624415c5841	type	actuator	str	t
-29ec76a3-5b0b-42a7-b682-0f152569f7fa	c66f67ec-84b1-484f-842f-5624415c5841	device_type	relay	str	t
-c2b8d712-dd97-4918-866e-06cf81c45d57	c66f67ec-84b1-484f-842f-5624415c5841	model	relay_no	str	t
-d6fa47b6-7bdb-454a-bb2e-54e4ad177171	c66f67ec-84b1-484f-842f-5624415c5841	version	0.1	str	t
-f421ea42-cd36-4535-8662-e04445c1ad55	c66f67ec-84b1-484f-842f-5624415c5841	comm_protocol	network	str	t
-4e95d1e9-0abb-4795-921c-68392dfba13e	c66f67ec-84b1-484f-842f-5624415c5841	ip	192.168.1.104	str	t
-91e2d27b-cd33-436a-894d-c443a6771fa6	c66f67ec-84b1-484f-842f-5624415c5841	relay_quantity	16	str	t
-d703d5da-90f7-4b17-aef1-0c0008c84690	75308265-98aa-428b-aff6-a13beb5a3129	type	actuator	str	t
-82d5c09e-ba66-4c34-98ae-cf671fa7256d	75308265-98aa-428b-aff6-a13beb5a3129	device_type	fill	str	t
-f803eaf4-73ce-49c5-9398-3cc7642e5df2	75308265-98aa-428b-aff6-a13beb5a3129	model	fill_nc	str	t
-a8af9542-8ede-4a3d-afbf-128700a2cd8f	75308265-98aa-428b-aff6-a13beb5a3129	version	0.1	str	t
-8d4ab2c7-1c33-4a85-b4ca-5622922e7ffd	75308265-98aa-428b-aff6-a13beb5a3129	comm_protocol	network	str	t
-5be59718-a514-49a1-b7b1-629e5cbdfa2a	75308265-98aa-428b-aff6-a13beb5a3129	ip	192.168.1.104	str	t
-234fe93e-03ea-4066-9b8c-835a376c895a	75308265-98aa-428b-aff6-a13beb5a3129	relay_quantity	16	str	t
+b325786c-7b18-4e71-8a3a-c67edce302d1	a1106ae2-b537-45c8-acb6-aca85dcee675	type	actuator	str	t
+6575ac9d-72e5-4fc3-a34c-31173ea98b60	a1106ae2-b537-45c8-acb6-aca85dcee675	device_type	console	str	t
+5e27d05d-a2f9-42de-9927-8fcd514e2784	a1106ae2-b537-45c8-acb6-aca85dcee675	model	rasbpery_pi	str	t
+dfb1116c-b588-4626-90e1-2caa25e7fdab	a1106ae2-b537-45c8-acb6-aca85dcee675	version	0.1	str	t
+08bc95c0-29f3-4ec8-9989-0cefe0cdc566	c66f67ec-84b1-484f-842f-5624415c5841	type	actuator	str	t
+7925c686-9da1-40e3-af5b-098c0d655e55	c66f67ec-84b1-484f-842f-5624415c5841	device_type	relay	str	t
+e7aabb0d-c5c0-4bd7-957a-1f91366553be	c66f67ec-84b1-484f-842f-5624415c5841	model	relay_no	str	t
+3c5568a0-0082-439d-8a12-a46d5d13f58a	c66f67ec-84b1-484f-842f-5624415c5841	version	0.1	str	t
+e88aca2c-73fc-42f2-813c-aa3964265168	c66f67ec-84b1-484f-842f-5624415c5841	comm_protocol	network	str	t
+3f3823c5-7dda-4358-82ea-3be1d1915838	c66f67ec-84b1-484f-842f-5624415c5841	ip	192.168.1.104	str	t
+aab566a9-b589-4881-830a-657c2ae17901	c66f67ec-84b1-484f-842f-5624415c5841	relay_quantity	16	str	t
+7389f3d6-63ac-44c2-9ca4-10a60b66a49d	75308265-98aa-428b-aff6-a13beb5a3129	type	actuator	str	t
+a3a5684a-8209-4fd8-b309-75ed1db8e2f0	75308265-98aa-428b-aff6-a13beb5a3129	device_type	fill	str	t
+94b5a61c-ec3f-4f59-8874-5ad683a43130	75308265-98aa-428b-aff6-a13beb5a3129	model	fill_nc	str	t
+b9194de5-e7aa-49da-956a-e9ecb9a8b431	75308265-98aa-428b-aff6-a13beb5a3129	version	0.1	str	t
+f2c73433-913d-4736-b83b-457ebf0292da	75308265-98aa-428b-aff6-a13beb5a3129	comm_protocol	network	str	t
+3e1f3155-a210-4fba-bb0f-0df49b71b5ff	75308265-98aa-428b-aff6-a13beb5a3129	ip	192.168.1.104	str	t
+81c81f08-1cfd-440b-821e-2b1a1696b316	75308265-98aa-428b-aff6-a13beb5a3129	relay_quantity	16	str	t
 \.
 
 
@@ -529,9 +580,9 @@ a8af9542-8ede-4a3d-afbf-128700a2cd8f	75308265-98aa-428b-aff6-a13beb5a3129	versio
 --
 
 COPY public.device_user (id, device_id, user_id) FROM stdin;
-a2f0b3e3-4348-4c19-9506-7265e962066b	a1106ae2-b537-45c8-acb6-aca85dcee675	3c545eb5-6cc0-47f7-a129-da0a41b856e3
-2010f0c2-7cbf-4a81-bbc8-4c8af9456932	c66f67ec-84b1-484f-842f-5624415c5841	3c545eb5-6cc0-47f7-a129-da0a41b856e3
-e6a668eb-99b6-4ade-b050-59af452706d3	75308265-98aa-428b-aff6-a13beb5a3129	3c545eb5-6cc0-47f7-a129-da0a41b856e3
+1ccd0cdd-27f2-4100-bbe6-5c9d6551088b	a1106ae2-b537-45c8-acb6-aca85dcee675	3c545eb5-6cc0-47f7-a129-da0a41b856e3
+569d5581-40a6-441f-a60a-5569b4739fdf	c66f67ec-84b1-484f-842f-5624415c5841	3c545eb5-6cc0-47f7-a129-da0a41b856e3
+8a20c1b4-0d28-422d-9d63-37da9817c29c	75308265-98aa-428b-aff6-a13beb5a3129	3c545eb5-6cc0-47f7-a129-da0a41b856e3
 \.
 
 
@@ -556,11 +607,44 @@ COPY public.groups (id, name, description) FROM stdin;
 
 
 --
+-- Data for Name: job_states; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.job_states (name, description) FROM stdin;
+pending	Заплановано
+done	Виконано
+failed	Не виконано
+canceled	Скасовано
+canceled_rain	Скасовано через дощ
+canceled_humidity	Скасовано через вологість
+canceled_mistime	Скасовано через помилку з часом
+\.
+
+
+--
+-- Data for Name: job_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.job_type (name, description) FROM stdin;
+activate	Активувати
+deactivate	Деактивувати
+\.
+
+
+--
+-- Data for Name: jobs_queue; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.jobs_queue (id, task_id, line_id, device_id, action, exec_time, state) FROM stdin;
+\.
+
+
+--
 -- Data for Name: line_device; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.line_device (id, line_id, device_id) FROM stdin;
-06ad5160-6578-4d65-bd97-cc620a33b860	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841
+2bc3d1f9-95fc-4dea-82cd-a9f656fe26a7	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841
 \.
 
 
@@ -591,11 +675,10 @@ COPY public.line_sensor_settings (id, line_id, sensor, priority, threshholds) FR
 --
 
 COPY public.line_settings (id, line_id, setting, value, type, readonly) FROM stdin;
-4b1f952c-1a13-4f11-a55d-df2d28c96127	80122552-18bc-4846-9799-0b728324251c	type	irrigation	str	f
-69377bcf-e8eb-4627-9f3c-e2c155edc9c4	80122552-18bc-4846-9799-0b728324251c	operation_execution_time	10	str	t
-f9f6869e-83dc-4705-80bd-53e869e12fe2	80122552-18bc-4846-9799-0b728324251c	operation_intervals	2	str	t
-70b8c5e7-91b1-4364-80a5-43187524a3d6	80122552-18bc-4846-9799-0b728324251c	operation_time_wait	15	str	t
-4b413dd5-8d00-4972-8a65-43e792483fa0	80122552-18bc-4846-9799-0b728324251c	relay_num	1	str	t
+ac85bf4a-b302-4b52-abb9-5e53eaf09f43	80122552-18bc-4846-9799-0b728324251c	type	irrigation	str	f
+ae86a8ad-62a5-456b-a99e-d3bfbf23b927	80122552-18bc-4846-9799-0b728324251c	operation_execution_time	10	str	t
+98088d3f-39a6-4833-abee-3b6555bb3d46	80122552-18bc-4846-9799-0b728324251c	operation_intervals	2	str	t
+c69c006c-4941-4b8c-b52a-39512a08e409	80122552-18bc-4846-9799-0b728324251c	operation_time_wait	15	str	t
 \.
 
 
@@ -613,8 +696,8 @@ deactivated	Вимкнуто
 -- Data for Name: lines; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.lines (id, name, description, state) FROM stdin;
-80122552-18bc-4846-9799-0b728324251c	Полуниця клумба	\N	deactivated
+COPY public.lines (id, name, description, relay_num, state) FROM stdin;
+80122552-18bc-4846-9799-0b728324251c	Полуниця клумба	\N	0	deactivated
 \.
 
 
@@ -639,20 +722,20 @@ delete_device	Ability to delete devices for user
 --
 
 COPY public.role_permissions (id, role_name, permission_name) FROM stdin;
-5907156b-29da-4e47-96b8-ad1241ae48a3	admin	create_line
-a27539bc-f7e3-49c0-918d-ee19aa89002b	admin	read_line
-4c3208fc-47b9-4af0-a564-02eb3c377355	admin	update_line
-1b9bcd04-8a73-4451-9782-91b910016c11	admin	delete_line
-45e41d07-6182-4b12-ae3c-47229b3c5ea6	admin	create_device
-0821f790-5526-4f9a-ac0c-4afe21340ec5	admin	read_device
-0b67ccab-188c-4168-b932-e0715663e8cb	admin	update_device
-5e3ccda0-cac3-4c6e-af06-04f0c3f490eb	admin	delete_device
-f6c1c274-90e7-42c9-9912-cd82d44c3386	advanced	read_line
-db9bad10-5d03-4914-a833-53ead9a5331a	advanced	update_line
-f4eb0f25-9473-4005-8b59-f42b2caca10f	advanced	read_device
-d3f3007f-614a-43a5-996d-0ba64df2989b	advanced	update_device
-9cde5f3b-c3ec-494e-8fd6-2d3fa3caa186	user	read_line
-f43d3c36-60ba-469e-b63f-bc9b4606e4a7	user	read_device
+de88962f-d279-480d-8c38-923c7d2d3bd7	admin	create_line
+177276c2-cbeb-4d42-ba56-25b060b05df1	admin	read_line
+e6924de0-8dff-4cd9-86e1-9b7dd2b1a997	admin	update_line
+8b7599e7-eb55-4cb1-96ce-df0f0717a7af	admin	delete_line
+bace8d8e-6210-4c94-9e49-eae2670444f6	admin	create_device
+9f8319fc-de9e-401e-a5bd-9e42436d9b1f	admin	read_device
+3ca71774-ce0b-4686-8fd5-a7f284592c72	admin	update_device
+237418a6-3088-4425-a4b8-ad9f2ae36632	admin	delete_device
+31c4c464-f7e9-4b20-81bf-109c9d1192fe	advanced	read_line
+74f4d3c4-da51-4282-8ea2-45fb8216313c	advanced	update_line
+1db11b37-21f8-4a78-8924-554356ebc3ab	advanced	read_device
+1e2394c6-81bc-4758-9a98-2baca717320b	advanced	update_device
+35966300-6b94-4775-91f8-bce3693d29b1	user	read_line
+633fdcab-bc77-479a-a432-24b6d7a1237e	user	read_device
 \.
 
 
@@ -664,48 +747,6 @@ COPY public.roles (name, description) FROM stdin;
 user	Read only user
 advanced	User with ability to modify settings
 admin	User with ability to create devices
-\.
-
-
---
--- Data for Name: rule_states; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.rule_states (name, description) FROM stdin;
-Pending	Заплановано
-Done	Виконано
-Failed	Не виконано
-Canceled	Скасовано
-Canceled_by_rain	Скасовано через дощ
-Canceled_by_humidity	Скасовано через вологість
-Canceled_by_mistime	Скасовано через помилку з часом
-\.
-
-
---
--- Data for Name: rule_type; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.rule_type (name, description) FROM stdin;
-activate	Активувати
-deactivate	Деактивувати
-\.
-
-
---
--- Data for Name: rules_line; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.rules_line (id, rule_id, line_id, device_id, action, exec_time, state) FROM stdin;
-682e9abb-ec83-4333-853b-ebd8859024bf	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
-3fac8dd3-a952-4413-8a99-204ac93649cd	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	deactivate	2019-04-21 01:07:38.753761+00	pending
-9c9353b3-2c61-4f8f-8028-ed69c5b1da34	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 01:12:38.753761+00	pending
-e1cf19b6-3543-49b9-8970-f03b3b1c3b56	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	deactivate	2019-04-21 01:22:38.753761+00	pending
-11ea0c07-1745-4d7f-942a-c0dbff3eb209	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
-def21db7-0136-48c9-9738-4622b9ccd8e4	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
-35080fba-56be-481c-9de5-f26ede14cbdc	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
-6170e861-f559-49c6-8d59-6d3e16314e44	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
-2a568647-6906-4a59-9043-b6baec23222f	a978ccee-c027-4aa5-bcad-4b5888c0326a	80122552-18bc-4846-9799-0b728324251c	c66f67ec-84b1-484f-842f-5624415c5841	activate	2019-04-21 00:57:38.753761+00	pending
 \.
 
 
@@ -774,6 +815,30 @@ ALTER TABLE ONLY public.devices
 
 ALTER TABLE ONLY public.groups
     ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: job_states job_states_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.job_states
+    ADD CONSTRAINT job_states_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: job_type job_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.job_type
+    ADD CONSTRAINT job_type_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: jobs_queue jobs_queue_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jobs_queue
+    ADD CONSTRAINT jobs_queue_pkey PRIMARY KEY (id);
 
 
 --
@@ -849,30 +914,6 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- Name: rule_states rule_states_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rule_states
-    ADD CONSTRAINT rule_states_pkey PRIMARY KEY (name);
-
-
---
--- Name: rule_type rule_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rule_type
-    ADD CONSTRAINT rule_type_pkey PRIMARY KEY (name);
-
-
---
--- Name: rules_line rules_line_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rules_line
-    ADD CONSTRAINT rules_line_pkey PRIMARY KEY (id);
-
-
---
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -881,10 +922,10 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: rules_line rules_changed; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: jobs_queue jobs_queue_changed; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER rules_changed AFTER INSERT OR UPDATE ON public.rules_line FOR EACH ROW EXECUTE PROCEDURE public.notify_rules_change();
+CREATE TRIGGER jobs_queue_changed AFTER INSERT OR UPDATE ON public.jobs_queue FOR EACH ROW EXECUTE PROCEDURE public.notify_jobs_queue_change();
 
 
 --
@@ -960,6 +1001,30 @@ ALTER TABLE ONLY public.devices
 
 
 --
+-- Name: jobs_queue jobs_queue_action_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jobs_queue
+    ADD CONSTRAINT jobs_queue_action_fkey FOREIGN KEY (action) REFERENCES public.job_type(name);
+
+
+--
+-- Name: jobs_queue jobs_queue_device_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jobs_queue
+    ADD CONSTRAINT jobs_queue_device_id_fkey FOREIGN KEY (device_id) REFERENCES public.devices(id);
+
+
+--
+-- Name: jobs_queue jobs_queue_line_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.jobs_queue
+    ADD CONSTRAINT jobs_queue_line_id_fkey FOREIGN KEY (line_id) REFERENCES public.lines(id);
+
+
+--
 -- Name: line_device line_device_device_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1029,80 +1094,6 @@ ALTER TABLE ONLY public.role_permissions
 
 ALTER TABLE ONLY public.role_permissions
     ADD CONSTRAINT role_permissions_role_name_fkey FOREIGN KEY (role_name) REFERENCES public.roles(name);
-
-
---
--- Name: rules_line rules_line_action_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rules_line
-    ADD CONSTRAINT rules_line_action_fkey FOREIGN KEY (action) REFERENCES public.rule_type(name);
-
-
---
--- Name: rules_line rules_line_device_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rules_line
-    ADD CONSTRAINT rules_line_device_id_fkey FOREIGN KEY (device_id) REFERENCES public.devices(id);
-
-
---
--- Name: rules_line rules_line_line_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rules_line
-    ADD CONSTRAINT rules_line_line_id_fkey FOREIGN KEY (line_id) REFERENCES public.lines(id);
-
-
---
--- PostgreSQL database dump complete
---
-
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
--- Dumped by pg_dump version 11.2 (Debian 11.2-1.pgdg90+1)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
-DROP DATABASE postgres;
---
--- Name: postgres; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE postgres WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-
-
-ALTER DATABASE postgres OWNER TO postgres;
-
-\connect postgres
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: DATABASE postgres; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
 
 
 --

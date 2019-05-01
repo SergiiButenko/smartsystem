@@ -1,5 +1,5 @@
 from common.config.helpers import create_app, create_jwt
-from actuators.models import *
+from web.models import *
 
 app = create_app(__name__)
 jwt = create_jwt(app)

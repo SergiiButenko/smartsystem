@@ -12,7 +12,7 @@ class Database:
     cursor = None
 
     def __init__(self):
-        conn_string = "host='postgres' port='5432' dbname='irrigation' user='postgres' password='changeme'"
+        conn_string = "host='localhost' port='5432' dbname='smart_house' user='postgres' password='changeme'"
         self.conn = psycopg2.connect(conn_string)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -154,22 +154,22 @@ class Database:
     def get_all_groups(self, user_identity):
         return self._get_groups(group_id=None, user_identity=user_identity)
 
-    def register_rule_tasks(self, rules):
+    def register_job(self, job):
         """
         Add tasks into database.
 
-        :param rules: array of rules
+        :param job: job class
         :return: void
         """
-        for rule in rules:
-            for task in rule.tasks:
-                query = """
-                INSERT INTO rules_line
-                (rule_id, line_id, device_id, action, exec_time)
-                VALUES (%(rule_id)s, %(line_id)s, %(device_id)s, %(action)s, %(exec_time)s)
-                """
-                self.cursor.execute(query, task.to_json())
-            self.conn.commit()
+        query = """
+            INSERT INTO jobs_queue
+            (task_id, line_id, device_id, action, exec_time)
+            VALUES (%(task_id)s, %(line_id)s, %(device_id)s, %(action)s, %(exec_time)s)
+            RETURNING id
+            """
+        self.cursor.execute(query, job.to_json())
+        self.conn.commit()
+        return self.cursor.fetchone()
 
     def remove_rule_tasks(self, rules):
         """
@@ -187,7 +187,7 @@ class Database:
                 self.cursor.execute(query, task.to_json())
             self.conn.commit()
 
-    def get_device_lines_next_tasks(self, device_id, user_identity):
+    def get_device_lines_next_tasks(self, device_id):
         """
         Return first rule to execute
         :param device_id:
@@ -203,8 +203,6 @@ class Database:
         """
         self.cursor.execute(query, {"device_id": device_id})
         records = self.cursor.fetchall()
-
-        logger.info(len(records))
         tasks = list()
         for rec in records:
             # tasks.append(Task(**rec))

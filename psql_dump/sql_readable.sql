@@ -223,40 +223,40 @@ INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-
 INSERT INTO line_device (line_id, device_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'c66f67ec-84b1-484f-842f-5624415c5841');
 
 
-CREATE TABLE rule_type (
+CREATE TABLE job_type (
     name text NOT NULL PRIMARY KEY,
     description text NOT NULL
 );
-INSERT INTO rule_type(name, description) VALUES('activate', 'Активувати');
-INSERT INTO rule_type(name, description) VALUES('deactivate', 'Деактивувати');
+INSERT INTO job_type(name, description) VALUES('activate', 'Активувати');
+INSERT INTO job_type(name, description) VALUES('deactivate', 'Деактивувати');
 
 
-CREATE TABLE rule_states (
+CREATE TABLE job_states (
     name text NOT NULL PRIMARY KEY,
     description text NOT NULL
 );
-INSERT INTO rule_states VALUES('pending', 'Заплановано');
-INSERT INTO rule_states VALUES('done', 'Виконано');
-INSERT INTO rule_states VALUES('failed', 'Не виконано');
-INSERT INTO rule_states VALUES('canceled', 'Скасовано');
-INSERT INTO rule_states VALUES('canceled_rain', 'Скасовано через дощ');
-INSERT INTO rule_states VALUES('canceled_humidity', 'Скасовано через вологість');
-INSERT INTO rule_states VALUES('canceled_mistime', 'Скасовано через помилку з часом');
+INSERT INTO job_states VALUES('pending', 'Заплановано');
+INSERT INTO job_states VALUES('done', 'Виконано');
+INSERT INTO job_states VALUES('failed', 'Не виконано');
+INSERT INTO job_states VALUES('canceled', 'Скасовано');
+INSERT INTO job_states VALUES('canceled_rain', 'Скасовано через дощ');
+INSERT INTO job_states VALUES('canceled_humidity', 'Скасовано через вологість');
+INSERT INTO job_states VALUES('canceled_mistime', 'Скасовано через помилку з часом');
 
-CREATE TABLE rules_line(
+CREATE TABLE jobs_queue(
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    rule_id uuid,
+    task_id uuid,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
     action text NOT NULL,
     exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     state text DEFAULT 'pending' NOT NULL,
     FOREIGN KEY(line_id) REFERENCES lines(id),
-    FOREIGN KEY(action) REFERENCES rule_type(name),
+    FOREIGN KEY(action) REFERENCES job_type(name),
     FOREIGN KEY(device_id) REFERENCES devices(id)
 );
 
-CREATE OR REPLACE FUNCTION notify_rules_change()
+CREATE OR REPLACE FUNCTION notify_jobs_queue_change()
 RETURNS trigger AS $$
 DECLARE
   queue_name text;
@@ -274,8 +274,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER rules_changed
+CREATE TRIGGER jobs_queue_changed
 AFTER INSERT OR UPDATE
-ON rules_line
+ON jobs_queue
 FOR EACH ROW
-EXECUTE PROCEDURE notify_rules_change();
+EXECUTE PROCEDURE notify_jobs_queue_change();

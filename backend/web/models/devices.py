@@ -8,8 +8,6 @@ from common.config.helpers import validate_json
 
 import logging
 
-from common.resources.planner import RulesPlanner
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 devices = Blueprint("devices", __name__)
@@ -17,7 +15,7 @@ devices = Blueprint("devices", __name__)
 
 @devices.route("/", methods=["GET"])
 @jwt_required
-def devices_route(device_id=None):
+def devices_route():
     cr_user = get_jwt_identity()
 
     return jsonify(devices=Devices.get_all(user_identity=cr_user))
@@ -33,18 +31,18 @@ def devices_lines_route(device_id):
     )
 
 
-@devices.route("/<string:device_id>/rules", methods=["GET"])
+@devices.route("/<string:device_id>/tasks", methods=["GET"])
 @jwt_required
 def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 
     device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    rules = RulesPlanner.get_next_rules(device=device)
+    tasks = Tasks.get_next_tasks(device=device)
 
-    return jsonify(rules=rules)
+    return jsonify(tasks=tasks)
 
 
-@devices.route("/<string:device_id>/rules", methods=["POST"])
+@devices.route("/<string:device_id>/tasks", methods=["POST"])
 @jwt_required
 @validate_json
 def set_rules_for_device(device_id):
@@ -58,18 +56,17 @@ def set_rules_for_device(device_id):
     # }
 
     device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    lines = income_json["lines"]
-    rules = RulesPlanner.add_rules(device=device, lines=lines)
+    tasks = Tasks.register_tasks(device=device, lines=income_json["lines"])
 
-    return jsonify(rules=rules)
+    return jsonify(tasks=tasks)
 
 
-@devices.route("/<string:device_id>/rules", methods=["DELETE"])
+@devices.route("/<string:device_id>/tasks", methods=["DELETE"])
 @jwt_required
 @validate_json
 def delete_rules_for_device(device_id):
     income_json = request.json
-    RulesPlanner.remove_rules(rules=income_json["rules"])
+    Tasks.remove_tasks(rules=income_json["rules"])
 
     return jsonify(state="ok")
 
