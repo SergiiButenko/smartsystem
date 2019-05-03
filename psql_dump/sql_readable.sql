@@ -164,13 +164,30 @@ CREATE TABLE lines (
     FOREIGN KEY (state) REFERENCES line_state(name)
 );
 
+CREATE TABLE actions (
+    name text NOT NULL PRIMARY KEY,
+    description text
+);
+
+CREATE TABLE conditions (
+    name text NOT NULL PRIMARY KEY,
+    description text
+);
+
+CREATE TABLE rules (
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name text,
+    action text NOT NULL,
+    condition text NOT NULL,
+    FOREIGN KEY (action) REFERENCES actions(name),
+    FOREIGN KEY (condition) REFERENCES conditions(name)
+);
+
 CREATE TABLE line_settings (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id uuid NOT NULL,
     setting TEXT NOT NULL,
     value TEXT NOT NULL,
-    type TEXT NOT NULL DEFAULT 'str',
-    readonly BOOLEAN NOT NULL DEFAULT 'TRUE', 
     FOREIGN KEY (line_id) REFERENCES lines(id),
     FOREIGN KEY (setting) REFERENCES line_parameters(name)
 );
@@ -179,8 +196,6 @@ CREATE TABLE line_sensor_settings (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id uuid NOT NULL,
     sensor uuid NOT NULL,
-    priority INTEGER DEFAULT 1 NOT NULL, -- 1 - highest
-    threshholds json NOT NULL, 
     FOREIGN KEY (line_id) REFERENCES lines(id),
     FOREIGN KEY (sensor) REFERENCES devices(id)
 );
@@ -213,7 +228,7 @@ CREATE TABLE allowed_status_for_line (
 
 
 INSERT INTO lines(id, name, state, relay_num) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'Полуниця клумба', 'deactivated', 0);
-INSERT INTO line_settings (line_id, setting, value, readonly) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'type', 'irrigation', 'FALSE');
+INSERT INTO line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'type', 'irrigation');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'activated');
 INSERT INTO allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'deactivated');
 
