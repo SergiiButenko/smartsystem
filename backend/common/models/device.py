@@ -12,11 +12,15 @@ logger = logging.getLogger(__name__)
 
 
 class Device:
-    def __init__(self, user_identity, id, name, description, settings, lines=None):
+    def __init__(self, user_identity, id, name, description, type, device_type, model, version, settings, lines=None):
         self.user_identity = user_identity
         self.id = id
         self.name = name
         self.description = description
+        self.type = type
+        self.device_type = device_type
+        self.model = model
+        self.version = version
         self.settings = settings
         self.state = None
         self.lines = []
@@ -49,6 +53,10 @@ class Device:
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "type": self.type,
+            "device_type": self.device_type,
+            "model": self.model,
+            "version": self.version,
             "settings": self.settings,
             "lines": self.lines,
             "state": self.state,
