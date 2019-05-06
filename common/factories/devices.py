@@ -10,6 +10,7 @@ class Devices:
         )
         device = Device(user_identity=user_identity, **device)
         device.init_lines()
+        device.init_state()
 
         return device
 

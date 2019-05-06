@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class Database:
-    conn_string = "host='postgres' port='5432' dbname='smart_house' user='postgres' password='changeme'"
+    conn_string = "host='localhost' port='5432' dbname='smart_house' user='postgres' password='changeme'"
 
     def __init__(self):
         self.conn = psycopg2.connect(Database.conn_string)
@@ -35,7 +35,7 @@ class Database:
 
         q = """
             select
-            d.id, d.name, d.description,
+            d.*, 
             jsonb_object_agg(setting, value) as settings
             from device_settings as s
             join devices as d on s.device_id = d.id
@@ -66,7 +66,7 @@ class Database:
 
         q = """
             select
-            l.id, l.name, l.description,
+            l.*, 
             jsonb_object_agg(setting, value) as settings
             from line_settings as s
             join lines as l on s.line_id = l.id
@@ -94,7 +94,7 @@ class Database:
             group = " and group_id = '{group_id}'".format(group_id=group_id)
 
         q = """
-           select * from groups where id in (
+           select g.* from groups as g where id in (
                 select group_id from device_groups where device_id in (
                     select device_id from device_user where user_id in (
                                     select id from users where name = '{user_identity}'
@@ -120,7 +120,7 @@ class Database:
 
         q = """
             select
-            d.id, d.name, d.description,
+            d.*,
             jsonb_object_agg(setting, value) as settings
             from device_settings as s
             join devices as d on s.device_id = d.id

@@ -114,7 +114,8 @@
         'NO',
         '0.1');
     INSERT INTO public.device_settings (device_id, setting, value) VALUES ('c66f67ec-84b1-484f-842f-5624415c5841', 'comm_protocol', 'network');
-    INSERT INTO public.device_settings (device_id, setting, value) VALUES ('c66f67ec-84b1-484f-842f-5624415c5841', 'ip', '192.168.1.104');
+    INSERT INTO public.device_settings (device_id, setting, value) VALUES (
+    'c66f67ec-84b1-484f-842f-5624415c5841', 'ip', 'http://192.168.1.4/30000/');
     INSERT INTO public.device_settings (device_id, setting, value) VALUES ('c66f67ec-84b1-484f-842f-5624415c5841', 'relay_quantity', '16');
 
     INSERT INTO public.devices(id, name, description, concole, type, device_type, model, version) VALUES (
@@ -127,8 +128,10 @@
         'NC',
         '0.1');
     INSERT INTO public.device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'comm_protocol', 'network');
-    INSERT INTO public.device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'ip', '192.168.1.104');
-    INSERT INTO public.device_settings (device_id, setting, value) VALUES ('75308265-98aa-428b-aff6-a13beb5a3129', 'relay_quantity', '16');
+    INSERT INTO public.device_settings (device_id, setting, value) VALUES (
+    '75308265-98aa-428b-aff6-a13beb5a3129', 'ip', 'http://192.168.1.4/30000/');
+    INSERT INTO public.device_settings (device_id, setting, value) VALUES (
+    '75308265-98aa-428b-aff6-a13beb5a3129', 'relay_quantity', '16');
 
 
     CREATE TABLE public.device_user(
@@ -170,32 +173,29 @@ CREATE TABLE public.actions (
     name text NOT NULL PRIMARY KEY,
     description text
 );
+INSERT INTO public.actions(name, description) VALUES ('ON', 'Увімкнути актуатор');
+INSERT INTO public.actions(name, description) VALUES ('OFF', 'Вимкнути актуатор');
 
-CREATE TABLE public.conditions (
-    name text NOT NULL PRIMARY KEY,
-    description text
-);
 
 CREATE TABLE public.rules (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    name text,
     action text NOT NULL,
+    prioriy INT NOT NULL DEFAULT 0,
+    notify BOOL NOT NULL DEFAULT 'false',
+    sensor_id uuid NOT NULL,
+    device_id uuid NOT NULL,
     condition text NOT NULL,
+    variable text NOT NULL,
+    operator text NOT NULL,
+    value text NOT NULL,
     FOREIGN KEY (action) REFERENCES actions(name),
-    FOREIGN KEY (condition) REFERENCES conditions(name)
+    FOREIGN KEY(device_id) REFERENCES devices(id),
+    FOREIGN KEY(sensor_id) REFERENCES devices(id)
 );
 
 
 
 -- IRRIGATION SECTION ---
-CREATE TABLE public.lines (      
-    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    name text NOT NULL,
-    description text,
-    relay_num int NOT NULL DEFAULT 0,
-    state text NOT NULL,
-    FOREIGN KEY (state) REFERENCES line_state(name)
-);
 
 CREATE TABLE public.line_state (
     name text NOT NULL PRIMARY KEY,
@@ -205,13 +205,20 @@ INSERT INTO public.line_state VALUES ('activated', 'Включено');
 INSERT INTO public.line_state VALUES ('deactivated', 'Вимкнуто');
 
 
+CREATE TABLE public.lines (      
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name text NOT NULL,
+    description text,
+    relay_num int NOT NULL DEFAULT 0,
+    state text NOT NULL,
+    FOREIGN KEY (state) REFERENCES line_state(name)
+);
+
 CREATE TABLE public.line_parameters (
     name text NOT NULL PRIMARY KEY,
     description text NOT NULL
 );
-INSERT INTO public.line_parameters(name, description) VALUES('irrigation_low', 'Незначний полив');
-INSERT INTO public.line_parameters(name, description) VALUES('irrigation_mid', 'Звичайний полив');
-INSERT INTO public.line_parameters(name, description) VALUES('irrigation_high', 'Значний полив');
+INSERT INTO public.line_parameters(name, description) VALUES('irrigation_modes', 'Режими полива');
 INSERT INTO public.line_parameters(name, description) VALUES('type', 'Тип лінії.');
 
 
@@ -227,9 +234,9 @@ CREATE TABLE public.line_settings (
 CREATE TABLE public.line_sensor (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id uuid NOT NULL,
-    sensor uuid NOT NULL,
+    sensor_id uuid NOT NULL,
     FOREIGN KEY (line_id) REFERENCES lines(id),
-    FOREIGN KEY (sensor) REFERENCES devices(id)
+    FOREIGN KEY (sensor_id) REFERENCES devices(id)
 );
 
 CREATE TABLE public.line_start_before (
@@ -241,7 +248,7 @@ CREATE TABLE public.line_start_before (
     timeout INT DEFAULT 0 NOT NULL,
     FOREIGN KEY (line_id) REFERENCES lines(id),
     FOREIGN KEY (device_id_start_before) REFERENCES devices(id),
-    FOREIGN KEY (line_id_start_before) REFERENCES lines(id),
+    FOREIGN KEY (line_id_start_before) REFERENCES lines(id)
 );
 
 CREATE TABLE public.line_device (
@@ -266,10 +273,10 @@ INSERT INTO public.line_settings (line_id, setting, value) VALUES ('80122552-18b
 INSERT INTO public.allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'activated');
 INSERT INTO public.allowed_status_for_line (line_id, allowed_status) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'deactivated');
 
-INSERT INTO public.line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c',
-    "{'irrigation_low': {'operation_execution_time': 10, 'operation_intervals': 1, 'operation_time_wait' : 0},
-    'irrigation_mid': {'operation_execution_time': 10, 'operation_intervals': 2, 'operation_time_wait' : 15},
-    'irrigation_high': {'operation_execution_time': 15, 'operation_intervals': 2, 'operation_time_wait' : 15}"
+INSERT INTO public.line_settings (line_id, setting, value) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'irrigation_modes',
+    '{"irrigation_low": {"operation_time_wait": 0, "operation_execution_time": 10, "operation_intervals": 1}},
+     {"irrigation_mid": {"operation_time_wait": 0, "operation_execution_time": 10, "operation_intervals": 1}},
+     {"irrigation_high": {"operation_time_wait": 0, "operation_execution_time": 10, "operation_intervals": 1}}'
     );
 INSERT INTO public.line_device (line_id, device_id) VALUES ('80122552-18bc-4846-9799-0b728324251c', 'c66f67ec-84b1-484f-842f-5624415c5841');
 

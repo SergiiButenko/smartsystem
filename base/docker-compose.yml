@@ -1,0 +1,42 @@
+version: '3.6'
+services:
+  web:
+    build:
+      context: ./web/
+      dockerfile: WebDockerfile
+    container_name: web
+    networks:
+      - backend
+    expose:
+      - 5000
+    command: /usr/local/bin/gunicorn web.app:app -w 1 -t 90 -b 0.0.0.0:5000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./frontend/FrontendDockerfile
+    container_name: frontend
+    depends_on:
+      - web
+    networks:
+      - frontend
+    expose:
+      - 8008
+    command: yarn start
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: ./nginx/NginxDockerFile
+    container_name: nginx  
+    ports:
+      - 80:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - web
+
+networks:
+  frontend:
+  backend:

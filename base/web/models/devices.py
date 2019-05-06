@@ -14,7 +14,7 @@ devices = Blueprint("devices", __name__)
 
 
 @devices.route("/", methods=["GET"])
-@jwt_required
+# @jwt_required
 def devices_route():
     cr_user = get_jwt_identity()
 
@@ -22,7 +22,7 @@ def devices_route():
 
 
 @devices.route("/<string:device_id>", methods=["GET"])
-@jwt_required
+# @jwt_required
 def devices_lines_route(device_id):
     cr_user = get_jwt_identity()
 

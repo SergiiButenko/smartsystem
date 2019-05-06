@@ -2,8 +2,8 @@ version: '3.6'
 services:
   web:
     build:
-      context: .
-      dockerfile: WebDockerfile
+      context: ../..
+      dockerfile: ../base/WebDockerfile
     container_name: web
     networks:
       - backend
@@ -16,8 +16,8 @@ services:
 
   actuators:
     build:
-      context: .
-      dockerfile: ActuatorsDockerfile
+      context: ../..
+      dockerfile: ../remote/ActuatorsDockerfile
     container_name: actuators
     networks:
       - backend
@@ -28,8 +28,8 @@ services:
 
   sensors:
     build:
-      context: .
-      dockerfile: SensorsDockerfile
+      context: ../..
+      dockerfile: ../remote/SensorsDockerfile
     container_name: sensors
     networks:
       - backend
@@ -39,8 +39,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: FrontendDockerfile
+      context: ../..
+      dockerfile: ../../frontend/FrontendDockerfile
     container_name: frontend
     depends_on:
       - web
@@ -52,8 +52,8 @@ services:
 
   nginx:
     build:
-      context: .
-      dockerfile: NginxDockerFile
+      context: ../..
+      dockerfile: ../base/nginx/NginxDockerFile
     container_name: nginx  
     ports:
       - 80:80
@@ -78,7 +78,7 @@ services:
 
   postgres:
     build:
-      context: .
+      context: ../..
       dockerfile: PostgresDockerFile
     container_name: postgres
     environment:
@@ -89,20 +89,6 @@ services:
 #       - postgres-data:/data/postgres
     ports:
       - 5432:5432
-    networks:
-      - backend
-    restart: unless-stopped
-  
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-       - pgadmin-data:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
     networks:
       - backend
     restart: unless-stopped
@@ -117,23 +103,23 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - ./backend/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./backend/common/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
     networks:
       - backend
 
-  mongo-db:
-    image: mongo:3.6
-    hostname: mongo-db
-    container_name: db-mongo
-    expose:
-      - "27017"
-    ports:
-      - "27017:27017"
-    networks:
-      - backend
-    command: --bind_ip_all --smallfiles
-    volumes:
-      - mongo-data:/data
+#  mongo-db:
+#    image: mongo:3.6
+#    hostname: mongo-db
+#    container_name: db-mongo
+#    expose:
+#      - "27017"
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - backend
+#    command: --bind_ip_all --smallfiles
+#    volumes:
+#      - mongo-data:/data
 
 networks:
   frontend:
@@ -143,4 +129,4 @@ volumes:
   redis_data:
   postgres-data:
   pgadmin-data:
-  mongo-data:
+  #mongo-data:

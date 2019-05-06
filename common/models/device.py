@@ -3,6 +3,7 @@
 # like a SQLAlchemy instance.
 import requests
 import logging
+import re
 
 from common.models.line import Line
 from common.resources import *
@@ -41,12 +42,30 @@ class Device:
         if self.lines is None:
             self.lines = self._init_lines()
 
-        if self.settings["radio_type"] == "ip":
-            lines_state = requests.get(url=self.settings["base_url"])
-            self.state = "online"
+        if self.settings["comm_protocol"] == "network":
+            try:
+                lines_state = requests.get(url=self.settings["ip"] + '99')
+                lines_state.raise_for_status()
+
+                lines_state = re.findall('\d+', lines_state.text)
+                logger.info(lines_state)
+
+                lines_state = list(map(int, lines_state))
+                logger.info(lines_state)
+
+            except Exception as e:
+                logger.error(e)
+                self.state = "offline"
+                raise Exception("device is offline")
+            else:
+                self.state = "online"
+
+            for line in self.lines:
+                logger.info(lines_state)
+                line.state = lines_state[line.relay_num]
 
         # merge matrics
-        return self.state
+        return self
 
     def to_json(self):
         return {
