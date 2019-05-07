@@ -4,13 +4,15 @@ services:
     environment:
       FLASK_ENV: 'development'
     volumes:
-      - ./:/app
-    command: python -m web.app
+      - ./services:/app
+    command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}",
+              "--",
+              "python", "-m", "web.app"]
 
   frontend:
     volumes:
-      - ./frontend:/opt/app
-    command: yarn start
+      - ./services/frontend:/opt/app
+    command: sh -c "yarn && yarn start"
 
   pgadmin:
     container_name: pgadmin

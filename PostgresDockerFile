@@ -1,5 +1,0 @@
-FROM postgres
-WORKDIR /docker-entrypoint-initdb.d
-ADD psql_dump/create_database.sql .
-ADD psql_dump/dump.sql .
-ADD psql_dump/init.sh .

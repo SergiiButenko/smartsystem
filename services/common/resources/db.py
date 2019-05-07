@@ -1,4 +1,5 @@
 import logging
+import os
 
 import psycopg2
 import psycopg2.extras
@@ -8,10 +9,14 @@ logger = logging.getLogger(__name__)
 
 
 class Database:
-    conn_string = "host='localhost' port='5432' dbname='smart_house' user='postgres' password='changeme'"
+    conn_creds = dict(host=os.environ['DB_HOST'],
+                      port=os.environ['DB_PORT'],
+                      dbname=os.environ['DB_DATABASE'],
+                      user=os.environ['DB_USERNAME'],
+                      password=os.environ['DB_PASSWORD'])
 
     def __init__(self):
-        self.conn = psycopg2.connect(Database.conn_string)
+        self.conn = psycopg2.connect(**Database.conn_creds)
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def __del__(self):

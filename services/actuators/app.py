@@ -2,14 +2,14 @@ import psycopg2
 import psycopg2.extensions
 import psycopg2.extras
 import logging
+from common.resources.db import Db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from common.resourses.db import Db
 
 def main():
-    conn = psycopg2.connect(Db.conn_string)
+    conn = psycopg2.connect(**Db.conn_creds)
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     curs = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)

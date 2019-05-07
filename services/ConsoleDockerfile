@@ -1,15 +1,22 @@
 FROM ubuntu:latest
 
+WORKDIR /app
+
 RUN apt-get update \
 && apt-get install -y python3-pip python3-dev \
 && cd /usr/local/bin \
 && ln -s /usr/bin/python3 python \
 && pip3 install --upgrade pip
 
-ADD backend/actuators/requirements.txt /app/requirements.txt
-WORKDIR /app
+COPY console/requirements.txt /app/requirements.txt
+
 RUN pip install -r requirements.txt
 
-ADD backend /app
+RUN mkdir -p /app/common
+RUN mkdir -p /app/console
+
+COPY common /app/common
+COPY console /app/console
+
 
 

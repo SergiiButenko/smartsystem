@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import os
 
 import logging
 
@@ -22,8 +23,8 @@ def on_message(client, userdata, message):
 
 
 def main():
-    broker_address = "mosquitto"
-    broker_portno = 1883
+    broker_address = os.environ['MOSQUITTO_HOST']
+    broker_portno = os.environ['MOSQUITTO_PORT']
 
     client = mqtt.Client()
     client.on_connect = on_connect
