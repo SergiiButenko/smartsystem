@@ -1,0 +1,103 @@
+version: '3.4'
+services:
+    redis:
+        image: "redis:5.0.2-alpine"
+        ports:
+            - 6379:6379
+    db:
+        image: "postgres:11.1-alpine"
+        restart: always
+        ports: 
+            - 5432:5432
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: ""
+    google-cloud-ds:
+        image: google/cloud-sdk:latest
+        restart: always
+        ports: 
+            - 8081:8081
+        environment:
+            CLOUDSDK_CORE_PROJECT: "sagacity-ava"
+        entrypoint:
+            - /usr/lib/google-cloud-sdk/platform/cloud-datastore-emulator/cloud_datastore_emulator
+            - start
+            - --host=0.0.0.0
+            - --port=8081
+            - --testing
+    webapp:
+        build:
+           context: webapp/.
+           dockerfile: Dockerfile
+        image: "webapp"
+        ports: 
+           - 80:80
+           - 443:443
+        depends_on:
+           - "sagacity-dal-service"
+           - "sagacity-iam-service"
+           - "sagacity-audit-service"
+           - "sagacity-materials-service"
+    sagacity-dal-service:
+        build: 
+            context: dal/.
+            dockerfile: Dockerfile
+        image: "sagacity_dal"
+        ports:
+            - 5001:80
+        depends_on:
+            - "db"
+            - "redis"
+            - "google-cloud-ds"
+        environment:
+            PG_CONNSTRING: "User ID=postgres;Password=secret;Host=db;Port=5432;Database=sagacity;Pooling=true;"
+            REDIS_CONNSTRING: "redis"
+            GOOGLE_APPLICATION_CREDENTIALS: sagacity-ava-599b2d458ea5.json
+            DATASTORE_EMULATOR_HOST: "google-cloud-ds:8081"
+            DATASTORE_PROJECT_ID: "sagacity-ava"
+    sagacity-iam-service:
+        build:
+           context: iam/.
+           dockerfile: Dockerfile
+        image: "sagacity_iam"
+        ports:
+           - 5000:80
+        depends_on:
+           - "sagacity-dal-service"
+        environment:
+            SAGACITY_DAL_SERVICE: "http://sagacity-dal-service/dal/v1/"
+            ASPNETCORE_ENVIRONMENT: Development
+            AUTH_NS: deadbeef-dead-dead-dead-deaddeafbeef
+            FIREBASE_CONFIG: '{"type":"service_account","project_id":"sagacity-ava","private_key_id":"599b2d458ea5bebb9825bc8e4ef2ff74e84db1f1","private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDwLCLsWL8uaYlU\ncGBl4sDvDMty0Rg7art5Y4xr/Ylyz083XVTsXj+baf3iWKKVOhkeTvJWo0UG5Unr\nznwaI4W0fD742cXA44OokXDDZpGe9HFPIrmWFTurOh74JwuVXCmIUDU9T8SSZ3cG\nlEl+1Rn2hXOAltNwQAKv0qVyiY3y5OxbsS3W6m81I67aMAV7/zFSKcmMalulflZ7\nrTbWZ2qOowoyW0Ah4308DaecFFYzRzO0WXSENlWKGGW3hTDp2VhKRwkbLWYPEftV\nNfb/L9U7tEc+zHKADjhv2VoSkZ1fDOt/aMjngcuixhUCExHu3Rd26ZA5Ds+aMCpo\n9O7nqkg1AgMBAAECggEAR7QFoSZFvaeIdosuXHy8OSJKwzal02dkHTOZQsxo8rvt\n3IuixQbGWrHkOGVZ9M9pnGDZfQA1pX9i+GGnL26XhnDppAXwQkwqjHMPhWbj5t73\nzTaCzcn9DHvHrzKJBMiFJcs8edeMymDVakNvRcx9edoRx7w/1+1kX/W1q2Jh3Lfj\nvQkCxvgGRgC4qcYy9r+zLBNyqAFyPUp1m2c6LVkTb4Jb+dB/UDoUaBU9mLSNeLJt\nZVSTkoIP+ZCoN6jnNrgaZiKjXkcowfB6su++Bwcr1/IqVWJExtM0/yry6JCONSMC\n6/Id0lnHMCXSoE9iVc40axOOeNzbhc8O5nNyu4kcqQKBgQD79cLMEC2CDszk3BLV\nrLEUV6AtOgMaiSnpgrinZlGFcGG1fJdBXmLd7NcUPEKGpSFat0cYfiMAl1+OaAyk\n5ln1xn5NUnrnDegLcQYOFW9ODL6AEokOjINdyWGMNUTmTq1pAq94/xtd6HxtO1Bd\nsL76jk5QsPk/o74KFX3TGSEQRwKBgQD0Bf11AowUtxYlT9nfl8thM38vrh7K2Tnu\nnBnULFjFDg9baB6Sz9XebJP/wx/krrpmt33lwc7y7aMf5Vh62j1mrB8RV0C0bMal\n3sO+2e5WKA04gwBzdF3tHq8LITZU3C2vdQsJkAKoG+7REUlURQTU9NpzDPJ3Wy80\nsOf0fWQ9owKBgHSPFtSsT0Exc5wUKypqP2k3uEPz6GeoOJlr/dyDOwdOHAWHY7m7\n3mToIf+cePItBicfTmaIQ80MOgp5HBBU+Bz4/IjstSqahlR0ruZpCBrFToOVD46J\ndmQ2u0fPhNY+Y36G3YJOEez5lkY6AE23bEIg/x3ZIRVNvKaRlqnHoEIVAoGBAME3\njPz9S1WLsqlQlL8KPit0zxw9znvnjIt2Zq0tgAxnmZlS1AKDNmCrsHQvWC2GfGmg\nmLs3vllz+FnlCy4bZ8rINsFQSReTmab0wCF6BdGKXQ2GDPFeDpEWXpt9bLu8qx/m\nmRq1QKVDmNFJ0ro6/Bxy1BWNBt+i/7nE6aUZNCnpAoGBALU4y2fWn4iRlp9pFNhu\ndYDr1xEl/UZQIzPqIzOvx7ZGnv1Tenj+99cESHsJ8pA9SKj61ckOkQqUvO24U/lH\nCWq3QicmpVJo9MI5/3qaX0S/lQsm2D5eydsmEyMeuaGKIwMAkXMH3HDRJHzRQ5q9\nZAutRzekY02aqnmfmbQM36UE\n-----END PRIVATE KEY-----\n","client_email": "dev-datastore-creds@sagacity-ava.iam.gserviceaccount.com","client_id": "111104717969284249161","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri": "https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dev-datastore-creds%40sagacity-ava.iam.gserviceaccount.com"}'
+    sagacity-audit-service:
+        build:
+           context: audit/Sagacity.Audit/.
+           dockerfile: Dockerfile
+        image: "sagacity_audit"
+        ports:
+           - 5002:80
+        depends_on:
+           - "sagacity-dal-service"
+        environment:
+            SAGACITY_DAL_SERVICE: "http://sagacity-dal-service/dal/v1/"
+            ASPNETCORE_ENVIRONMENT: Development
+            AUTH_NS: deadbeef-dead-dead-dead-deaddeafbeef
+            FIREBASE_CONFIG: '{"type":"service_account","project_id":"sagacity-ava","private_key_id":"599b2d458ea5bebb9825bc8e4ef2ff74e84db1f1","private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDwLCLsWL8uaYlU\ncGBl4sDvDMty0Rg7art5Y4xr/Ylyz083XVTsXj+baf3iWKKVOhkeTvJWo0UG5Unr\nznwaI4W0fD742cXA44OokXDDZpGe9HFPIrmWFTurOh74JwuVXCmIUDU9T8SSZ3cG\nlEl+1Rn2hXOAltNwQAKv0qVyiY3y5OxbsS3W6m81I67aMAV7/zFSKcmMalulflZ7\nrTbWZ2qOowoyW0Ah4308DaecFFYzRzO0WXSENlWKGGW3hTDp2VhKRwkbLWYPEftV\nNfb/L9U7tEc+zHKADjhv2VoSkZ1fDOt/aMjngcuixhUCExHu3Rd26ZA5Ds+aMCpo\n9O7nqkg1AgMBAAECggEAR7QFoSZFvaeIdosuXHy8OSJKwzal02dkHTOZQsxo8rvt\n3IuixQbGWrHkOGVZ9M9pnGDZfQA1pX9i+GGnL26XhnDppAXwQkwqjHMPhWbj5t73\nzTaCzcn9DHvHrzKJBMiFJcs8edeMymDVakNvRcx9edoRx7w/1+1kX/W1q2Jh3Lfj\nvQkCxvgGRgC4qcYy9r+zLBNyqAFyPUp1m2c6LVkTb4Jb+dB/UDoUaBU9mLSNeLJt\nZVSTkoIP+ZCoN6jnNrgaZiKjXkcowfB6su++Bwcr1/IqVWJExtM0/yry6JCONSMC\n6/Id0lnHMCXSoE9iVc40axOOeNzbhc8O5nNyu4kcqQKBgQD79cLMEC2CDszk3BLV\nrLEUV6AtOgMaiSnpgrinZlGFcGG1fJdBXmLd7NcUPEKGpSFat0cYfiMAl1+OaAyk\n5ln1xn5NUnrnDegLcQYOFW9ODL6AEokOjINdyWGMNUTmTq1pAq94/xtd6HxtO1Bd\nsL76jk5QsPk/o74KFX3TGSEQRwKBgQD0Bf11AowUtxYlT9nfl8thM38vrh7K2Tnu\nnBnULFjFDg9baB6Sz9XebJP/wx/krrpmt33lwc7y7aMf5Vh62j1mrB8RV0C0bMal\n3sO+2e5WKA04gwBzdF3tHq8LITZU3C2vdQsJkAKoG+7REUlURQTU9NpzDPJ3Wy80\nsOf0fWQ9owKBgHSPFtSsT0Exc5wUKypqP2k3uEPz6GeoOJlr/dyDOwdOHAWHY7m7\n3mToIf+cePItBicfTmaIQ80MOgp5HBBU+Bz4/IjstSqahlR0ruZpCBrFToOVD46J\ndmQ2u0fPhNY+Y36G3YJOEez5lkY6AE23bEIg/x3ZIRVNvKaRlqnHoEIVAoGBAME3\njPz9S1WLsqlQlL8KPit0zxw9znvnjIt2Zq0tgAxnmZlS1AKDNmCrsHQvWC2GfGmg\nmLs3vllz+FnlCy4bZ8rINsFQSReTmab0wCF6BdGKXQ2GDPFeDpEWXpt9bLu8qx/m\nmRq1QKVDmNFJ0ro6/Bxy1BWNBt+i/7nE6aUZNCnpAoGBALU4y2fWn4iRlp9pFNhu\ndYDr1xEl/UZQIzPqIzOvx7ZGnv1Tenj+99cESHsJ8pA9SKj61ckOkQqUvO24U/lH\nCWq3QicmpVJo9MI5/3qaX0S/lQsm2D5eydsmEyMeuaGKIwMAkXMH3HDRJHzRQ5q9\nZAutRzekY02aqnmfmbQM36UE\n-----END PRIVATE KEY-----\n","client_email": "dev-datastore-creds@sagacity-ava.iam.gserviceaccount.com","client_id": "111104717969284249161","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri": "https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dev-datastore-creds%40sagacity-ava.iam.gserviceaccount.com"}'
+    sagacity-materials-service:
+        build:
+           context: materials/Sagacity.Materials/.
+           dockerfile: Dockerfile
+        image: "sagacity_materials"
+        ports:
+           - 5003:80
+        depends_on:
+           - "sagacity-dal-service"
+        environment:
+            SAGACITY_DAL_SERVICE: "http://sagacity-dal-service/dal/v1/"
+            ASPNETCORE_ENVIRONMENT: Development
+            AUTH_NS: deadbeef-dead-dead-dead-deaddeafbeef
+            FIREBASE_CONFIG: '{"type":"service_account","project_id":"sagacity-ava","private_key_id":"599b2d458ea5bebb9825bc8e4ef2ff74e84db1f1","private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDwLCLsWL8uaYlU\ncGBl4sDvDMty0Rg7art5Y4xr/Ylyz083XVTsXj+baf3iWKKVOhkeTvJWo0UG5Unr\nznwaI4W0fD742cXA44OokXDDZpGe9HFPIrmWFTurOh74JwuVXCmIUDU9T8SSZ3cG\nlEl+1Rn2hXOAltNwQAKv0qVyiY3y5OxbsS3W6m81I67aMAV7/zFSKcmMalulflZ7\nrTbWZ2qOowoyW0Ah4308DaecFFYzRzO0WXSENlWKGGW3hTDp2VhKRwkbLWYPEftV\nNfb/L9U7tEc+zHKADjhv2VoSkZ1fDOt/aMjngcuixhUCExHu3Rd26ZA5Ds+aMCpo\n9O7nqkg1AgMBAAECggEAR7QFoSZFvaeIdosuXHy8OSJKwzal02dkHTOZQsxo8rvt\n3IuixQbGWrHkOGVZ9M9pnGDZfQA1pX9i+GGnL26XhnDppAXwQkwqjHMPhWbj5t73\nzTaCzcn9DHvHrzKJBMiFJcs8edeMymDVakNvRcx9edoRx7w/1+1kX/W1q2Jh3Lfj\nvQkCxvgGRgC4qcYy9r+zLBNyqAFyPUp1m2c6LVkTb4Jb+dB/UDoUaBU9mLSNeLJt\nZVSTkoIP+ZCoN6jnNrgaZiKjXkcowfB6su++Bwcr1/IqVWJExtM0/yry6JCONSMC\n6/Id0lnHMCXSoE9iVc40axOOeNzbhc8O5nNyu4kcqQKBgQD79cLMEC2CDszk3BLV\nrLEUV6AtOgMaiSnpgrinZlGFcGG1fJdBXmLd7NcUPEKGpSFat0cYfiMAl1+OaAyk\n5ln1xn5NUnrnDegLcQYOFW9ODL6AEokOjINdyWGMNUTmTq1pAq94/xtd6HxtO1Bd\nsL76jk5QsPk/o74KFX3TGSEQRwKBgQD0Bf11AowUtxYlT9nfl8thM38vrh7K2Tnu\nnBnULFjFDg9baB6Sz9XebJP/wx/krrpmt33lwc7y7aMf5Vh62j1mrB8RV0C0bMal\n3sO+2e5WKA04gwBzdF3tHq8LITZU3C2vdQsJkAKoG+7REUlURQTU9NpzDPJ3Wy80\nsOf0fWQ9owKBgHSPFtSsT0Exc5wUKypqP2k3uEPz6GeoOJlr/dyDOwdOHAWHY7m7\n3mToIf+cePItBicfTmaIQ80MOgp5HBBU+Bz4/IjstSqahlR0ruZpCBrFToOVD46J\ndmQ2u0fPhNY+Y36G3YJOEez5lkY6AE23bEIg/x3ZIRVNvKaRlqnHoEIVAoGBAME3\njPz9S1WLsqlQlL8KPit0zxw9znvnjIt2Zq0tgAxnmZlS1AKDNmCrsHQvWC2GfGmg\nmLs3vllz+FnlCy4bZ8rINsFQSReTmab0wCF6BdGKXQ2GDPFeDpEWXpt9bLu8qx/m\nmRq1QKVDmNFJ0ro6/Bxy1BWNBt+i/7nE6aUZNCnpAoGBALU4y2fWn4iRlp9pFNhu\ndYDr1xEl/UZQIzPqIzOvx7ZGnv1Tenj+99cESHsJ8pA9SKj61ckOkQqUvO24U/lH\nCWq3QicmpVJo9MI5/3qaX0S/lQsm2D5eydsmEyMeuaGKIwMAkXMH3HDRJHzRQ5q9\nZAutRzekY02aqnmfmbQM36UE\n-----END PRIVATE KEY-----\n","client_email": "dev-datastore-creds@sagacity-ava.iam.gserviceaccount.com","client_id": "111104717969284249161","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri": "https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dev-datastore-creds%40sagacity-ava.iam.gserviceaccount.com"}'
+volumes:
+    pgdata:

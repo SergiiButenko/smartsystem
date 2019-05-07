@@ -1,12 +1,9 @@
-version: '3.6'
+version: '3.7'
 services:
   web:
     build:
-      context: ../..
-      dockerfile: ../base/WebDockerfile
+      dockerfile: WebDockerfile
     container_name: web
-    networks:
-      - backend
     expose:
       - 5000
     depends_on:
@@ -16,11 +13,8 @@ services:
 
   actuators:
     build:
-      context: ../..
-      dockerfile: ../remote/ActuatorsDockerfile
+      dockerfile: ActuatorsDockerfile
     container_name: actuators
-    networks:
-      - backend
     depends_on:
       - postgres
       - redis
@@ -28,38 +22,31 @@ services:
 
   sensors:
     build:
-      context: ../..
-      dockerfile: ../remote/SensorsDockerfile
+      dockerfile: SensorsDockerfile
     container_name: sensors
-    networks:
-      - backend
     depends_on:
       - mosquitto
     command: python -m sensors.app
 
   frontend:
     build:
-      context: ../..
-      dockerfile: ../../frontend/FrontendDockerfile
+      dockerfile: FrontendDockerfile
     container_name: frontend
     depends_on:
       - web
-    networks:
-      - frontend
     expose:
       - 8008
     command: yarn start
 
   nginx:
-    build:
-      context: ../..
-      dockerfile: ../base/nginx/NginxDockerFile
+    image: nginx:latest
     container_name: nginx  
     ports:
       - 80:80
-    networks:
-      - backend
-      - frontend
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/404.html:/etc/nginx/
+      - ./frontend/404.html:/usr/share/nginx/html/
     depends_on:
       - actuators
       - web
@@ -71,41 +58,34 @@ services:
       - redis_data:/data
     ports:
       - 6379:6379
-    networks:
-      - backend
     restart: always
     command: redis-server --appendonly yes
 
   postgres:
-    build:
-      context: ../..
-      dockerfile: PostgresDockerFile
+    image: "postgres:11.1-alpine"
     container_name: postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
-#    volumes:
+    volumes:
+      - ./psql_dump/: /docker-entrypoint-initdb.d
 #       - postgres-data:/data/postgres
     ports:
       - 5432:5432
-    networks:
-      - backend
     restart: unless-stopped
 
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
     expose:
-      - "1883"
-      - "9001"
+      - 1883
+      - 9001
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - 1883:1883
+      - 9001:9001
     volumes:
-      - ./backend/common/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-    networks:
-      - backend
+      - ./configs/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
 #  mongo-db:
 #    image: mongo:3.6
@@ -122,11 +102,10 @@ services:
 #      - mongo-data:/data
 
 networks:
-  frontend:
-  backend:
+  default:
+    driver: bridge
 
 volumes:
   redis_data:
   postgres-data:
-  pgadmin-data:
   #mongo-data:
