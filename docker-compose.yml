@@ -126,15 +126,7 @@ services:
 #    volumes:
 #      - mongo-data:/data
 
-
 volumes:
   redis_data:
   postgres-data:
   #mongo-data:
-
-
-# POSTGRES_USER=postgres
-# POSTGRES_PASSWORD=changeme
-# PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
-# PGADMIN_DEFAULT_PASSWORD=admin
-# PGADMIN_PORT=5050
