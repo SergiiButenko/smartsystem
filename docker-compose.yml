@@ -2,8 +2,7 @@ version: '3.7'
 services:
   web:
     build:
-      context: ./services
-      dockerfile: WebDockerfile
+      context: ./services/web
     container_name: web
     env_file:
       - ./.env
@@ -14,38 +13,35 @@ services:
       - postgres
     command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}",
               "--",
-              "/usr/local/bin/gunicorn", "services.web.app:app",
+              "/usr/local/bin/gunicorn", "web.app:app",
               "-w", "1", "-t", "90", "-b", "0.0.0.0:5000"
               ]
 
-  actuators:
+  task-executor:
     build:
-      context: ./services
-      dockerfile: ActuatorsDockerfile
-    container_name: actuators
+      context: ./services/task-executor
+    container_name: task-executor
     env_file:
       - ./.env
     depends_on:
       - postgres
       - redis
-    command: python -m actuators.app
+    command: python -m app
 
-  sensors:
+  data-registrator:
     build:
-      context: ./services
-      dockerfile: SensorsDockerfile
-    container_name: sensors
+      context: ./services/data-registrator
+    container_name: data-registrator
     env_file:
       - ./.env
     depends_on:
       - mosquitto
-    command: python -m sensors.app
+    command: python -m app
 
-  console:
+  data-analyzer:
     build:
-      context: ./services
-      dockerfile: ConsoleDockerfile
-    container_name: console
+      context: ./services/data-analyzer
+    container_name: data-analyzer
     env_file:
       - ./.env
     depends_on:
@@ -55,8 +51,7 @@ services:
 
   frontend:
     build:
-      context: ./services
-      dockerfile: FrontendDockerfile
+      context: ./services/frontend
     container_name: frontend
     depends_on:
       - web
@@ -75,8 +70,8 @@ services:
       - ./services/frontend/app/404.html:/usr/share/nginx/html/404.html
     depends_on:
       - web
-      - actuators
-      - sensors
+      - data-registrator
+      - task-executor
       - frontend
 
   redis:
@@ -97,7 +92,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: /data/postgres
     volumes:
-      - ./psql_dump/:/docker-entrypoint-initdb.d
+      - ./services/postgres/:/docker-entrypoint-initdb.d
 #       - postgres-data:/data/postgres
     ports:
       - 5432:5432

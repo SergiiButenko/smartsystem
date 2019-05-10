@@ -1,1 +1,0 @@
-from .tasks import get_device_status

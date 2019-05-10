@@ -1,2 +1,0 @@
-class DeviceToRuleType:
-    PERIODIC = "actuator"
