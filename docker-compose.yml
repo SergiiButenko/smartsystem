@@ -4,6 +4,8 @@ services:
     build:
       context: ./services/web
     container_name: web
+    environment:
+        POSTGRES_CONN: "server=localhost;user=$POSTGRES_USER"
     env_file:
       - ./.env
     expose:
@@ -129,3 +131,10 @@ volumes:
   redis_data:
   postgres-data:
   #mongo-data:
+
+
+# POSTGRES_USER=postgres
+# POSTGRES_PASSWORD=changeme
+# PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+# PGADMIN_DEFAULT_PASSWORD=admin
+# PGADMIN_PORT=5050
