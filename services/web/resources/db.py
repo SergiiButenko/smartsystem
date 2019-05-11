@@ -206,9 +206,9 @@ class Database:
         """
         self.cursor.execute(query, {"device_id": device_id})
         records = self.cursor.fetchall()
+
         tasks = list()
         for rec in records:
-            # tasks.append(Task(**rec))
             tasks.append(rec)
 
         tasks.sort(key=lambda e: e["exec_time"])

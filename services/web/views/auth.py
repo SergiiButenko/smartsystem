@@ -19,7 +19,7 @@ from flask_jwt_extended import (
 
 from web.errors import GeneralError, WrongCreds, UnableToRefresh
 from web.models import User
-from web.resources import Db, redis
+from web.resources import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

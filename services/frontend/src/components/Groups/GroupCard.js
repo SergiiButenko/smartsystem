@@ -37,7 +37,7 @@ export default class GroupCard extends React.Component {
     };
 
     redirectToSettings = (id) => (e) => {
-        console.log(this.context.router.history)
+        console.log(this.router.history)
     };
 
     render() {

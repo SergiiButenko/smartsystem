@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class Device:
-    def __init__(self, user_identity, id, name, description, type, device_type, model, version, settings, lines=None):
+    def __init__(self, user_identity, id, name, description, type, device_type, model, version, settings, concole=None, lines=None):
         self.user_identity = user_identity
         self.id = id
         self.name = name
@@ -23,6 +23,7 @@ class Device:
         self.model = model
         self.version = version
         self.settings = settings
+        self.concole = concole
         self.state = None
         self.lines = []
 
@@ -56,15 +57,15 @@ class Device:
                 logger.info(lines_state)
 
             except Exception as e:
+                logger.error("device is offline")
                 logger.error(e)
                 self.state = "offline"
-                raise Exception("device is offline")
             else:
                 self.state = "online"
 
-            for line in self.lines:
-                logger.info(lines_state)
-                line.state = lines_state[line.relay_num]
+                for line in self.lines:
+                    logger.info(lines_state)
+                    line.state = lines_state[line.relay_num]
 
         # merge matrics
         return self

@@ -55,11 +55,11 @@ module.exports =  env => {
         optimization: isDevMode(ENV) ? {} : {
             minimize: true,
             minimizer: [
-              new TerserPlugin({
-                parallel: true,
-                cache: true,
-                test: /\.js(\?.*)?$/i,
-              }),
+                new TerserPlugin({
+                    parallel: true,
+                    cache: true,
+                    test: /\.js(\?.*)?$/i,
+                }),
             ],
             usedExports: true,
             sideEffects: true

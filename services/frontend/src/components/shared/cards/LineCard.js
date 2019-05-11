@@ -12,6 +12,10 @@ import Settings from '@material-ui/icons/Settings';
 import Battery20 from '@material-ui/icons/Battery20';
 import Battery60 from '@material-ui/icons/Battery60';
 import Battery90 from '@material-ui/icons/Battery90';
+import {getDevices} from '../../../selectors/devices';
+import connect from 'react-redux/es/connect/connect';
+import {fetchDeviceById} from '../../../actions/device';
+import {withRouter} from 'react-router-dom';
 
 
 
@@ -24,18 +28,30 @@ const styles = theme => ({
         width: '100%',
     },
 });
-
+const mapStateToProps = (state) => {
+    return getDevices(state);
+};
+@connect(mapStateToProps)
+@withRouter
 @withStyles(styles)
 export default class LineCard extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        line: PropTypes.object.isRequired,
+        devices: PropTypes.object.isRequired,
+        match: PropTypes.object.isRequired,
+        lineId: PropTypes.number.isRequired,
         loading: PropTypes.bool.isRequired,
     };
 
     static contextTypes = {
         router: PropTypes.object
     };
+
+    state = {deviceId: this.props.match.params.deviceId,
+        device: this.props.devices.deviceId,
+        ...this.props.devices.deviceId.lines.lineId,
+    };
+
 
     redirectToLine = (id) => (e) => {
         console.log(this.context.router.history);
@@ -48,6 +64,10 @@ export default class LineCard extends React.Component {
 
     render() {
         const {classes, loading, line} = this.props;
+        const {name, description, settings} = this.state;
+
+        console.log("test");
+        console.log(this.state);
 
         if (loading) {
             return <PageSpinner/>;
@@ -67,13 +87,13 @@ export default class LineCard extends React.Component {
                 >
                     <Grid item xs={6} onClick={this.redirectToLine(line.id)}>
                         <Typography variant="h5" component="h3">
-                            {line.name}
+                            {name}
                         </Typography>
                         <Typography component="p">
-                            {line.description}
+                            {description}
                         </Typography>
                         <Typography component="p">
-                            {JSON.stringify(line.settings, null, 2)}
+                            {JSON.stringify(settings, null, 2)}
                         </Typography>
                     </Grid>
                     <Grid item>

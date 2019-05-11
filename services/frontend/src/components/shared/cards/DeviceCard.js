@@ -73,10 +73,6 @@ export default class DeviceCard extends React.Component {
                     <Grid item xs={1} onClick={this.redirectToDevice(device.id)}>
                         <ArrowForwardIos />
                     </Grid>
-
-                    <Grid item xs={1} onClick={this.redirectToSettings(device.id)}>
-                        <Settings />
-                    </Grid>
                 </Grid>
             </Paper>
         );

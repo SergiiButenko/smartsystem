@@ -39,13 +39,27 @@ export default class Devices extends React.Component {
         deviceFetchError: PropTypes.any,
     };
 
+    constructor(props) {
+        super(props);
+
+        const {match: {params}, devices} = this.props;
+        const device = devices[params.deviceId];
+        this.state = {device};
+
+    }
+
     componentWillMount() {
         this.props.fetchDeviceById(this.props.match.params.deviceId);
     }
 
+    toogleLine = (event, id) => {
+        event.preventDefault();
+        this.setState({ id: !this.state.id});
+    }
+
     render() {
-        const {classes, loading, deviceFetchError, devices, match: {params}} = this.props;   
-        const device = devices[params.deviceId];
+        const {classes, loading, deviceFetchError} = this.props;
+        const {device} = this.state;
 
         if (loading) {
             return <PageSpinner/>;
@@ -85,7 +99,7 @@ export default class Devices extends React.Component {
                 {device.lines.map((line, i) => {
                     return (     
                         <Grid item xs={12}>
-                            <LineCard line={line} key={line.id}/>
+                            <LineCard lineId={line.id} key={line.id}/>
                         </Grid>
                     );
                 })}

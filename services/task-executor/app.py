@@ -18,9 +18,9 @@ def main():
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
     curs = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    curs.execute("LISTEN \"a1106ae2-b537-45c8-acb6-aca85dcee675\";")
+    curs.execute("LISTEN \"{}\";".format(os.environ['CONSOLE_ID']))
 
-    logger.info("Waiting for notifications on channel \"a1106ae2-b537-45c8-acb6-aca85dcee675\"")
+    logger.info("Waiting for notifications on channel \"{}\";".format(os.environ['CONSOLE_ID']))
     while True:
         conn.poll()
         while conn.notifies:
