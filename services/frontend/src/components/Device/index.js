@@ -41,25 +41,38 @@ export default class Devices extends React.Component {
 
     constructor(props) {
         super(props);
+        this.toogleLine = this.toogleLine.bind(this);
 
-        const {match: {params}, devices} = this.props;
-        const device = devices[params.deviceId];
-        this.state = {device};
-
+        this.state = {};
     }
+
 
     componentWillMount() {
         this.props.fetchDeviceById(this.props.match.params.deviceId);
     }
 
-    toogleLine = (event, id) => {
-        event.preventDefault();
-        this.setState({ id: !this.state.id});
+    shouldComponentUpdate(nextProps) {
+        const {match: {params}, devices} = nextProps;
+        const device = devices[params.deviceId];
+
+        const {id} = this.state;
+
+        if (device !== undefined && id !== device.id) {
+            this.setState({...device});
+        }
+
+        return device !== undefined;
     }
+
+    toogleLine = (id) => (e) => {
+        // e.preventDefault();
+        //this.setState({ id: !this.state.id});
+        console.log(id)
+    };
 
     render() {
         const {classes, loading, deviceFetchError} = this.props;
-        const {device} = this.state;
+        const {name, description, settings, lines} = this.state;
 
         if (loading) {
             return <PageSpinner/>;
@@ -77,13 +90,13 @@ export default class Devices extends React.Component {
                         <Grid container spacing={24}>
                             <Grid item xs={8}>
                                 <Typography variant="h5" component="h3">
-                                    {device.name}
+                                    {name}
                                 </Typography>
                                 <Typography component="p">
-                                    {device.description}
+                                    {description}
                                 </Typography>
                                 <Typography component="p">
-                                    <pre>{JSON.stringify(device.settings, null, 2) }</pre>
+                                    <pre>{JSON.stringify(settings, null, 2) }</pre>
                                 </Typography>
 
                             </Grid>
@@ -96,10 +109,10 @@ export default class Devices extends React.Component {
                     </Paper>
                 </Grid>
 
-                {device.lines.map((line, i) => {
+                {lines.map((line, i) => {
                     return (     
                         <Grid item xs={12}>
-                            <LineCard lineId={line.id} key={line.id}/>
+                            <LineCard line={line} key={line.id} toogleLine={this.toogleLine}/>
                         </Grid>
                     );
                 })}

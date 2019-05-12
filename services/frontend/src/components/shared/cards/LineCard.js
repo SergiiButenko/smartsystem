@@ -38,24 +38,12 @@ export default class LineCard extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         devices: PropTypes.object.isRequired,
-        match: PropTypes.object.isRequired,
-        lineId: PropTypes.number.isRequired,
         loading: PropTypes.bool.isRequired,
+        toogleLine: PropTypes.func.isRequired,
     };
 
     static contextTypes = {
         router: PropTypes.object
-    };
-
-    state = {deviceId: this.props.match.params.deviceId,
-        device: this.props.devices.deviceId,
-        ...this.props.devices.deviceId.lines.lineId,
-    };
-
-
-    redirectToLine = (id) => (e) => {
-        console.log(this.context.router.history);
-        //this.context.router.history.push(webUri.DEVICES(id));
     };
 
     redirectToSettings = (id) => (e) => {
@@ -64,10 +52,6 @@ export default class LineCard extends React.Component {
 
     render() {
         const {classes, loading, line} = this.props;
-        const {name, description, settings} = this.state;
-
-        console.log("test");
-        console.log(this.state);
 
         if (loading) {
             return <PageSpinner/>;
@@ -77,6 +61,7 @@ export default class LineCard extends React.Component {
             <Paper
                 className={classes.root}
                 elevation={1}
+                onClick={this.props.toogleLine(line.id)}
             >
                 <Grid
                     container
@@ -85,15 +70,15 @@ export default class LineCard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                 >
-                    <Grid item xs={6} onClick={this.redirectToLine(line.id)}>
+                    <Grid item xs={6}>
                         <Typography variant="h5" component="h3">
-                            {name}
+                            {line.name}
                         </Typography>
                         <Typography component="p">
-                            {description}
+                            {line.description}
                         </Typography>
                         <Typography component="p">
-                            {JSON.stringify(settings, null, 2)}
+                            {JSON.stringify(line.settings, null, 2)}
                         </Typography>
                     </Grid>
                     <Grid item>

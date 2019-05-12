@@ -53,14 +53,14 @@ module.exports =  env => {
             filename: 'bundle.js'
         },
         optimization: isDevMode(ENV) ? {} : {
-            minimize: true,
-            minimizer: [
-                new TerserPlugin({
-                    parallel: true,
-                    cache: true,
-                    test: /\.js(\?.*)?$/i,
-                }),
-            ],
+            // minimize: true,
+            // minimizer: [
+            //     new TerserPlugin({
+            //         parallel: true,
+            //         cache: true,
+            //         test: /\.js(\?.*)?$/i,
+            //     }),
+            // ],
             usedExports: true,
             sideEffects: true
         },
@@ -128,12 +128,12 @@ module.exports =  env => {
             },
         },
         plugins: [
-            new TerserPlugin({
-                parallel: true,
-                terserOptions: {
-                    ecma: 6,
-                },
-            }),
+            // new TerserPlugin({
+            //     parallel: true,
+            //     terserOptions: {
+            //         ecma: 6,
+            //     },
+            // }),
             new HtmlWebPackPlugin({
                 template: './src/index.html',
                 filename: './index.html',
