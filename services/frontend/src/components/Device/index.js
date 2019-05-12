@@ -15,6 +15,7 @@ import {fetchDeviceById} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import LineCard from '../shared/cards/LineCard';
+import DeviceCard from '../shared/cards/DeviceCard';
 
 const styles = theme => ({
     root: {
@@ -39,13 +40,7 @@ export default class Devices extends React.Component {
         deviceFetchError: PropTypes.any,
     };
 
-    constructor(props) {
-        super(props);
-        this.toogleLine = this.toogleLine.bind(this);
-
-        this.state = {};
-    }
-
+    state = {};
 
     componentWillMount() {
         this.props.fetchDeviceById(this.props.match.params.deviceId);
@@ -55,20 +50,12 @@ export default class Devices extends React.Component {
         const {match: {params}, devices} = nextProps;
         const device = devices[params.deviceId];
 
-        const {id} = this.state;
-
-        if (device !== undefined && id !== device.id) {
+        if (device !== undefined && this.state.id !== device.id) {
             this.setState({...device});
         }
 
         return device !== undefined;
     }
-
-    toogleLine = (id) => (e) => {
-        // e.preventDefault();
-        //this.setState({ id: !this.state.id});
-        console.log(id)
-    };
 
     render() {
         const {classes, loading, deviceFetchError} = this.props;
@@ -109,13 +96,16 @@ export default class Devices extends React.Component {
                     </Paper>
                 </Grid>
 
-                {lines.map((line, i) => {
-                    return (     
-                        <Grid item xs={12}>
-                            <LineCard line={line} key={line.id} toogleLine={this.toogleLine}/>
-                        </Grid>
-                    );
-                })}
+
+                {
+                    Object.keys(lines).map(function (id, index) {
+                        return (
+                            <Grid item xs={12}>
+                                <LineCard lineId={lines[id].id} key={lines[id].id}/>
+                            </Grid>
+                        );
+                    })
+                }
 
             </Grid>
             </>

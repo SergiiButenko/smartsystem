@@ -1,6 +1,6 @@
 import {createActions} from 'redux-actions';
 import {smartSystemApi} from '../provider';
-import {arrayToObj} from "../helpers/common.helper";
+import {arrayToObj} from '../helpers/common.helper';
 
 const actions = createActions(
     {
@@ -27,9 +27,14 @@ export const fetchDevices = () => {
         dispatch(devices.loading(true));
 
         try {
-            let devices_input = await smartSystemApi.getDevice();
-            devices_input = arrayToObj(devices_input[deviceKey]);
-            dispatch(entity.devices.updateBatch(devices_input));
+            let devices = await smartSystemApi.getDevice();
+            for (let _device in devices[deviceKey]) {
+                _device.lines = arrayToObj(devices.lines);
+            }
+
+            devices = arrayToObj(devices[deviceKey]);
+
+            dispatch(entity.devices.updateBatch(devices));
         }
         catch (e) {
             dispatch(devices.failure(e));
@@ -45,10 +50,11 @@ export const fetchDeviceById = (deviceId) => {
 
         try {
 
-            const devices_input = await smartSystemApi.getDeviceById(deviceId);
-            let first = devices_input[deviceKey][0];
+            const _devices = await smartSystemApi.getDeviceById(deviceId);
+            let device = _devices[deviceKey][0];
+            device.lines = arrayToObj(device.lines);
 
-            dispatch(entity.devices.set(first));
+            dispatch(entity.devices.set(device));
         }
         catch (e) {
             dispatch(devices.failure(e));
