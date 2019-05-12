@@ -14,7 +14,7 @@ import Battery60 from '@material-ui/icons/Battery60';
 import Battery90 from '@material-ui/icons/Battery90';
 import {getDevices} from '../../../selectors/devices';
 import connect from 'react-redux/es/connect/connect';
-import {fetchDeviceById} from '../../../actions/device';
+import {fetchDeviceById, togleLine} from '../../../actions/device';
 import {withRouter} from 'react-router-dom';
 
 
@@ -31,7 +31,7 @@ const styles = theme => ({
 const mapStateToProps = (state) => {
     return getDevices(state);
 };
-@connect(mapStateToProps)
+@connect(mapStateToProps, {togleLine})
 @withRouter
 @withStyles(styles)
 export default class LineCard extends React.Component {
@@ -74,12 +74,15 @@ export default class LineCard extends React.Component {
         this.updateState(nextProps);
         const {lineId} = nextProps;
 
-        return this.state.id !== lineId;
+        return this.state.id === lineId;
     }
 
     render() {
-        const {classes, loading} = this.props;
-        const {name, description, settings} = this.state;
+        const {match: {params}, lineId, classes, loading, togleLine} = this.props;
+        const {deviceId} = params;
+
+        const {name, description, settings, selected} = this.state;
+        console.log(this.state)
 
         if (loading) {
             return <PageSpinner/>;
@@ -89,6 +92,7 @@ export default class LineCard extends React.Component {
             <Paper
                 className={classes.root}
                 elevation={1}
+                onClick={() => togleLine(deviceId, lineId)}
             >
                 <Grid
                     container
@@ -102,7 +106,7 @@ export default class LineCard extends React.Component {
                             {name}
                         </Typography>
                         <Typography component="p">
-                            {description}
+                            {description + " " + selected}
                         </Typography>
                         <Typography component="p">
                             {JSON.stringify(settings, null, 2)}

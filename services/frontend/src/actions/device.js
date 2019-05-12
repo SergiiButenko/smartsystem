@@ -62,3 +62,16 @@ export const fetchDeviceById = (deviceId) => {
         dispatch(devices.loading(false));
     };
 };
+
+
+export const togleLine = (deviceId, lineId) => {
+    return async dispatch => {
+        try {
+            dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, 'selected'], true));
+        }
+        catch (e) {
+            dispatch(devices.failure(e));
+        }
+        dispatch(devices.loading(false));
+    };
+};
