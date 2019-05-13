@@ -14,10 +14,9 @@ import Battery60 from '@material-ui/icons/Battery60';
 import Battery90 from '@material-ui/icons/Battery90';
 import {getDevices} from '../../../selectors/devices';
 import connect from 'react-redux/es/connect/connect';
-import {fetchDeviceById, togleLine} from '../../../actions/device';
+import {fetchDeviceById, toggleLine} from '../../../actions/device';
 import {withRouter} from 'react-router-dom';
-
-
+import classNames from 'classnames';
 
 
 const styles = theme => ({
@@ -27,7 +26,12 @@ const styles = theme => ({
         paddingBottom: theme.spacing.unit * 2,
         width: '100%',
     },
+    selected: {
+        boxShadow: '0 0 0 3px #8dbdf7',
+        background: '#dae7f7',
+    },
 });
+
 const mapStateToProps = (state) => {
     return getDevices(state);
 };
@@ -46,23 +50,19 @@ export default class LineCard extends React.Component {
         router: PropTypes.object
     };
 
-    toggleLine = () => {
-
-    };
-
     render() {
         const {match: {params}, lineId, devices, classes, loading, toggleLine} = this.props;
         const {deviceId} = params;
-
-        const {name, description, settings} = devices[deviceId].lines[lineId];
+        const line = devices[deviceId].lines[lineId];
         
         if (loading) {
             return <PageSpinner/>;
         }
 
+        line.selected = !!line.selected || false;
         return (
             <Paper
-                className={classes.root}
+                className={classNames(classes.root, line.selected && classes.selected)}
                 elevation={1}
                 onClick={() => toggleLine(deviceId, lineId)}
             >
@@ -75,13 +75,13 @@ export default class LineCard extends React.Component {
                 >
                     <Grid item xs={6}>
                         <Typography variant="h5" component="h3">
-                            {name}
+                            {line.name}
                         </Typography>
                         <Typography component="p">
-                            {description + " " + selected}
+                            {line.description + " " + line.selected}
                         </Typography>
                         <Typography component="p">
-                            {JSON.stringify(settings, null, 2)}
+                            {JSON.stringify(line.settings, null, 2)}
                         </Typography>
                     </Grid>
                     <Grid item>

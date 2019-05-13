@@ -42,7 +42,7 @@ export default class Group extends React.Component {
         groupFetchError: PropTypes.any,
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.fetchGroupById(this.props.match.params.groupId);
     }
 
@@ -62,12 +62,12 @@ export default class Group extends React.Component {
             <>
             <Grid container spacing={24}>
                 <Grid item xs={12}>
-                    <GroupHeader group={group}/>
+                    <GroupHeader group={group} key={group.id}/>
                 </Grid>
                 {group.devices.map((device, i) => {
                     return (
                         <Grid item xs={12}>
-                            <DeviceCard device={device}/>
+                            <DeviceCard device={device} key={device.id}/>
                         </Grid>
                     );
                 })}

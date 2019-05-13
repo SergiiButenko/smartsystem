@@ -25,7 +25,7 @@ export default class DeviceCard extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         device: PropTypes.object.isRequired,
-        loading: PropTypes.bool.isRequired,
+        //loading: PropTypes.bool.isRequired,
     };
 
     static contextTypes = {

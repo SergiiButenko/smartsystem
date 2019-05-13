@@ -34,7 +34,7 @@ export default class Groups extends React.Component {
         groupFetchError: PropTypes.any,
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.fetchGroups();
     }
 

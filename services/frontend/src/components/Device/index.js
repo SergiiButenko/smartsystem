@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import { Button } from '@material-ui/core';
 
 import {getDevices} from '../../selectors/devices';
-import {fetchDeviceById} from '../../actions/device';
+import {fetchDeviceById, planLines} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import LineCard from '../shared/cards/LineCard';
@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 };
 @withStyles(styles)
 @withRouter
-@connect(mapStateToProps, {fetchDeviceById})
+@connect(mapStateToProps, {fetchDeviceById, planLines})
 export default class Devices extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
@@ -45,9 +45,9 @@ export default class Devices extends React.Component {
     }
 
     render() {
-        const {classes, loading, deviceFetchError, devices, match: {params}} = this.props;
-        const {name, description, settings, lines} = devices[params.deviceId];
-
+        const {classes, loading, deviceFetchError, devices, match: {params}, planLines} = this.props;
+        const device = devices[params.deviceId];
+        
         if (loading) {
             return <PageSpinner/>;
         }
@@ -64,18 +64,20 @@ export default class Devices extends React.Component {
                         <Grid container spacing={24}>
                             <Grid item xs={8}>
                                 <Typography variant="h5" component="h3">
-                                    {name}
+                                    {device.name}
                                 </Typography>
                                 <Typography component="p">
-                                    {description}
+                                    {device.description}
                                 </Typography>
                                 <Typography component="p">
-                                    <pre>{JSON.stringify(settings, null, 2) }</pre>
+                                    <pre>{JSON.stringify(device.settings, null, 2) }</pre>
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
-                                <Button>
-                            Почати полив
+                                <Button
+                                onClick={() => planLines(device.id)}
+                                >
+                                    Почати полив
                                 </Button>
                             </Grid>
                         </Grid>
@@ -83,10 +85,10 @@ export default class Devices extends React.Component {
                 </Grid>
 
                 {
-                    Object.keys(lines).map(function (id, index) {
+                    Object.keys(device.lines).map(function (id, index) {
                         return (
                             <Grid item xs={12}>
-                                <LineCard lineId={lines[id].id} key={lines[id].id}/>
+                                <LineCard lineId={device.lines[id].id} key={device.lines[id].id}/>
                             </Grid>
                         );
                     })

@@ -21,6 +21,7 @@ const actions = createActions(
 export const {devices, entity} = actions;
 
 const deviceKey = 'devices';
+const selectedKey = 'selected';
 
 export const fetchDevices = () => {
     return async dispatch => {
@@ -63,15 +64,59 @@ export const fetchDeviceById = (deviceId) => {
     };
 };
 
-
 export const toggleLine = (deviceId, lineId) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+
         try {
-            dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, 'selected'], true));
+            const _devices = getState().entity.devices.toJS();
+            const lineSelected = !!_devices[deviceId].lines[lineId].selected;
+
+            dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, selectedKey], !lineSelected));
         }
         catch (e) {
-            dispatch(devices.failure(e));
+            console.log(e);
         }
+        dispatch(devices.loading(false));
+    };
+};
+
+
+export const syncDeviceById = (deviceId) => {
+    return async (dispatch, getState) => {
+        try {
+            const _devices = getState().entity.devices.toJS();
+            const _device = _devices[deviceId];
+
+            dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, selectedKey], !lineSelected));
+        }
+        catch (e) {
+            console.log(e);
+        }
+        dispatch(devices.loading(false));
+    };
+};
+
+
+export const planLines = (deviceId) => {
+    return async (dispatch, getState) => {
+        dispatch(devices.loading(false));
+            try {
+                const _devices = getState().entity.devices.toJS();
+                const lines = _devices[deviceId].lines;
+
+                const linesSelected = Object.keys(lines)
+                                .reduce((obj, key) => {
+                                    if (lines[key].selected && lines[key].selected === true) {
+                                        obj[key] = lines[key];
+                                    }
+                                    return obj;
+                                }, {});
+
+                console.log(linesSelected);
+            }
+            catch (e) {
+                console.log(e);
+            }
         dispatch(devices.loading(false));
     };
 };
