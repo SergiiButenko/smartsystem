@@ -64,7 +64,7 @@ export const fetchDeviceById = (deviceId) => {
 };
 
 
-export const togleLine = (deviceId, lineId) => {
+export const toggleLine = (deviceId, lineId) => {
     return async dispatch => {
         try {
             dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, 'selected'], true));

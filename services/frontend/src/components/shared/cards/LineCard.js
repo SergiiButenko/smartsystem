@@ -31,7 +31,7 @@ const styles = theme => ({
 const mapStateToProps = (state) => {
     return getDevices(state);
 };
-@connect(mapStateToProps, {togleLine})
+@connect(mapStateToProps, {toggleLine})
 @withRouter
 @withStyles(styles)
 export default class LineCard extends React.Component {
@@ -46,44 +46,16 @@ export default class LineCard extends React.Component {
         router: PropTypes.object
     };
 
-    state = {};
+    toggleLine = () => {
 
-    redirectToSettings = (id) => (e) => {
-        console.log(this.context.router.history);
     };
-
-    updateState = (props) => {
-        const {match: {params}, devices, lineId} = props;
-        const device = devices[params.deviceId];
-
-        let line = undefined;
-        if (device !== undefined) {
-            line = devices[params.deviceId].lines[lineId];
-        }
-
-        if (line !== undefined && this.state.id !== line.id) {
-            this.setState({...line});
-        }
-    };
-
-    componentWillMount() {
-        this.updateState(this.props);
-    }
-
-    shouldComponentUpdate(nextProps) {
-        this.updateState(nextProps);
-        const {lineId} = nextProps;
-
-        return this.state.id === lineId;
-    }
 
     render() {
-        const {match: {params}, lineId, classes, loading, togleLine} = this.props;
+        const {match: {params}, lineId, devices, classes, loading, toggleLine} = this.props;
         const {deviceId} = params;
 
-        const {name, description, settings, selected} = this.state;
-        console.log(this.state)
-
+        const {name, description, settings} = devices[deviceId].lines[lineId];
+        
         if (loading) {
             return <PageSpinner/>;
         }
@@ -92,7 +64,7 @@ export default class LineCard extends React.Component {
             <Paper
                 className={classes.root}
                 elevation={1}
-                onClick={() => togleLine(deviceId, lineId)}
+                onClick={() => toggleLine(deviceId, lineId)}
             >
                 <Grid
                     container

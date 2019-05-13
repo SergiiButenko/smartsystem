@@ -40,26 +40,13 @@ export default class Devices extends React.Component {
         deviceFetchError: PropTypes.any,
     };
 
-    state = {};
-
-    componentWillMount() {
+    componentDidMount() {
         this.props.fetchDeviceById(this.props.match.params.deviceId);
     }
 
-    shouldComponentUpdate(nextProps) {
-        const {match: {params}, devices} = nextProps;
-        const device = devices[params.deviceId];
-
-        if (device !== undefined && this.state.id !== device.id) {
-            this.setState({...device});
-        }
-
-        return device !== undefined;
-    }
-
     render() {
-        const {classes, loading, deviceFetchError} = this.props;
-        const {name, description, settings, lines} = this.state;
+        const {classes, loading, deviceFetchError, devices, match: {params}} = this.props;
+        const {name, description, settings, lines} = devices[params.deviceId];
 
         if (loading) {
             return <PageSpinner/>;
@@ -85,7 +72,6 @@ export default class Devices extends React.Component {
                                 <Typography component="p">
                                     <pre>{JSON.stringify(settings, null, 2) }</pre>
                                 </Typography>
-
                             </Grid>
                             <Grid item xs={4}>
                                 <Button>
@@ -95,7 +81,6 @@ export default class Devices extends React.Component {
                         </Grid>
                     </Paper>
                 </Grid>
-
 
                 {
                     Object.keys(lines).map(function (id, index) {
