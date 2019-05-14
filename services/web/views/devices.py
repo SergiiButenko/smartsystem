@@ -5,7 +5,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 import logging
 
-from web.factories import Devices, Tasks
+from web.factories import Devices
 from web.factories.create_app import validate_json
 
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,7 @@ def get_rules_for_device(device_id):
     cr_user = get_jwt_identity()
 
     device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    tasks = Tasks.get_next_tasks(device=device)
+    tasks = device.get_next_tasks()
 
     return jsonify(tasks=tasks)
 
@@ -57,7 +57,7 @@ def set_rules_for_device(device_id):
     # }
 
     device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    tasks = Tasks.register_tasks(device=device, lines=income_json["lines"])
+    tasks = device.register_tasks(lines=income_json["lines"])
 
     return jsonify(tasks=tasks)
 
@@ -68,16 +68,5 @@ def set_rules_for_device(device_id):
 def delete_rules_for_device(device_id):
     income_json = request.json
     Tasks.remove_tasks(rules=income_json["rules"])
-
-    return jsonify(state="ok")
-
-
-@devices.route("/<string:device_id>/state", methods=["GET"])
-# @jwt_required
-def get_state(device_id):
-    cr_user = get_jwt_identity()
-
-    device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    device.init_state()
 
     return jsonify(state="ok")

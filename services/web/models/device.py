@@ -6,7 +6,10 @@ import logging
 import re
 
 from web.models.line import Line
-from web.resources import *
+from web.models import Task
+from web.resources import Db
+
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,10 +40,30 @@ class Device:
         self.version = version
         self.settings = settings
         self.concole = concole
-        self.state = None
-        self.lines = []
+        self.state = self._init_state()
+        self.lines = self._init_lines()
+        self.tasks = dict()
 
-    def init_lines(self):
+    def register_line_tasks(self, lines):
+        tasks = dict()
+        exec_time = datetime.now()
+        for line in lines:
+            task = Task(exec_time=exec_time, device_id=self.id, **line)
+            task.register
+            tasks[line.id] = task
+            exec_time = task.next_rule_start_time
+
+        self.tasks = tasks
+
+        return self
+
+    def get_next_tasks(self):
+        return Db.get_device_lines_next_tasks(device_id=self.id)
+
+    def remove_tasks(self, rules):
+        return Db.get_device_lines_next_tasks(device_id=self.id, rules=rules)
+
+    def _init_lines(self):
         records = Db.get_device_lines(device_id=self.id, line_id=None)
 
         for rec in records:
@@ -50,7 +73,7 @@ class Device:
 
         return self
 
-    def init_state(self):
+    def _init_state(self):
         if self.lines is None:
             self.lines = self._init_lines()
 
@@ -58,27 +81,25 @@ class Device:
         # request change
         if self.settings["comm_protocol"] == "network":
             try:
-                lines_state = requests.get(url=self.settings["ip"] + "99")
-                lines_state.raise_for_status()
+                # lines_state = requests.get(url=self.settings["ip"] + "99")
+                # lines_state.raise_for_status()
 
-                lines_state = re.findall("\d+", lines_state.text)
-                logger.info(lines_state)
+                # lines_state = re.findall("\d+", lines_state.text)
+                # logger.info(lines_state)
 
-                lines_state = list(map(int, lines_state))
-                logger.info(lines_state)
-
-            except Exception as e:
-                logger.error("device is offline")
-                logger.error(e)
-                self.state = "offline"
-            else:
+                # lines_state = list(map(int, lines_state))
+                # logger.info(lines_state)
+                lines_state = [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
                 self.state = "online"
 
                 for line in self.lines:
                     logger.info(lines_state)
                     line.state = lines_state[line.relay_num]
+            except Exception as e:
+                logger.error("device is offline")
+                logger.error(e)
+                self.state = "offline"
 
-        # merge matrics
         return self
 
     def to_json(self):

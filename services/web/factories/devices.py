@@ -7,8 +7,6 @@ class Devices:
     def get_by_id(device_id, user_identity):
         device = Db.get_device_by_id(device_id=device_id, user_identity=user_identity)
         device = Device(user_identity=user_identity, **device)
-        device.init_lines()
-        device.init_state()
 
         return device
 

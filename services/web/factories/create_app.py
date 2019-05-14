@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask.json import JSONEncoder
 from flask_jwt_extended import JWTManager, get_jwt_claims, verify_jwt_in_request
+from flask_socketio import SocketIO
+
 from werkzeug.exceptions import BadRequest
 
 from web.resources import redis, Db
@@ -10,7 +12,9 @@ from web.errors import *
 from web.errors.errors_handler import handle_common_errors
 
 import logging
+import os
 from functools import wraps
+import eventlet
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,6 +34,8 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 def create_flask_app(name):
+    eventlet.monkey_patch()
+
     app = Flask(name)
     app.config.from_object("web.config")
 
@@ -37,7 +43,9 @@ def create_flask_app(name):
 
     app = handle_common_errors(app)
 
-    return app
+    socketio = SocketIO(app, async_mode="eventlet", engineio_logger=True, message_queue=os.environ["REDIS_BROKER"])
+
+    return app, socketio
 
 
 def create_jwt_app(app):

@@ -15,7 +15,8 @@ services:
       - postgres
     command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}",
               "--",
-              "/usr/local/bin/gunicorn", "web.app:app",
+              "/usr/local/bin/gunicorn", "--worker-class", "eventlet"
+              "web.app:app",
               "-w", "1", "-t", "90", "-b", "0.0.0.0:5000"
               ]
 
