@@ -17,7 +17,7 @@ class Database:
 
     def __init__(self):
         self.conn = psycopg2.connect(**Database.conn_creds)
-        self.conn.autocommit=False
+        self.conn.autocommit = False
 
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -128,7 +128,7 @@ class Database:
             group=group, user_identity="admin"
         )
 
-        self.cursor.execute(q, (user_identity))
+        self._execute(q, (user_identity))
 
         records = self.cursor.fetchall()
         if len(records) == 0:
@@ -151,19 +151,17 @@ class Database:
             select id from devices where id in (
                 select device_id from device_groups where device_id in (
                         select device_id from device_user where user_id in (
-                            select id from users where name = '{user_identity}'
+                            select id from users where name = %(user_identity)s
                         )
                     ) {group}
-                ) 
+                )
             )
             group by d.id
             """.format(
-            group=group, user_identity="admin"
+            group=group
         )
 
-        self.cursor.execute(q, (user_identity))
-
-        records = self.cursor.fetchall()
+        records = self._execute(q, {user_identity: "admin"}, method='fetchall')
         if len(records) == 0:
             raise Exception("No devices in group_id={}".format(group_id))
 
