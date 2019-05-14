@@ -1,10 +1,6 @@
 from flask import Flask, request
 from flask.json import JSONEncoder
-from flask_jwt_extended import (
-    JWTManager,
-    get_jwt_claims,
-    verify_jwt_in_request,
-)
+from flask_jwt_extended import JWTManager, get_jwt_claims, verify_jwt_in_request
 from werkzeug.exceptions import BadRequest
 
 from web.resources import redis, Db
@@ -35,7 +31,7 @@ class CustomJSONEncoder(JSONEncoder):
 
 def create_flask_app(name):
     app = Flask(name)
-    app.config.from_object('web.config')
+    app.config.from_object("web.config")
 
     app.json_encoder = CustomJSONEncoder
 
@@ -117,6 +113,7 @@ def validate_schema(schema_name):
         def wrapper(*args, **kw):
             # validate(request.json, current_app.config[schema_name])
             return f(*args, **kw)
+
         return wrapper
 
     return decorator

@@ -14,7 +14,16 @@ logger = logging.getLogger(__name__)
 class Task:
     """Compose set of tasks according to iterations and time_sleep"""
 
-    def __init__ (self, exec_time, device_id, line_id, time, iterations, time_sleep, id=str(uuid4())):
+    def __init__(
+        self,
+        exec_time,
+        device_id,
+        line_id,
+        time,
+        iterations,
+        time_sleep,
+        id=str(uuid4()),
+    ):
         self.id = id
         self.line_id = line_id
         self.device_id = device_id

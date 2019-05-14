@@ -12,10 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def error_obj(message, code, description):
-    tmp = dict(message=message,
-               code=code,
-               description=str(description),
-               )
+    tmp = dict(message=message, code=code, description=str(description))
     return jsonify(tmp), tmp["code"]
 
 

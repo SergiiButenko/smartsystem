@@ -1,6 +1,7 @@
 import {createActions} from 'redux-actions';
 import {smartSystemApi} from '../provider';
 import {arrayToObj} from '../helpers/common.helper';
+import {filterSelectedLines, formLinesJson} from '../helpers/device.helper';
 
 const actions = createActions(
     {
@@ -14,6 +15,7 @@ const actions = createActions(
         DEVICES: {
             LOADING: v => v,
             FAILURE: v => v,
+            UPDATING: v => v,
         }    
     }
 );
@@ -22,6 +24,7 @@ export const {devices, entity} = actions;
 
 const deviceKey = 'devices';
 const selectedKey = 'selected';
+const tasksKey = 'tasks';
 
 export const fetchDevices = () => {
     return async dispatch => {
@@ -66,7 +69,6 @@ export const fetchDeviceById = (deviceId) => {
 
 export const toggleLine = (deviceId, lineId) => {
     return async (dispatch, getState) => {
-
         try {
             const _devices = getState().entity.devices.toJS();
             const lineSelected = !!_devices[deviceId].lines[lineId].selected;
@@ -76,47 +78,52 @@ export const toggleLine = (deviceId, lineId) => {
         catch (e) {
             console.log(e);
         }
-        dispatch(devices.loading(false));
     };
 };
 
+export const fetchDeviceTasks = (deviceId) => {
+    return async dispatch => {
+        dispatch(devices.loading(true));
 
-export const syncDeviceById = (deviceId) => {
-    return async (dispatch, getState) => {
         try {
-            const _devices = getState().entity.devices.toJS();
-            const _device = _devices[deviceId];
 
-            dispatch(entity.devices.updateIn([deviceId, 'lines', lineId, selectedKey], !lineSelected));
+            const _devices = await smartSystemApi.getDeviceLatestTask(deviceId);
+            const tasks = _devices[tasksKey];
+
+            for (task in tasks) {
+                dispatch(entity.devices.updateIn(
+                    [
+                    deviceId,
+                    linesKey,
+                    task.line_id,
+                    tasksKey
+                    ], task.list));
+            }
         }
         catch (e) {
-            console.log(e);
+            dispatch(devices.failure(e));
         }
         dispatch(devices.loading(false));
     };
 };
 
-
-export const planLines = (deviceId) => {
+export const postDeviceTasks = (deviceId) => {
     return async (dispatch, getState) => {
-        dispatch(devices.loading(false));
+        dispatch(devices.updating(true));
+
             try {
                 const _devices = getState().entity.devices.toJS();
                 const lines = _devices[deviceId].lines;
 
-                const linesSelected = Object.keys(lines)
-                                .reduce((obj, key) => {
-                                    if (lines[key].selected && lines[key].selected === true) {
-                                        obj[key] = lines[key];
-                                    }
-                                    return obj;
-                                }, {});
+                const linesSelected = filterSelectedLines(lines);
+                const tasks = formLinesJson(linesSelected);
 
-                console.log(linesSelected);
+                await smartSystemApi.postDeviceTasks(deviceId, tasks);
             }
             catch (e) {
                 console.log(e);
             }
-        dispatch(devices.loading(false));
+        
+        dispatch(devices.updating(false));
     };
 };

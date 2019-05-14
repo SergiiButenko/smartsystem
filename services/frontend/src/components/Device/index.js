@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import { Button } from '@material-ui/core';
 
 import {getDevices} from '../../selectors/devices';
-import {fetchDeviceById, planLines} from '../../actions/device';
+import {fetchDeviceById, postDeviceTasks} from '../../actions/device';
 import PageSpinner from '../shared/PageSpinner';
 import LoadingFailed from '../shared/LoadingFailed';
 import LineCard from '../shared/cards/LineCard';
@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 };
 @withStyles(styles)
 @withRouter
-@connect(mapStateToProps, {fetchDeviceById, planLines})
+@connect(mapStateToProps, {fetchDeviceById, postDeviceTasks})
 export default class Devices extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
@@ -45,7 +45,7 @@ export default class Devices extends React.Component {
     }
 
     render() {
-        const {classes, loading, deviceFetchError, devices, match: {params}, planLines} = this.props;
+        const {classes, loading, deviceFetchError, devices, match: {params}, postDeviceTasks} = this.props;
         const device = devices[params.deviceId];
         
         if (loading) {
@@ -75,7 +75,7 @@ export default class Devices extends React.Component {
                             </Grid>
                             <Grid item xs={4}>
                                 <Button
-                                onClick={() => planLines(device.id)}
+                                onClick={() => postDeviceTasks(device.id)}
                                 >
                                     Почати полив
                                 </Button>

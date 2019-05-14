@@ -13,7 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 class Device:
-    def __init__(self, user_identity, id, name, description, type, device_type, model, version, settings, concole=None, lines=None):
+    def __init__(
+        self,
+        user_identity,
+        id,
+        name,
+        description,
+        type,
+        device_type,
+        model,
+        version,
+        settings,
+        concole=None,
+        lines=None,
+    ):
         self.user_identity = user_identity
         self.id = id
         self.name = name
@@ -28,9 +41,7 @@ class Device:
         self.lines = []
 
     def init_lines(self):
-        records = Db.get_device_lines(
-            device_id=self.id, line_id=None
-        )
+        records = Db.get_device_lines(device_id=self.id, line_id=None)
 
         for rec in records:
             self.lines.append(Line(**rec))
@@ -47,10 +58,10 @@ class Device:
         # request change
         if self.settings["comm_protocol"] == "network":
             try:
-                lines_state = requests.get(url=self.settings["ip"] + '99')
+                lines_state = requests.get(url=self.settings["ip"] + "99")
                 lines_state.raise_for_status()
 
-                lines_state = re.findall('\d+', lines_state.text)
+                lines_state = re.findall("\d+", lines_state.text)
                 logger.info(lines_state)
 
                 lines_state = list(map(int, lines_state))

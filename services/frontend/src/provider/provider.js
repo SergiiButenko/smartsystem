@@ -94,6 +94,21 @@ class SmartSystemApi {
         );
     }
 
+    async getDeviceLatestTask(deviceId, options = {}) {
+        return this.provider.get(
+            apiUri.TASKS(deviceId),
+            options,
+        );
+    }
+
+    async postDeviceTasks(deviceId, body, options = {}) {
+        return this.provider.post(
+            apiUri.TASKS(deviceId),
+            body,
+            options,
+        );
+    }
+
     async getGroup(options = {}) {
         return this.provider.get(
             apiUri.GROUPS(),

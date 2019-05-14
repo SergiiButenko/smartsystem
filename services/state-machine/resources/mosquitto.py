@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class Mosquitto:
     def __init__(self):
-        broker_address = os.environ['MOSQUITTO_HOST']
-        broker_portno = os.environ['MOSQUITTO_PORT']
+        broker_address = os.environ["MOSQUITTO_HOST"]
+        broker_portno = os.environ["MOSQUITTO_PORT"]
 
         self.client = mqtt.Client()
 

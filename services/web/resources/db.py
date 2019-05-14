@@ -17,10 +17,28 @@ class Database:
 
     def __init__(self):
         self.conn = psycopg2.connect(**Database.conn_creds)
+        self.conn.autocommit=False
+
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def __del__(self):
         self.conn.close()
+
+    def _execute(self, query, params={}, method='fetchall'):
+        try:
+            self.cursor.execute(
+                query,
+                params,
+            )
+            records = getattr(self.cursor, method)()
+
+            self.conn.commit()
+
+            return records
+        except (Exception, psycopg2.DatabaseError) as error:
+            logger.error("Error in transction Reverting all other operations of a transction ", error)
+            self.conn.rollback()
+            raise error
 
     def get_user(self, user_identity):
         self.cursor.execute(
@@ -40,7 +58,7 @@ class Database:
 
         q = """
             select
-            d.*, 
+            d.*,
             jsonb_object_agg(setting, value) as settings
             from device_settings as s
             join devices as d on s.device_id = d.id
@@ -71,7 +89,7 @@ class Database:
 
         q = """
             select
-            l.*, 
+            l.*,
             jsonb_object_agg(setting, value) as settings
             from line_settings as s
             join lines as l on s.line_id = l.id

@@ -2,6 +2,7 @@ import {handleActions} from 'redux-actions';
 
 const defaultState = {
     loading: true,
+    updating: false,
     deviceFetchError: null,
 };
 
@@ -17,6 +18,12 @@ export default handleActions({
             return {
                 ...state,
                 loading: action.payload,
+            };
+        },
+        UPDATING: (state, action) => {
+            return {
+                ...state,
+                updating: action.payload,
             };
         },
     }

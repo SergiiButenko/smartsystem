@@ -40,10 +40,10 @@ services:
       - mosquitto
     command: python -m app
 
-  data-analyzer:
+  state-machine:
     build:
-      context: ./services/data-analyzer
-    container_name: data-analyzer
+      context: ./services/state-machine
+    container_name: state-machine
     env_file:
       - ./.env
     depends_on:

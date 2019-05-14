@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-#the callback function
+# the callback function
 def on_connect(client, userdata, flags, rc):
     logger.info("Connected With Result Code {}".format(rc))
     client.subscribe("TestingTopic")
@@ -23,8 +23,8 @@ def on_message(client, userdata, message):
 
 
 def main():
-    broker_address = os.environ['MOSQUITTO_HOST']
-    broker_portno = int(os.environ['MOSQUITTO_PORT'])
+    broker_address = os.environ["MOSQUITTO_HOST"]
+    broker_portno = int(os.environ["MOSQUITTO_PORT"])
 
     client = mqtt.Client()
     client.on_connect = on_connect

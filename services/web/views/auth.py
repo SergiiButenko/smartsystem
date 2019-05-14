@@ -40,11 +40,11 @@ def login():
 
     current_user = Db.get_user(user_identity=username)
     current_user = User(
-            username=current_user["name"],
-            password=current_user["password"],
-            roles=["admin"],
-            permissions=["rw"],
-        )
+        username=current_user["name"],
+        password=current_user["password"],
+        roles=["admin"],
+        permissions=["rw"],
+    )
 
     if current_user is None or bcrypt.hashpw(
         password.encode("utf-8"), current_user.password.encode("utf-8")
