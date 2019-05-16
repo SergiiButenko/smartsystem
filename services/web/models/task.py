@@ -2,7 +2,7 @@ from builtins import property, range
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from web.models import Job
+from web.models.job import Job
 from web.resources import Db
 
 import logging

@@ -24,13 +24,16 @@ class Database:
     def __del__(self):
         self.conn.close()
 
-    def _execute(self, query, params={}, method='fetchall'):
+    def _execute(self, query, params={}, method=None):
         try:
             self.cursor.execute(
                 query,
                 params,
             )
-            records = getattr(self.cursor, method)()
+
+            records = None
+            if method is not None:
+                records = getattr(self.cursor, method)()
 
             self.conn.commit()
 
@@ -128,9 +131,7 @@ class Database:
             group=group, user_identity="admin"
         )
 
-        self._execute(q, (user_identity))
-
-        records = self.cursor.fetchall()
+        records = self._execute(q, method="fetchall")
         if len(records) == 0:
             raise Exception("No group_id {} found".format(group_id))
 

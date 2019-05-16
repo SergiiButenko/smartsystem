@@ -6,6 +6,6 @@ module.exports = {
     endpoint_section: {
         base_url: 'http://localhost/',
         amazon: {},
-        ws_uri: 'ws://localhost:9000',
+        ws_uri: 'ws://localhost/',
     }
 };

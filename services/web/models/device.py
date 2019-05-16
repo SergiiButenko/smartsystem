@@ -6,7 +6,7 @@ import logging
 import re
 
 from web.models.line import Line
-from web.models import Task
+from web.models.task import Task
 from web.resources import Db
 
 from datetime import datetime
