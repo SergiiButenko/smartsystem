@@ -44,11 +44,9 @@ class Database:
             raise error
 
     def get_user(self, user_identity):
-        self.cursor.execute(
-            "select name, password from users where email = %s or name = %s",
-            (user_identity, user_identity),
-        )
-        records = self.cursor.fetchone()
+        q = "select name, password from users where email = %(user_identity)s or name = %(user_identity)s"
+
+        records = self._execute(q, {user_identity: 'admin'}, method='fetchone')
         if len(records) == 0:
             raise Exception("No user_id={}".format(user_identity))
 
@@ -68,20 +66,16 @@ class Database:
             where s.device_id in (
             select id from devices where id in (
                 select device_id from device_user where user_id in (
-                    select id from users where name = '{user_identity}'
+                    select id from users where name = %(user_identity)s
                     )
                 ) {device}
             )
             group by d.id
-            """.format(
-            device=device, user_identity="admin"
-        )
+            """.format(device=device)
 
-        self.cursor.execute(q, (user_identity))
-
-        records = self.cursor.fetchall()
+        records = self._execute(q, {user_identity: 'admin'}, method='fetchall')
         if len(records) == 0:
-            raise Exception("No device found")
+            raise Exception("No device '{}' found".format(device_id))
 
         return records
 
@@ -97,16 +91,12 @@ class Database:
             from line_settings as s
             join lines as l on s.line_id = l.id
             where l.id in (
-                select line_id from line_device where device_id = '{device_id}'
+                select line_id from line_device where device_id = %(device_id)s
             ) {line}
             group by l.id
-        """.format(
-            device_id=device_id, line=line
-        )
+        """.format(line=line)
 
-        self.cursor.execute(q, (device_id))
-
-        return self.cursor.fetchall()
+        return self.cursor.execute(q, params={device_id: device_id}, method='fetchall')
 
     def get_device_by_id(self, device_id, user_identity):
         return self._get_devices(device_id=device_id, user_identity=user_identity)[0]
@@ -123,15 +113,13 @@ class Database:
            select g.* from groups as g where id in (
                 select group_id from device_groups where device_id in (
                     select device_id from device_user where user_id in (
-                                    select id from users where name = '{user_identity}'
+                                    select id from users where name = %(user_identity)s
                                 )
                 ) {group}
             )
-            """.format(
-            group=group, user_identity="admin"
-        )
+            """.format(group=group)
 
-        records = self._execute(q, method="fetchall")
+        records = self._execute(q, params={user_identity: "admin"}, method="fetchall")
         if len(records) == 0:
             raise Exception("No group_id {} found".format(group_id))
 
@@ -181,13 +169,13 @@ class Database:
         :param job: job class
         :return: void
         """
-        query = """
+        q = """
             INSERT INTO jobs_queue
             (task_id, line_id, device_id, action, exec_time)
             VALUES (%(task_id)s, %(line_id)s, %(device_id)s, %(action)s, %(exec_time)s)
             RETURNING id
             """
-        self.cursor.execute(query, job.to_json())
+        self.cursor.execute(q, job.to_json())
         self.conn.commit()
         return self.cursor.fetchone()
 
@@ -200,11 +188,11 @@ class Database:
         """
         for rule in rules:
             for task in rule.tasks:
-                query = """
+                q = """
                 REMOVE FROM rules_line
                 WHERE rule_id = %(rule_id)s
                 """
-                self.cursor.execute(query, task.to_json())
+                self.cursor.execute(q, task.to_json())
             self.conn.commit()
 
     def get_device_lines_next_tasks(self, device_id):
@@ -213,15 +201,14 @@ class Database:
         :param device_id:
         :return: array of further tasks
         """
-
-        query = """
+        q = """
         SELECT * from rules_line
         WHERE exec_time > now()
         AND device_id = %(device_id)s
         ORDER BY exec_time ASC
         LIMIT 1
         """
-        self.cursor.execute(query, {"device_id": device_id})
+        self.cursor.execute(q, {"device_id": device_id})
         records = self.cursor.fetchall()
 
         tasks = list()
