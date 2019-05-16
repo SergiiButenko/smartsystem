@@ -4,7 +4,6 @@ import lines from '../actions/device';
 import config from 'config';
 
 const {endpoints: {ws_uri}} = config;
-
 const socket = io(ws_uri);
 
 export const websocketInit = (store) => {
@@ -17,9 +16,14 @@ export const websocketInit = (store) => {
         console.log('Connected to webSocket');
     });
 
-    socket.on(ACTION_TYPES.line_status_update, (payload) => {
-        let path = '';
-        store.dispatch(lines.updateIn(path, payload));
+    socket.on(ACTION_TYPES.device_update, (payload) => {
+        let path = [''];
+        store.dispatch(entity.devices.updateIn(path, payload));
+    });
+
+    socket.on(ACTION_TYPES.message, (payload) => {
+        let path = [''];
+        store.dispatch(entity.devices.updateIn(path, payload));
     });
 };
 

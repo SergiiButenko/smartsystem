@@ -19,13 +19,13 @@ const store = createStore(
     rootReducer,
     composeEnhancers(
         applyMiddleware(
-            thunk.withExtraArgument( {emit} ),
+            thunk.withExtraArgument({emit}),
             promise,
             logger,
         )
     ));
 
-//websocketInit( store );
+websocketInit(store);
 
 export default store;
 window.Store = store;

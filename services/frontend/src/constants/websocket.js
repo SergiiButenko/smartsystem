@@ -1,5 +1,6 @@
 export const ACTION_TYPES = {
-    line_status_update: 'line_status_update',
+    device_update: 'device_update',
     connect: 'connect',
     error: 'error',
+    message: 'message',
 };

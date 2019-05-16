@@ -26,5 +26,4 @@ class Database:
     def data_register(self, device_id, data):
         pass
 
-
 DAL = Database()
