@@ -46,7 +46,7 @@ class Database:
     def get_user(self, user_identity):
         q = "select name, password from users where email = %(user_identity)s or name = %(user_identity)s"
 
-        records = self._execute(q, {user_identity: 'admin'}, method='fetchone')
+        records = self._execute(q, {'user_identity': 'admin'}, method='fetchone')
         if len(records) == 0:
             raise Exception("No user_id={}".format(user_identity))
 
@@ -73,7 +73,7 @@ class Database:
             group by d.id
             """.format(device=device)
 
-        records = self._execute(q, {user_identity: 'admin'}, method='fetchall')
+        records = self._execute(q, {'user_identity': 'admin'}, method='fetchall')
         if len(records) == 0:
             raise Exception("No device '{}' found".format(device_id))
 
@@ -96,7 +96,7 @@ class Database:
             group by l.id
         """.format(line=line)
 
-        return self.cursor.execute(q, params={device_id: device_id}, method='fetchall')
+        return self.cursor.execute(q, params={'device_id': device_id}, method='fetchall')
 
     def get_device_by_id(self, device_id, user_identity):
         return self._get_devices(device_id=device_id, user_identity=user_identity)[0]
@@ -119,7 +119,7 @@ class Database:
             )
             """.format(group=group)
 
-        records = self._execute(q, params={user_identity: "admin"}, method="fetchall")
+        records = self._execute(q, params={'user_identity': "admin"}, method="fetchall")
         if len(records) == 0:
             raise Exception("No group_id {} found".format(group_id))
 
@@ -150,7 +150,7 @@ class Database:
             group=group
         )
 
-        records = self._execute(q, {user_identity: "admin"}, method='fetchall')
+        records = self._execute(q, {'user_identity': "admin"}, method='fetchall')
         if len(records) == 0:
             raise Exception("No devices in group_id={}".format(group_id))
 
