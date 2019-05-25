@@ -96,7 +96,7 @@ class Database:
             group by l.id
         """.format(line=line)
 
-        return self.cursor.execute(q, params={'device_id': device_id}, method='fetchall')
+        return self._execute(q, params={'device_id': device_id}, method='fetchall')
 
     def get_device_by_id(self, device_id, user_identity):
         return self._get_devices(device_id=device_id, user_identity=user_identity)[0]

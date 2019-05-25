@@ -104,7 +104,7 @@ class SmartSystemApi {
     async postDeviceTasks(deviceId, body, options = {}) {
         return this.provider.post(
             apiUri.TASKS(deviceId),
-            body,
+            JSON.stringify(body),
             options,
         );
     }

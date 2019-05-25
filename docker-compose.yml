@@ -10,9 +10,6 @@ services:
       - ./.env
     expose:
       - 5000
-    depends_on:
-      - redis
-      - postgres
     volumes:
       - ./configs/web.py:/config.py
     command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}", "--",
@@ -26,9 +23,6 @@ services:
     container_name: task-executor
     env_file:
       - ./.env
-    depends_on:
-      - postgres
-      - redis
     command: python -m app
 
   data-registrator:
@@ -37,8 +31,6 @@ services:
     container_name: data-registrator
     env_file:
       - ./.env
-    depends_on:
-      - mosquitto
     command: python -m app
 
   state-machine:
@@ -47,9 +39,6 @@ services:
     container_name: state-machine
     env_file:
       - ./.env
-    depends_on:
-      - postgres
-      - redis
     command: celery -A common.resources.celery worker --loglevel=info
 
   frontend:
@@ -76,56 +65,6 @@ services:
       - data-registrator
       - task-executor
       - frontend
-
-  redis:
-    image: redis:5.0.3-alpine
-    container_name: redis
-    volumes:
-      - redis_data:/data
-    ports:
-      - 6379:6379
-    restart: always
-    command: redis-server --appendonly yes
-
-  postgres:
-    image: "postgres:11.2-alpine"
-    container_name: postgres
-    environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      PGDATA: /data/postgres
-    volumes:
-      - ./services/postgres/:/docker-entrypoint-initdb.d
-#       - postgres-data:/data/postgres
-    ports:
-      - 5432:5432
-    restart: unless-stopped
-
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto
-    expose:
-      - 1883
-      - 9001
-    ports:
-      - 1883:1883
-      - 9001:9001
-    volumes:
-      - ./configs/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
-#  mongo-db:
-#    image: mongo:3.6
-#    hostname: mongo-db
-#    container_name: db-mongo
-#    expose:
-#      - "27017"
-#    ports:
-#      - "27017:27017"
-#    networks:
-#      - backend
-#    command: --bind_ip_all --smallfiles
-#    volumes:
-#      - mongo-data:/data
 
 volumes:
   redis_data:

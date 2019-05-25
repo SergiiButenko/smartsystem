@@ -40,17 +40,21 @@ class Device:
         self.version = version
         self.settings = settings
         self.concole = concole
-        self.state = self._init_state()
-        self.lines = self._init_lines()
+        self.lines = list()
+        self.state = -1
+        self._init_lines()
+        self._init_state()
+
         self.tasks = dict()
 
-    def register_line_tasks(self, lines):
+    def register_lines_tasks(self, lines):
         tasks = dict()
         exec_time = datetime.now()
         for line in lines:
+            logger.info(line)
             task = Task(exec_time=exec_time, device_id=self.id, **line)
-            task.register
-            tasks[line.id] = task
+            task.register()
+            tasks[line['line_id']] = task
             exec_time = task.next_rule_start_time
 
         self.tasks = tasks

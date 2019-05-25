@@ -93,10 +93,10 @@ export const fetchDeviceTasks = (deviceId) => {
             for (task in tasks) {
                 dispatch(entity.devices.updateIn(
                     [
-                    deviceId,
-                    linesKey,
-                    task.line_id,
-                    tasksKey
+                        deviceId,
+                        linesKey,
+                        task.line_id,
+                        tasksKey
                     ], task.list));
             }
         }
@@ -111,18 +111,18 @@ export const postDeviceTasks = (deviceId) => {
     return async (dispatch, getState) => {
         dispatch(devices.updating(true));
 
-            try {
-                const _devices = getState().entity.devices.toJS();
-                const lines = _devices[deviceId].lines;
+        try {
+            const _devices = getState().entity.devices.toJS();
+            const lines = _devices[deviceId].lines;
 
-                const linesSelected = filterSelectedLines(lines);
-                const tasks = formLinesJson(linesSelected);
-
-                await smartSystemApi.postDeviceTasks(deviceId, tasks);
-            }
-            catch (e) {
-                console.log(e);
-            }
+            const linesSelected = filterSelectedLines(lines);
+            await smartSystemApi.postDeviceTasks(deviceId,
+                {'lines': formLinesJson(linesSelected)}
+            );
+        }
+        catch (e) {
+            console.log(e);
+        }
         
         dispatch(devices.updating(false));
     };

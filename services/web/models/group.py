@@ -20,8 +20,6 @@ class Group:
 
         for rec in records:
             device = Device(user_identity=self.user_identity, **rec)
-            device.init_lines()
-
             self.devices.append(device)
 
         self.devices.sort(key=lambda e: e.name)
