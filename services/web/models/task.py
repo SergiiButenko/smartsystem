@@ -6,6 +6,7 @@ from web.models.job import Job
 from web.resources import Db
 
 import logging
+import JSON
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ class Task:
         self.jobs = self._generate_jobs()
 
     def _generate_jobs(self):
+        _db_line = Db.get_device_lines(device_id=self.device_id, line_id=self.line_id)[0]
         exec_time = self.exec_time
         jobs = []
         for i in range(self.iterations):
@@ -43,7 +45,11 @@ class Task:
                     task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
-                    action="activate",
+                    desired_device_state=JSON.dumps(
+                        {'state': {
+                                  'relay': {'num': _db_line['relay_num'], 'state': 1}
+                                  }
+                        }),
                     exec_time=exec_time,
                 )
             )
@@ -52,7 +58,11 @@ class Task:
                     task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
-                    action="deactivate",
+                    desired_device_state=JSON.dumps(
+                        {'state': {
+                                  'relay': {'num': _db_line['relay_num'], 'state': 0}
+                                  }
+                        }),
                     exec_time=exec_time + timedelta(minutes=self.time),
                 )
             )
@@ -74,7 +84,7 @@ class Task:
 
     def register(self):
         for job in self.jobs:
-            job.id = Db.register_job(job)
+            job.register_job()
 
     def to_json(self):
         return dict(

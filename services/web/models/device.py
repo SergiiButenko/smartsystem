@@ -16,6 +16,26 @@ logger = logging.getLogger(__name__)
 
 
 class Device:
+    @classmethod
+    def _get_device_lines(cls, device_id, line_id, user_identity):
+        line = ""
+        if line_id is not None:
+            line = " and line_id = '{line_id}'".format(line_id=line_id)
+
+        q = """
+            select
+            l.*,
+            jsonb_object_agg(setting, value) as settings
+            from line_settings as s
+            join lines as l on s.line_id = l.id
+            where l.id in (
+                select line_id from line_device where device_id = %(device_id)s
+            ) {line}
+            group by l.id
+        """.format(line=line)
+
+        return Db.execute(query=q, params={'device_id': device_id}, method='fetchall')
+
     def __init__(
         self,
         user_identity,
@@ -40,35 +60,29 @@ class Device:
         self.version = version
         self.settings = settings
         self.concole = concole
+
         self.lines = list()
         self.state = -1
+
         self._init_lines()
         self._init_state()
-
-        self.tasks = dict()
 
     def register_lines_tasks(self, lines):
         tasks = dict()
         exec_time = datetime.now()
         for line in lines:
-            logger.info(line)
             task = Task(exec_time=exec_time, device_id=self.id, **line)
             task.register()
             tasks[line['line_id']] = task
             exec_time = task.next_rule_start_time
-
-        self.tasks = tasks
 
         return self
 
     def get_next_tasks(self):
         return Db.get_device_lines_next_tasks(device_id=self.id)
 
-    def remove_tasks(self, rules):
-        return Db.get_device_lines_next_tasks(device_id=self.id, rules=rules)
-
     def _init_lines(self):
-        records = Db.get_device_lines(device_id=self.id, line_id=None)
+        records = Device._get_device_lines(device_id=self.id, line_id=None, user_identity=self.user_identity)
 
         for rec in records:
             self.lines.append(Line(**rec))

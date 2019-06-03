@@ -308,7 +308,7 @@ CREATE TABLE public.jobs_queue(
     task_id uuid,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
-    action text NOT NULL,
+    desired_device_state text NOT NULL,
     exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     state text DEFAULT 'pending' NOT NULL,
     FOREIGN KEY(line_id) REFERENCES lines(id),
