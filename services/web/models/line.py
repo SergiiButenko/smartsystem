@@ -1,20 +1,27 @@
+from web.models.task import Task
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 class Line:
     @classmethod
-    def _get_line_next_task(cls, device_id):
+    def _get_line_next_task(cls, line_id):
         """
         Return first rule to execute
-        :param device_id:
+        :param line_id:
         :return: array of further tasks
         """
         q = """
-            SELECT * from rules_line
+            SELECT * from tasks
             WHERE exec_time > now()
-            AND device_id = %(device_id)s
+            AND line_id = %(line_id)s
             ORDER BY exec_time ASC
             LIMIT 1
             """
 
-        records = Db.execute(query=q, params={"device_id": device_id}, method='fetchone')
+        records = Db.execute(query=q, params={"line_id": line_id}, method='fetchone')
 
         tasks = list()
         for rec in records:
@@ -31,17 +38,27 @@ class Line:
         self.relay_num = relay_num
         self.state = state
 
-        self.tasks = dict(desired_state=-1)
-        self._init_task()
+        self.tasks = self._init_task()
 
     def _init_task(self):
-        records = Line._get_line_next_task(device_id=self.id)
+        records = Line._get_line_next_task(line_id=self.id)
 
+        tasks = list()
         for rec in records:
-            self.tasks = Task(**rec)
+            tasks.append(Task(**rec))
+
+        return tasks
+
+    def register_task(self, task):
+        prev_tasks = self.tasks
+
+        task.register()
+        self.tasks = self._init_task()
+
+        if prev_tasks != self.tasks:
+            logger.info("Should send websocket notify")
 
         return self
-
 
     def to_json(self):
         return {
@@ -51,6 +68,7 @@ class Line:
             "settings": self.settings,
             "relay_num": self.relay_num,
             "state": self.state,
+            "tasks": self.tasks,
         }
 
     serialize = to_json

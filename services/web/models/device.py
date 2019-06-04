@@ -61,35 +61,19 @@ class Device:
         self.settings = settings
         self.concole = concole
 
-        self.lines = list()
-        self.state = -1
-
-        self._init_lines()
-        self._init_state()
-
-    def register_lines_tasks(self, lines):
-        tasks = dict()
-        exec_time = datetime.now()
-        for line in lines:
-            task = Task(exec_time=exec_time, device_id=self.id, **line)
-            task.register()
-            tasks[line['line_id']] = task
-            exec_time = task.next_rule_start_time
-
-        return self
-
-    def get_next_tasks(self):
-        return Db.get_device_lines_next_tasks(device_id=self.id)
+        self.lines = self._init_lines()
+        self.state = self._init_state()
 
     def _init_lines(self):
         records = Device._get_device_lines(device_id=self.id, line_id=None, user_identity=self.user_identity)
 
+        lines = list()
         for rec in records:
             self.lines.append(Line(**rec))
 
-        self.lines.sort(key=lambda e: e.name)
+        lines.sort(key=lambda e: e.name)
 
-        return self
+        return lines
 
     def _init_state(self):
         if self.lines is None:
@@ -97,6 +81,7 @@ class Device:
 
         # get from redis
         # request change
+        state = "offline"
         if self.settings["comm_protocol"] == "network":
             try:
                 # lines_state = requests.get(url=self.settings["ip"] + "99")
@@ -108,15 +93,32 @@ class Device:
                 # lines_state = list(map(int, lines_state))
                 # logger.info(lines_state)
                 lines_state = [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
-                self.state = "online"
+                state = "online"
 
                 for line in self.lines:
-                    logger.info(lines_state)
                     line.state = lines_state[line.relay_num]
             except Exception as e:
                 logger.error("device is offline")
                 logger.error(e)
-                self.state = "offline"
+                state = "offline"
+
+        return state
+
+    def register_lines_tasks(self, lines):
+        exec_time = datetime.now()
+        for line_to_plan in lines:
+            line = self.lines[line_to_plan['line_id']]
+
+            task = Task(exec_time=exec_time,
+                        device_id=self.id,
+                        time=line_to_plan['time'],
+                        iterations=line_to_plan['iterations'],
+                        time_sleep=line_to_plan['time_sleep'],
+                        relay_num=line.relay_num,
+                        )
+            line.register_task(task)
+
+            exec_time = task.next_rule_start_time
 
         return self
 
