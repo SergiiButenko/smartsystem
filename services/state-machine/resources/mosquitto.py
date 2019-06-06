@@ -32,6 +32,3 @@ class Mosquitto:
     def _on_message(self, userdata, message):
         logger.info(message.payload.decode())
         logger.info(message.topic)
-
-
-DataBus = Mosquitto()

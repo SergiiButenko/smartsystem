@@ -19,8 +19,8 @@ services:
 
   task-executor:
     build:
-      context: ./services/task-executor
-    container_name: task-executor
+      context: ./services/postgres-worker
+    container_name: postgres-worker
     env_file:
       - ./.env
     command: python -m app
@@ -63,7 +63,7 @@ services:
     depends_on:
       - web
       - data-registrator
-      - task-executor
+      - postgres-worker
       - frontend
 
 volumes:
