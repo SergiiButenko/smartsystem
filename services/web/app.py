@@ -18,5 +18,6 @@ app.register_blueprint(groups, url_prefix="/v1/groups")
 def handle_my_custom_event(json):
     print('received json: ' + str(json))
 
+
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", debug=True)

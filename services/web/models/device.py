@@ -1,9 +1,7 @@
 # This is an example of a complex object that we could build
 # a JWT from. In practice, this will likely be something
 # like a SQLAlchemy instance.
-import requests
 import logging
-import re
 
 from web.models.line import Line
 from web.models.task import Task
@@ -16,6 +14,26 @@ logger = logging.getLogger(__name__)
 
 
 class Device:
+    @classmethod
+    def _get_device_lines(cls, device_id, line_id, user_identity):
+        line = ""
+        if line_id is not None:
+            line = " and line_id = '{line_id}'".format(line_id=line_id)
+
+        q = """
+            select
+            l.*,
+            jsonb_object_agg(setting, value) as settings
+            from line_settings as s
+            join lines as l on s.line_id = l.id
+            where l.id in (
+                select line_id from line_device where device_id = %(device_id)s
+            ) {line}
+            group by l.id
+        """.format(line=line)
+
+        return Db.execute(query=q, params={'device_id': device_id}, method='fetchall')
+
     def __init__(
         self,
         user_identity,
@@ -40,38 +58,20 @@ class Device:
         self.version = version
         self.settings = settings
         self.concole = concole
-        self.state = self._init_state()
+
         self.lines = self._init_lines()
-        self.tasks = dict()
-
-    def register_line_tasks(self, lines):
-        tasks = dict()
-        exec_time = datetime.now()
-        for line in lines:
-            task = Task(exec_time=exec_time, device_id=self.id, **line)
-            task.register
-            tasks[line.id] = task
-            exec_time = task.next_rule_start_time
-
-        self.tasks = tasks
-
-        return self
-
-    def get_next_tasks(self):
-        return Db.get_device_lines_next_tasks(device_id=self.id)
-
-    def remove_tasks(self, rules):
-        return Db.get_device_lines_next_tasks(device_id=self.id, rules=rules)
+        self.state = self._init_state()
 
     def _init_lines(self):
-        records = Db.get_device_lines(device_id=self.id, line_id=None)
+        records = Device._get_device_lines(device_id=self.id, line_id=None, user_identity=self.user_identity)
 
+        lines = list()
         for rec in records:
             self.lines.append(Line(**rec))
 
-        self.lines.sort(key=lambda e: e.name)
+        lines.sort(key=lambda e: e.name)
 
-        return self
+        return lines
 
     def _init_state(self):
         if self.lines is None:
@@ -79,6 +79,7 @@ class Device:
 
         # get from redis
         # request change
+        state = "offline"
         if self.settings["comm_protocol"] == "network":
             try:
                 # lines_state = requests.get(url=self.settings["ip"] + "99")
@@ -90,15 +91,32 @@ class Device:
                 # lines_state = list(map(int, lines_state))
                 # logger.info(lines_state)
                 lines_state = [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
-                self.state = "online"
+                state = "online"
 
                 for line in self.lines:
-                    logger.info(lines_state)
                     line.state = lines_state[line.relay_num]
             except Exception as e:
                 logger.error("device is offline")
                 logger.error(e)
-                self.state = "offline"
+                state = "offline"
+
+        return state
+
+    def register_lines_tasks(self, lines):
+        exec_time = datetime.now()
+        for line_to_plan in lines:
+            line = self.lines[line_to_plan['line_id']]
+
+            task = Task(exec_time=exec_time,
+                        device_id=self.id,
+                        time=line_to_plan['time'],
+                        iterations=line_to_plan['iterations'],
+                        time_sleep=line_to_plan['time_sleep'],
+                        relay_num=line.relay_num,
+                        )
+            line.register_task(task)
+
+            exec_time = task.next_rule_start_time
 
         return self
 

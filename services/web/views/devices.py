@@ -57,7 +57,7 @@ def set_rules_for_device(device_id):
     # }
 
     device = Devices.get_by_id(device_id=device_id, user_identity=cr_user)
-    tasks = device.register_tasks(lines=income_json["lines"])
+    tasks = device.register_lines_tasks(lines=income_json["lines"])
 
     return jsonify(tasks=tasks)
 
