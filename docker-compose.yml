@@ -11,15 +11,15 @@ services:
     expose:
       - 5000
     volumes:
-      - ./configs/web.py:/config.py
+      - ./configs/web.py:/app/web/config.py
     command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}", "--",
               "/usr/local/bin/gunicorn", "--worker-class", "eventlet",
               "web.app:app", "-w", "1", "-t", "90", "-b", "0.0.0.0:5000"
               ]
 
-  task-executor:
+  postgres-worker:
     build:
-      context: ./services/postgres-worker
+      context: ./workers/postgres-worker
     container_name: postgres-worker
     env_file:
       - ./.env

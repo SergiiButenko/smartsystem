@@ -6,7 +6,7 @@ from web.models.job import Job
 from web.resources import Db
 
 import logging
-import JSON
+import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class Task:
                     task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
-                    desired_device_state=JSON.dumps(
+                    desired_device_state=json.dumps(
                         {'state': {
                                   'relay': {'num': self.relay_num, 'state': 1}
                                   }
@@ -69,9 +69,9 @@ class Task:
                     task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
-                    desired_device_state=JSON.dumps(
+                    desired_device_state=json.dumps(
                         {'state': {
-                                  'relay': {'num': _db_line['relay_num'], 'state': 0}
+                                  'relay': {'num': self.relay_num, 'state': 0}
                                   }
                         }),
                     exec_time=exec_time + timedelta(minutes=self.time),

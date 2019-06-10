@@ -67,7 +67,7 @@ class Device:
 
         lines = list()
         for rec in records:
-            self.lines.append(Line(**rec))
+            lines.append(Line(**rec))
 
         lines.sort(key=lambda e: e.name)
 

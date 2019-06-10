@@ -1,4 +1,6 @@
 from web.models.task import Task
+from web.resources import Db
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
