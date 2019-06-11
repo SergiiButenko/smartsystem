@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 app, socketio = create_flask_app(__name__)
-jwt = create_jwt_app(app)
+jwt = create_jwt_app(app=app)
 
 app.register_blueprint(devices, url_prefix="/v1/devices")
 app.register_blueprint(auth, url_prefix="/v1/auth")
