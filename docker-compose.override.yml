@@ -3,6 +3,8 @@ services:
   web:
     volumes:
       - ./services:/app
+    ports:
+      - 5000:5000
     command: ["web/wait-for-it.sh","${DB_HOST}:${DB_PORT}",
               "--",
               "python", "-m", "web.app"]

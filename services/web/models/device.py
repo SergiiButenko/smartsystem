@@ -103,6 +103,9 @@ class Device:
         return state
 
     def register_lines_tasks(self, lines):
+        if self.lines is None:
+            self.lines = self._init_lines()
+
         exec_time = datetime.now()
         for line_to_plan in lines:
             line = self.lines[line_to_plan['line_id']]

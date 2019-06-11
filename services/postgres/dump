@@ -287,7 +287,7 @@ CREATE TABLE public.tasks (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
-    exec_time INT NOT NULL,
+    exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     time INT NOT NULL,
     iterations INT NOT NULL,
     time_sleep INT NOT NULL,

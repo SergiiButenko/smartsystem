@@ -26,10 +26,14 @@ class Line:
         records = Db.execute(query=q, params={"line_id": line_id}, method='fetchone')
 
         tasks = list()
-        for rec in records:
-            tasks.append(rec)
+        if records is None:
+            return tasks
 
-        tasks.sort(key=lambda e: e["exec_time"])
+        for rec in records:
+            tasks.append(Task(**rec))
+
+        tasks.sort(key=lambda e: e.exec_time)
+
         return tasks
 
     def __init__(self, id, name, description, relay_num, settings, state=-1):
@@ -43,13 +47,7 @@ class Line:
         self.tasks = self._init_task()
 
     def _init_task(self):
-        records = Line._get_line_next_task(line_id=self.id)
-
-        tasks = list()
-        for rec in records:
-            tasks.append(Task(**rec))
-
-        return tasks
+        return Line._get_line_next_task(line_id=self.id)
 
     def register_task(self, task):
         prev_tasks = self.tasks
