@@ -17,6 +17,20 @@ services:
               "web.app:app", "-w", "1", "-t", "90", "-b", "0.0.0.0:5000"
               ]
 
+  postgres_local:
+    image: "postgres:11.2-alpine"
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - ./services/postgres_local/:/docker-entrypoint-initdb.d
+    #       - postgres-data:/data/postgres
+    ports:
+      - 5433:5432
+    restart: unless-stopped
+
   postgres-worker:
     build:
       context: ./workers/postgres-worker

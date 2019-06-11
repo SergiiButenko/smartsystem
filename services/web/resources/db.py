@@ -24,7 +24,7 @@ class Database:
     def __del__(self):
         self.conn.close()
 
-    def _execute(self, query, params={}, method=None):
+    def execute(self, query, params={}, method=None):
         try:
             self.cursor.execute(
                 query,
@@ -43,15 +43,5 @@ class Database:
             self.conn.rollback()
             raise error
 
-    execute = _execute
-
-    def get_user(self, user_identity):
-        q = "select name, password from users where email = %(user_identity)s or name = %(user_identity)s"
-
-        records = self._execute(q, {'user_identity': 'admin'}, method='fetchone')
-        if len(records) == 0:
-            raise Exception("No user_id={}".format(user_identity))
-
-        return records
 
 Db = Database()
