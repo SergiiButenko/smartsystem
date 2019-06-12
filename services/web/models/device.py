@@ -65,11 +65,11 @@ class Device:
     def _init_lines(self):
         records = Device._get_device_lines(device_id=self.id, line_id=None, user_identity=self.user_identity)
 
-        lines = list()
+        lines = dict()
         for rec in records:
-            lines.append(Line(**rec))
+            lines[rec['id']] = Line(**rec)
 
-        lines.sort(key=lambda e: e.name)
+        # lines.sort(key=lambda e: e.name)
 
         return lines
 
@@ -116,6 +116,7 @@ class Device:
                         iterations=line_to_plan['iterations'],
                         time_sleep=line_to_plan['time_sleep'],
                         relay_num=line.relay_num,
+                        line_id=line_to_plan['line_id'],
                         )
             line.register_task(task)
 

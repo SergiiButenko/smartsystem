@@ -16,7 +16,7 @@ class Job:
         """
         q = """
             INSERT INTO jobs_queue
-            (task_id, line_id, device_id, action, exec_time)
+            (task_id, line_id, device_id, desired_device_state, exec_time)
             VALUES (%(task_id)s, %(line_id)s, %(device_id)s, %(desired_device_state)s, %(exec_time)s)
             RETURNING id
             """

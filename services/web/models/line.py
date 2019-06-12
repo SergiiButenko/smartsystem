@@ -17,21 +17,19 @@ class Line:
         """
         q = """
             SELECT * from tasks
-            WHERE exec_time > now()
+            WHERE exec_time >= now() - INTERVAL '1 HOUR'
             AND line_id = %(line_id)s
             ORDER BY exec_time ASC
             LIMIT 1
             """
 
-        records = Db.execute(query=q, params={"line_id": line_id}, method='fetchone')
+        record = Db.execute(query=q, params={"line_id": line_id}, method='fetchone')
 
         tasks = list()
-        if records is None:
+        if record is None:
             return tasks
 
-        for rec in records:
-            tasks.append(Task(**rec))
-
+        tasks.append(Task(**record))
         tasks.sort(key=lambda e: e.exec_time)
 
         return tasks

@@ -22,9 +22,10 @@ class Task:
         time,
         iterations,
         time_sleep,
-        relay_num,
+        relay_num=-1,
+        id=-1,
     ):
-        self.id = -1  # will be set after register into database
+        self.id = id  # will be set after register into database
         self.line_id = line_id
         self.device_id = device_id
         self.exec_time = exec_time
@@ -93,7 +94,7 @@ class Task:
                                                'time': self.time,
                                                'iterations': self.iterations,
                                                'time_sleep': self.time_sleep,
-                                               }, method='fetchone')
+                                               }, method='fetchone')[0]
 
         return self
 
@@ -101,7 +102,8 @@ class Task:
         self._register_task()
 
         for job in self.jobs:
-            job.register_job()
+            job.task_id = self.id
+            job.register()
 
         return self
 

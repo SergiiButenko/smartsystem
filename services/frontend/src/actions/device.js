@@ -32,9 +32,9 @@ export const fetchDevices = () => {
 
         try {
             let devices = await smartSystemApi.getDevice();
-            for (let _device in devices[deviceKey]) {
-                _device.lines = arrayToObj(devices.lines);
-            }
+            // for (let _device in devices[deviceKey]) {
+            //     _device.lines = arrayToObj(devices.lines);
+            // }
 
             devices = arrayToObj(devices[deviceKey]);
 
@@ -56,7 +56,7 @@ export const fetchDeviceById = (deviceId) => {
 
             const _devices = await smartSystemApi.getDeviceById(deviceId);
             let device = _devices[deviceKey][0];
-            device.lines = arrayToObj(device.lines);
+            // device.lines = arrayToObj(device.lines);
 
             dispatch(entity.devices.set(device));
         }
