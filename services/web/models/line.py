@@ -1,4 +1,4 @@
-from web.models.task import Task
+from web.models.line_task import LineTask
 from web.resources import Db
 
 import logging
@@ -8,15 +8,15 @@ logger = logging.getLogger(__name__)
 
 
 class Line:
-    @classmethod
-    def _get_line_next_task(cls, line_id):
+    @staticmethod
+    def _get_line_next_task(line_id):
         """
         Return first rule to execute
         :param line_id:
         :return: array of further tasks
         """
         q = """
-            SELECT * from tasks
+            SELECT * from line_tasks
             WHERE exec_time >= now() - INTERVAL '1 HOUR'
             AND line_id = %(line_id)s
             ORDER BY exec_time ASC
@@ -29,7 +29,7 @@ class Line:
         if record is None:
             return tasks
 
-        tasks.append(Task(**record))
+        tasks.append(LineTask(**record))
         tasks.sort(key=lambda e: e.exec_time)
 
         return tasks

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:
-            if isinstance(obj, (Device, Group, Line, User, Task, Job)):
+            if isinstance(obj, (Device, Group, Line, User, LineTask, DeviceTask, Job)):
                 return obj.serialize()
             iterable = iter(obj)
         except TypeError as e:

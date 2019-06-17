@@ -5,9 +5,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class Job:
-    @classmethod
-    def _register_job(cls, job):
+    @staticmethod
+    def _register_job(job):
         """
         Add tasks into database.
 
@@ -20,9 +21,7 @@ class Job:
             VALUES (%(task_id)s, %(line_id)s, %(device_id)s, %(desired_device_state)s, %(exec_time)s)
             RETURNING id
             """
-        records = Db.execute(query=q, params=job.to_json(), method='fetchone')
-
-        return records
+        return Db.execute(query=q, params=job.to_json(), method='fetchone')
 
     def __init__(self, task_id, line_id, device_id, desired_device_state, exec_time, state="", id=-1):
         self.id = id

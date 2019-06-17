@@ -1,6 +1,4 @@
-from builtins import property, range
-from datetime import datetime, timedelta
-from uuid import uuid4
+from datetime import timedelta
 
 from web.models.job import Job
 from web.resources import Db
@@ -12,12 +10,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Task:
+class LineTask:
     """Compose set of tasks according to iterations and time_sleep"""
     def __init__(
         self,
         exec_time,
         device_id,
+        device_task,
         line_id,
         time,
         iterations,
@@ -28,13 +27,14 @@ class Task:
         self.id = id  # will be set after register into database
         self.line_id = line_id
         self.device_id = device_id
+        self.device_task = device_task
         self.exec_time = exec_time
         self.time = time
         self.iterations = iterations
         self.time_sleep = time_sleep
         self.relay_num = relay_num
 
-        self.jobs = self._generate_jobs()
+        self.jobs = list()
 
     @property
     def duration(self):
@@ -48,7 +48,7 @@ class Task:
     def next_rule_start_time(self):
         return self.time_ends + timedelta(minutes=self.duration * 2)
 
-    def _generate_jobs(self):
+    def generate_jobs(self):
         exec_time = self.exec_time
         jobs = []
         for i in range(self.iterations):
@@ -99,6 +99,7 @@ class Task:
         return self
 
     def register(self):
+        self.generate_jobs()
         self._register_task()
 
         for job in self.jobs:

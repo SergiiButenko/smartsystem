@@ -4,18 +4,62 @@
 import logging
 
 from web.models.line import Line
-from web.models.task import Task
 from web.resources import Db
-
-from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class Device:
-    @classmethod
-    def _get_device_lines(cls, device_id, line_id, user_identity):
+    @staticmethod
+    def _get_devices(user_identity, device_id):
+        device = ""
+        if device_id is not None:
+            device = " and device_id = '{device_id}'".format(device_id=device_id)
+
+        q = """
+            select
+            d.*,
+            jsonb_object_agg(setting, value) as settings
+            from device_settings as s
+            join devices as d on s.device_id = d.id
+            where s.device_id in (
+            select id from devices where id in (
+                select device_id from device_user where user_id in (
+                    select id from users where name = %(user_identity)s
+                    )
+                ) {device}
+            )
+            group by d.id
+            """.format(device=device)
+
+        records = Db.execute(q, {'user_identity': 'admin'}, method='fetchall')
+        if len(records) == 0:
+            raise Exception("No device '{}' found".format(device_id))
+
+        return records
+
+    @staticmethod
+    def get_by_id(device_id, user_identity):
+        device = Device._get_devices(device_id=device_id, user_identity=user_identity)[0]
+        device = Device(user_identity=user_identity, **device)
+
+        return device
+
+    @staticmethod
+    def get_all(user_identity):
+        records = Device._get_devices(device_id=None, user_identity=user_identity)
+
+        devices = list()
+        for rec in records:
+            devices.append(Device(user_identity=user_identity, **rec))
+
+        devices.sort(key=lambda e: e.name)
+
+        return devices
+
+    @staticmethod
+    def _get_device_lines(device_id, line_id, user_identity):
         line = ""
         if line_id is not None:
             line = " and line_id = '{line_id}'".format(line_id=line_id)
@@ -101,28 +145,6 @@ class Device:
                 state = "offline"
 
         return state
-
-    def register_lines_tasks(self, lines):
-        if self.lines is None:
-            self.lines = self._init_lines()
-
-        exec_time = datetime.now()
-        for line_to_plan in lines:
-            line = self.lines[line_to_plan['line_id']]
-
-            task = Task(exec_time=exec_time,
-                        device_id=self.id,
-                        time=line_to_plan['time'],
-                        iterations=line_to_plan['iterations'],
-                        time_sleep=line_to_plan['time_sleep'],
-                        relay_num=line.relay_num,
-                        line_id=line_to_plan['line_id'],
-                        )
-            line.register_task(task)
-
-            exec_time = task.next_rule_start_time
-
-        return self
 
     def to_json(self):
         return {

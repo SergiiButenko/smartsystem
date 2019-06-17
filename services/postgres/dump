@@ -283,25 +283,27 @@ INSERT INTO public.line_device (line_id, device_id) VALUES ('80122552-18bc-4846-
 
 
 ---job section---
-CREATE TABLE public.tasks (
+CREATE TABLE public.device_tasks (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    device_id uuid NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    type text NOT NULL DEFAULT 'onetime',
+    FOREIGN KEY(device_id) REFERENCES devices(id)
+);
+
+CREATE TABLE public.line_tasks (
+    id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+    task_id uuid NOT NULL,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
     exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     time INT NOT NULL,
     iterations INT NOT NULL,
     time_sleep INT NOT NULL,
+    FOREIGN KEY(task_id) REFERENCES device_tasks(id),
     FOREIGN KEY(device_id) REFERENCES devices(id),
     FOREIGN KEY(line_id) REFERENCES lines(id)
 );
-
---CREATE TABLE public.job_type (
---    name text NOT NULL PRIMARY KEY,
---    description text NOT NULL
---);
---INSERT INTO public.job_type(name, description) VALUES('activate', 'Активувати');
---INSERT INTO public.job_type(name, description) VALUES('deactivate', 'Деактивувати');
-
 
 CREATE TABLE public.job_states (
     name text NOT NULL PRIMARY KEY,
@@ -317,13 +319,13 @@ INSERT INTO public.job_states VALUES('canceled_mistime', 'Скасовано ч�
 
 CREATE TABLE public.jobs_queue(
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    task_id uuid NOT NULL,
+    line_task_id uuid NOT NULL,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
     desired_device_state text NOT NULL,
     exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     state text DEFAULT 'pending' NOT NULL,
-    FOREIGN KEY(task_id) REFERENCES tasks(id),
+    FOREIGN KEY(line_task_id) REFERENCES line_tasks(id),
     FOREIGN KEY(line_id) REFERENCES lines(id),
     FOREIGN KEY(device_id) REFERENCES devices(id)
 );
