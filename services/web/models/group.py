@@ -12,94 +12,73 @@ logger = logging.getLogger(__name__)
 
 class Group:
     @staticmethod
-    def _get_groups(user_identity, group_id):
-        group = ""
-        if group_id is not None:
-            group = " and group_id = '{group_id}'".format(group_id=group_id)
-
+    def get_by_id(group_id):
         q = """
-               select g.* from groups as g where id in (
-                    select group_id from device_groups where device_id in (
-                        select device_id from device_user where user_id in (
-                                        select id from users where name = %(user_identity)s
-                                    )
-                    ) {group}
-                )
-                """.format(group=group)
+                       select * from groups where id = %(group_id)s
+                        """
 
-        records = Db.execute(q, params={'user_identity': "admin"}, method="fetchall")
-        if len(records) == 0:
+        group = Db.execute(q, params={'group_id': group_id}, method="fetchone")
+        if group is None:
             raise Exception("No group_id {} found".format(group_id))
 
-        return records
-
-    @staticmethod
-    def get_by_id(group_id, user_identity):
-        group = Group._get_groups(group_id=group_id, user_identity=user_identity)[0]
-        group = Group(user_identity=user_identity, **group)
+        group = Group(**group)
         group.init_devices()
 
         return group
 
     @staticmethod
     def get_all(user_identity):
-        records = Group._get_groups(group_id=None, user_identity=user_identity)
+        q = """
+                       select g.* from groups as g where id in (
+                            select group_id from device_groups where device_id in (
+                                select device_id from device_user where user_id in (
+                                                select id from users where name = %(user_identity)s
+                                            )
+                            )
+                        )
+                        """
 
+        records = Db.execute(q, params={'user_identity': "admin"}, method="fetchall")
         groups = list()
+
+        if len(records) == 0:
+            logger.info("No groups for user '{}' found".format(user_identity))
+            return groups
+
         for rec in records:
-            logger.info(rec)
-            groups.append(Group(user_identity=user_identity, **rec))
+            groups.append(Group(**rec))
 
         groups.sort(key=lambda e: e.name)
 
         return groups
 
-    @staticmethod
-    def _get_group_devices(user_identity, group_id):
-        group = ""
-        if group_id is not None:
-            group = " and group_id = '{group_id}'".format(group_id=group_id)
-
-        q = """
-            select
-            d.*,
-            jsonb_object_agg(setting, value) as settings
-            from device_settings as s
-            join devices as d on s.device_id = d.id
-            where s.device_id in (
-            select id from devices where id in (
-                select device_id from device_groups where device_id in (
-                        select device_id from device_user where user_id in (
-                            select id from users where name = %(user_identity)s
-                        )
-                    ) {group}
-                )
-            )
-            group by d.id
-            """.format(
-            group=group
-        )
-
-        records = Db.execute(q, {'user_identity': "admin"}, method='fetchall')
-        if len(records) == 0:
-            raise Exception("No devices in group_id={}".format(group_id))
-
-        return records
-
-    def __init__(self, user_identity, id, name, description, devices=[]):
-        self.user_identity = user_identity
+    def __init__(self, id, name, description, devices=[]):
         self.id = id
         self.name = name
         self.description = description
         self.devices = []
 
     def init_devices(self):
-        records = Group._get_group_devices(
-            group_id=self.id, user_identity=self.user_identity
-        )
+        q = """
+                    select
+                    d.*,
+                    jsonb_object_agg(setting, value) as settings
+                    from device_settings as s
+                    join devices as d on s.device_id = d.id
+                    where s.device_id in (
+                    select id from devices where id in (
+                        select device_id from device_groups where group_id = %(group_id)s
+                        )
+                    )
+                    group by d.id
+                    """
+        records = Db.execute(q, {'group_id': self.id}, method='fetchall')
+        if len(records) == 0:
+            logger.info("No devices in group_id '{}'".format(self.id))
+            return self
 
         for rec in records:
-            device = Device(user_identity=self.user_identity, **rec)
+            device = Device(**rec)
             self.devices.append(device)
 
         self.devices.sort(key=lambda e: e.name)

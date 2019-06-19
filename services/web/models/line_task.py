@@ -16,7 +16,7 @@ class LineTask:
         self,
         exec_time,
         device_id,
-        device_task,
+        device_task_id,
         line_id,
         time,
         iterations,
@@ -27,7 +27,7 @@ class LineTask:
         self.id = id  # will be set after register into database
         self.line_id = line_id
         self.device_id = device_id
-        self.device_task = device_task
+        self.device_task_id = device_task_id
         self.exec_time = exec_time
         self.time = time
         self.iterations = iterations
@@ -82,25 +82,22 @@ class LineTask:
 
         return jobs
 
-    def _register_task(self):
-        q = """
-        INSERT INTO tasks(line_id, device_id, exec_time, time, iterations, time_sleep)
-        VALUES (%(line_id)s, %(device_id)s, %(exec_time)s, %(time)s, %(iterations)s, %(time_sleep)s)
-        RETURNING id
-        """
-        self.id = Db.execute(query=q, params={'line_id': self.line_id,
-                                               'device_id': self.device_id,
-                                               'exec_time': self.exec_time,
-                                               'time': self.time,
-                                               'iterations': self.iterations,
-                                               'time_sleep': self.time_sleep,
-                                               }, method='fetchone')[0]
-
-        return self
-
     def register(self):
         self.generate_jobs()
-        self._register_task()
+
+        q = """
+               INSERT INTO line_tasks(line_id, device_task_id, device_id, exec_time, time, iterations, time_sleep)
+               VALUES (%(line_id)s, %(device_task_id)s, %(device_id)s, %(exec_time)s, %(time)s, %(iterations)s, %(time_sleep)s)
+               RETURNING id
+               """
+        self.id = Db.execute(query=q, params={'line_id': self.line_id,
+                                              'device_task_id': self.device_task_id,
+                                              'device_id': self.device_id,
+                                              'exec_time': self.exec_time,
+                                              'time': self.time,
+                                              'iterations': self.iterations,
+                                              'time_sleep': self.time_sleep,
+                                              }, method='fetchone')[0]
 
         for job in self.jobs:
             job.task_id = self.id
@@ -111,12 +108,12 @@ class LineTask:
     def to_json(self):
         return dict(
             line_id=self.line_id,
+            device_task_id=self.device_task_id,
             device_id=self.device_id,
             exec_time=self.exec_time,
             time=self.time,
             iterations=self.iterations,
             time_sleep=self.time_sleep,
-            jobs=self.jobs,
             id=self.id,
         )
 

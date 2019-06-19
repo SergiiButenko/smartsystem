@@ -8,32 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class Line:
-    @staticmethod
-    def _get_line_next_task(line_id):
-        """
-        Return first rule to execute
-        :param line_id:
-        :return: array of further tasks
-        """
-        q = """
-            SELECT * from line_tasks
-            WHERE exec_time >= now() - INTERVAL '1 HOUR'
-            AND line_id = %(line_id)s
-            ORDER BY exec_time ASC
-            LIMIT 1
-            """
-
-        record = Db.execute(query=q, params={"line_id": line_id}, method='fetchone')
-
-        tasks = list()
-        if record is None:
-            return tasks
-
-        tasks.append(LineTask(**record))
-        tasks.sort(key=lambda e: e.exec_time)
-
-        return tasks
-
     def __init__(self, id, name, description, relay_num, settings, state=-1):
         self.id = id
         self.name = name
@@ -45,7 +19,24 @@ class Line:
         self.tasks = self._init_task()
 
     def _init_task(self):
-        return Line._get_line_next_task(line_id=self.id)
+        q = """
+                    SELECT * from line_tasks
+                    WHERE exec_time >= now() - INTERVAL '1 HOUR'
+                    AND line_id = %(line_id)s
+                    ORDER BY exec_time ASC
+                    LIMIT 1
+                    """
+
+        record = Db.execute(query=q, params={"line_id": self.id}, method='fetchone')
+
+        tasks = list()
+        if record is None:
+            return tasks
+
+        tasks.append(LineTask(**record))
+        tasks.sort(key=lambda e: e.exec_time)
+
+        return tasks
 
     def register_task(self, task):
         prev_tasks = self.tasks

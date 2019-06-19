@@ -22,7 +22,4 @@ def groups_route():
 @groups.route("/<string:group_id>", methods=["GET"])
 @jwt_required
 def groups_lines_route(group_id):
-    cr_user = get_jwt_identity()
-
-    # list is applied here for so frontend can work with arrays only
-    return jsonify(groups=[Group.get_by_id(group_id=group_id, user_identity=cr_user)])
+    return jsonify(groups=[Group.get_by_id(group_id=group_id)])

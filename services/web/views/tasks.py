@@ -22,7 +22,7 @@ def set_rules_for_device(device_id):
     #             {'line_id': '80122552-18bc-4846-9799-0b728324251c', 'time': 10, 'iterations': 2, 'time_sleep': 15},
     #         ],
     # }
-    tasks_arr = DeviceTask(device_id=device_id, lines=income_json["lines"]).register_tasks()
+    tasks_arr = DeviceTask(device_id=device_id, lines=income_json["lines"]).register()
 
     return jsonify(tasks=tasks_arr)
 

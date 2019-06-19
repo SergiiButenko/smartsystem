@@ -21,5 +21,5 @@ def devices_lines_route(device_id=None):
         return jsonify(devices=Device.get_all(user_identity=cr_user))
     else:
         return jsonify(
-            devices=[Device.get_by_id(device_id=device_id, user_identity=cr_user)]
+            devices=[Device.get_by_id(device_id=device_id)]
         )

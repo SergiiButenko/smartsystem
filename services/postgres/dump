@@ -293,14 +293,14 @@ CREATE TABLE public.device_tasks (
 
 CREATE TABLE public.line_tasks (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
-    task_id uuid NOT NULL,
+    device_task_id uuid NOT NULL,
     line_id uuid NOT NULL,
     device_id uuid NOT NULL,
     exec_time TIMESTAMP WITH TIME ZONE NOT NULL,
     time INT NOT NULL,
     iterations INT NOT NULL,
     time_sleep INT NOT NULL,
-    FOREIGN KEY(task_id) REFERENCES device_tasks(id),
+    FOREIGN KEY(device_task_id) REFERENCES device_tasks(id),
     FOREIGN KEY(device_id) REFERENCES devices(id),
     FOREIGN KEY(line_id) REFERENCES lines(id)
 );
