@@ -31,7 +31,15 @@ def main():
             logger.info(
                 "Got NOTIFY:{} {} {}".format(notify.pid, notify.channel, notify.payload)
             )
-            curs.execute("SELECT * FROM jobs_queue order by exec_time desc limit 1")
+            curs.execute("SELECT line_task_id,"
+                         "line_id,"
+                         "device_id,"
+                         "desired_device_state,"
+                         "exec_time"
+                         "FROM jobs_queue"
+                         "WHERE state = 'pending'"
+                         "AND exec_time >= now() - INTERVAL '1 HOUR'"
+                         "ORDER BY exec_time desc limit 1")
             records = curs.fetchone()
             logger.info(records)
 

@@ -39,13 +39,13 @@ services:
       - ./.env
     command: python -m app
 
-  data-registrator:
+  celery-worker:
     build:
-      context: ./services/data-registrator
-    container_name: data-registrator
+      context: ./workers/celery-worker
+    container_name: celery-worker
     env_file:
       - ./.env
-    command: python -m app
+    command: celery -A common.resources.celery worker --loglevel=info
 
   state-machine:
     build:
@@ -76,7 +76,6 @@ services:
       - ./services/frontend/app/404.html:/usr/share/nginx/html/404.html
     depends_on:
       - web
-      - data-registrator
       - postgres-worker
       - frontend
 
