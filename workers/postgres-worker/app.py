@@ -3,6 +3,8 @@ import psycopg2.extensions
 import psycopg2.extras
 import logging
 import os
+from resources.celery import CeleryApp
+from models.celery_tasks import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

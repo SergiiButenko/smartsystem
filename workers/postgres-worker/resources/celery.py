@@ -5,7 +5,7 @@ CeleryApp = Celery(
     os.environ["CONSOLE_ID"],
     backend=os.environ["REDIS_BROKER"],
     broker=os.environ["REDIS_BROKER"],
-    # include=[
-    #     "app.models.celery_tasks.get_device_status",
-    # ],
+    include=[
+        "models.celery_tasks.set_device_status",
+    ],
 )
