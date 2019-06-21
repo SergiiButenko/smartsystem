@@ -15,16 +15,13 @@ tasks = Blueprint("tasks", __name__)
 # @jwt_required
 def set_rules_for_device(device_id):
     cr_user = get_jwt_identity()
-    income_json = request.json
-    # income_json = {
-    #     'lines':
-    #         [
-    #             {'line_id': '80122552-18bc-4846-9799-0b728324251c', 'time': 10, 'iterations': 2, 'time_sleep': 15},
-    #         ],
-    # }
-    tasks_arr = DeviceTask(device_id=device_id, lines=income_json["lines"]).register()
 
-    return jsonify(tasks=tasks_arr)
+    income_json = request.json
+
+    device_task = DeviceTask.calculate(device_id=device_id, lines=income_json["lines"])
+    device_task = device_task.register()
+
+    return jsonify(tasks=device_task)
 
 
 @tasks.route("/<string:date_start>/<string:date_end>", methods=["GET"])

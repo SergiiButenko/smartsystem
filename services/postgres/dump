@@ -286,7 +286,7 @@ INSERT INTO public.line_device (line_id, device_id) VALUES ('80122552-18bc-4846-
 CREATE TABLE public.device_tasks (
     id uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     device_id uuid NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    exec_time TIMESTAMPTZ DEFAULT NOW(),
     type text NOT NULL DEFAULT 'onetime',
     FOREIGN KEY(device_id) REFERENCES devices(id)
 );
