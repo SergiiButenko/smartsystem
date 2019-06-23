@@ -13,12 +13,13 @@ logger = logging.getLogger(__name__)
 class DeviceTask:
     @staticmethod
     def get_by_id(device_task_id):
-        q = """select dt.id, dt.device_id, dt.type, dt.exec_time 
+        q = """select dt.id, dt.device_id, dt.type, dt.exec_time, 
                 json_agg(lt.*) as "line_tasks"
                 from device_tasks as dt
                 join line_tasks as lt
                 on  dt.id = lt.device_task_id
                 where lt.device_task_id = %(device_task_id)s
+                group by dt.id
                       """
         device_task = Db.execute(query=q, params={'device_task_id': device_task_id}, method='fetchone')
         device_task['line_tasks'] = map(lambda x: LineTask(**x), device_task['line_tasks'])
@@ -27,13 +28,15 @@ class DeviceTask:
 
     @staticmethod
     def get_next_for_device_id(device_id):
-        q = """SELECT dt.id, dt.device_id, dt.type, dt.exec_time 
+        q = """SELECT dt.id, dt.device_id, dt.type, dt.exec_time, 
                 json_agg(lt.*) as "line_tasks"
                 FROM device_tasks as dt
                 JOIN line_tasks as lt
                 ON dt.id = lt.device_task_id
                 WHERE dt.device_id = %(device_id)s
-                AND exec_time >= now() - INTERVAL '1 HOUR'
+                AND lt.exec_time >= now() - INTERVAL '1 HOUR'
+                GROUP BY dt.id
+                LIMIT 1
         """
         device_task = Db.execute(query=q, params={'device_id': device_id}, method='fetchone')
         device_task['line_tasks'] = map(lambda x: LineTask(**x), device_task['line_tasks'])

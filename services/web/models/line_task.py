@@ -54,7 +54,7 @@ class LineTask:
         for i in range(self.iterations):
             jobs.append(
                 Job(
-                    task_id=self.id,
+                    line_task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
                     desired_device_state=json.dumps(
@@ -67,7 +67,7 @@ class LineTask:
             )
             jobs.append(
                 Job(
-                    task_id=self.id,
+                    line_task_id=self.id,
                     line_id=self.line_id,
                     device_id=self.device_id,
                     desired_device_state=json.dumps(
@@ -80,9 +80,12 @@ class LineTask:
             )
             exec_time = exec_time + timedelta(minutes=self.time_sleep)
 
-        return jobs
+        self.jobs = jobs
+
+        return self
 
     def register(self):
+        logger.info("Generating jobs")
         self.generate_jobs()
 
         q = """
@@ -98,10 +101,12 @@ class LineTask:
                                               'iterations': self.iterations,
                                               'time_sleep': self.time_sleep,
                                               }, method='fetchone')[0]
+        logger.info("Registered line task id {}".format(self.id))
 
         for job in self.jobs:
-            job.task_id = self.id
+            job.line_task_id = self.id
             job.register()
+            logger.info("Registered job id {}".format(job.id))
 
         return self
 

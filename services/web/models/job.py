@@ -7,9 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 class Job:
-    def __init__(self, task_id, line_id, device_id, desired_device_state, exec_time, state="", id=-1):
+    def __init__(self, line_task_id, line_id, device_id, desired_device_state, exec_time, state="", id=-1):
         self.id = id
-        self.task_id = task_id
+        self.line_task_id = line_task_id
         self.line_id = line_id
         self.device_id = device_id
         self.desired_device_state = desired_device_state
@@ -19,18 +19,18 @@ class Job:
     def register(self):
         q = """
                     INSERT INTO jobs_queue
-                    (task_id, line_id, device_id, desired_device_state, exec_time)
-                    VALUES (%(task_id)s, %(line_id)s, %(device_id)s, %(desired_device_state)s, %(exec_time)s)
+                    (line_task_id, line_id, device_id, desired_device_state, exec_time)
+                    VALUES (%(line_task_id)s, %(line_id)s, %(device_id)s, %(desired_device_state)s, %(exec_time)s)
                     RETURNING id
                     """
-        self.id = Db.execute(query=q, params=job.to_json(), method='fetchone')[0]
+        self.id = Db.execute(query=q, params=self.to_json(), method='fetchone')[0]
 
         return self
 
     def to_json(self):
         return dict(
             id=self.id,
-            task_id=self.task_id,
+            line_task_id=self.line_task_id,
             line_id=self.line_id,
             device_id=self.device_id,
             desired_device_state=self.desired_device_state,

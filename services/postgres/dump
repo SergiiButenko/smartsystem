@@ -336,6 +336,7 @@ DECLARE
   queue_name text;
 BEGIN
   SELECT d.concole into queue_name from devices d where id = NEW.device_id;
+
   PERFORM pg_notify(
     queue_name,
     json_build_object(
@@ -349,7 +350,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER jobs_queue_changed
-AFTER INSERT OR UPDATE
+AFTER INSERT OR UPDATE OR DELETE
 ON jobs_queue
 FOR EACH ROW
 EXECUTE PROCEDURE notify_jobs_queue_change();
