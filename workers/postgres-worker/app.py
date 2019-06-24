@@ -2,10 +2,9 @@ import json
 import logging
 import os
 from datetime import datetime
-from resources.dal import DAL
 
-from resources.celery import CeleryApp
-from models.celery_tasks import set_device_status
+from resources.dal import DAL
+from resources.celery import CeleryApp, set_device_status
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
